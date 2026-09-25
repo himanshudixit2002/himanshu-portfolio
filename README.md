@@ -68,6 +68,19 @@ Only ScopeForge has real screenshots (its repository's synthetic demo workspace)
 - Interactive visuals fetch their code when the page goes idle and mount 1000px before they scroll into view. Their reserved heights in `LazyVisual.tsx` are measured per breakpoint so nothing shifts when they arrive — re-measure after changing a visual's layout.
 - **Motion caveat:** Motion 13 hands scroll-linked `opacity` to a native `ViewTimeline`. If a `useTransform` input range does not start at 0 and end at 1, the browser fills the missing keyframes from the element's base style and values drift outside the intended range. Always anchor ranges: `[0, 0.36, 0.46, 1] → [0, 0, 1, 1]`.
 
+### Motion primitives
+
+- **Tokens.** `--ease-out`, `--ease-emphasized`, `--ease-spring` and `--dur-micro/base/slow/cinematic` in `globals.css`; the same values for Motion in `src/lib/motion-tokens.ts`. Hover and press use micro, content changes base, a scene's steps slow or cinematic.
+- **Scroll-driven CSS** (`src/app/motion.css`). `sd-rise`, `sd-scale-in`, `sd-tilt-flat`, `sd-mask-up`, `sd-parallax` (depth via `--sd-shift`), `sd-dim-out` and `sd-progress` tie an effect to an element's own place in the viewport with native scroll timelines — compositor-only, no JavaScript per frame. They apply only where scroll timelines are supported and motion is on; add `data-reveal` alongside for RevealObserver's fade-up in other browsers.
+- **Text.** `<WordReveal>` splits text into real words: `entrance` blurs them up on load, `scrub` lights them as the text crosses the screen. `<Eyebrow>` is the "Label —— Title" line with a rule that draws in.
+- **Scenes.** `<ScrollScene>` pins a stage and hands it scroll progress; its `frames` tell the same story statically for no-JS, reduced motion and phones (unless `mobile="pin"`). CSS picks which shows before any script runs, and the track reserves its height, so nothing shifts. `useSceneStep` turns progress into a step that changes only at boundaries; `SceneDots` and `SceneCaptions` follow it.
+- **`<SnapGallery>`.** Apple-style card row: snaps, peeks, dot pager and paddles, still swipeable without JavaScript; `stackFrom="md"` makes it a plain stack on wider screens.
+- **Device frames** (`src/components/frames`). `MacBookFrame`, `PhoneFrame`, `BrowserFrame`, `DesktopFrame`, sized like the art so they scale as one piece. Their glare follows `--mx`, set by `usePointerLight` on fine pointers.
+
+### Checking performance
+
+`npm run perf -- <scroll|load|heights|shots>` runs Playwright against a running build (`--base`, default `http://localhost:3000`). `scroll` reports frame gaps, layout shift and long tasks per route; `load` median FCP and blocking time, with `--compare <url>` for an A/B against another build; `heights` checks each lazy visual's reserved height; `shots` saves screenshots, with `--scenes` at three points through every pinned scene and `--reduced` / `--nojs` variants. Budgets: CLS 0 on every route, no frame over 50ms while scrolling (also at `--throttle 4`), and blocking time within 10% of the previous build.
+
 ## Palette
 
 Checked against WCAG 2.x contrast:

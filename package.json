@@ -9,7 +9,8 @@
     "lint": "eslint",
     "typecheck": "next typegen && tsc --noEmit",
     "test": "vitest run",
-    "check": "npm run typecheck && npm run lint && npm test"
+    "check": "npm run typecheck && npm run lint && npm test",
+    "perf": "node scripts/perf/index.mjs"
   },
   "dependencies": {
     "motion": "13.4.4",
@@ -24,6 +25,7 @@
     "@types/react-dom": "^19",
     "eslint": "^9",
     "eslint-config-next": "16.3.6",
+    "playwright": "1.56.1",
     "tailwindcss": "^4",
     "typescript": "^5",
     "vitest": "5.0.2"

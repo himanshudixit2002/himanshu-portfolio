@@ -1,0 +1,311 @@
+/*
+ * Device frames. Same sizing model as the art: the frame is an inline-size
+ * container and everything inside is in em against 1cqw, so a device scales
+ * as one piece. Screens reflect a soft glare that follows --mx (0–1), which
+ * an ancestor can set with usePointerLight; without it the glare rests.
+ */
+
+@layer components {
+  .frame {
+    container-type: inline-size;
+    position: relative;
+    width: 100%;
+  }
+}
+
+.device {
+  font-size: 1cqw;
+  position: relative;
+}
+
+/* A soft contact shadow under the device. */
+.device::after {
+  content: "";
+  position: absolute;
+  inset: auto 8% -3.5em;
+  height: 5em;
+  border-radius: 50%;
+  background: radial-gradient(closest-side, rgb(0 0 0 / 0.55), transparent);
+  filter: blur(0.6em);
+  z-index: -1;
+  pointer-events: none;
+}
+
+.onLight .device::after {
+  background: radial-gradient(closest-side, rgb(15 23 42 / 0.28), transparent);
+}
+
+.glare {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: linear-gradient(115deg, rgb(255 255 255 / 0.1) 0%, rgb(255 255 255 / 0.03) 28%, transparent 46%);
+  transform: translate3d(calc((var(--mx, 0.5) - 0.5) * 9%), 0, 0);
+  transition: transform 600ms var(--ease-out);
+  z-index: 2;
+}
+
+/* MacBook ---------------------------------------------------------------- */
+
+.lid {
+  position: relative;
+  margin-inline: 5.5em;
+  padding: 1.5em 1.5em 2em;
+  border-radius: 2.2em 2.2em 0.7em 0.7em;
+  background: linear-gradient(180deg, #2b2c31, #0e0f11 30%);
+  box-shadow:
+    inset 0 0 0 0.12em rgb(255 255 255 / 0.16),
+    inset 0 0 0 0.5em #050506;
+}
+
+.camera {
+  position: absolute;
+  top: 0.55em;
+  left: 50%;
+  width: 0.55em;
+  height: 0.55em;
+  translate: -50% 0;
+  border-radius: 50%;
+  background: radial-gradient(circle at 35% 35%, #3b4a66, #0b0c0e 70%);
+}
+
+.macScreen {
+  position: relative;
+  aspect-ratio: 16 / 10;
+  overflow: hidden;
+  border-radius: 0.7em;
+  background:
+    radial-gradient(60% 80% at 20% 10%, var(--wall-a, rgb(92 164 255 / 0.35)), transparent 70%),
+    radial-gradient(60% 80% at 90% 90%, var(--wall-b, rgb(45 212 191 / 0.28)), transparent 70%),
+    #0c1018;
+  display: grid;
+  place-items: center;
+  padding: 3.5em 4.5em 3em;
+}
+
+.macScreen > :not(.glare) {
+  width: 100%;
+}
+
+.base {
+  position: relative;
+  height: 1.9em;
+  border-radius: 0 0 5em 5em / 0 0 1.9em 1.9em;
+  background: linear-gradient(180deg, #5d5e63 0%, #2c2d31 35%, #18191c 100%);
+  box-shadow: inset 0 0.12em 0 rgb(255 255 255 / 0.28);
+}
+
+.hinge {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  width: 15em;
+  height: 0.85em;
+  translate: -50% 0;
+  border-radius: 0 0 1.1em 1.1em;
+  background: linear-gradient(180deg, #111214, #3a3b40);
+}
+
+/* iPhone ----------------------------------------------------------------- */
+
+.iphone {
+  aspect-ratio: 9 / 19.2;
+  padding: 3em;
+  border-radius: 15em;
+  background: linear-gradient(160deg, #3d3e44, #121316 40%, #0b0c0e);
+  box-shadow:
+    inset 0 0 0 0.6em #1c1d21,
+    0 0 0 0.4em rgb(255 255 255 / 0.06);
+}
+
+.phoneScreen {
+  position: relative;
+  height: 100%;
+  overflow: hidden;
+  border-radius: 12em;
+  background: var(--screen, #ffffff);
+  color: var(--screen-fg, #18181b);
+}
+
+.island {
+  position: absolute;
+  top: 3em;
+  left: 50%;
+  width: 27em;
+  height: 7.6em;
+  translate: -50% 0;
+  border-radius: 4em;
+  background: #050506;
+  z-index: 3;
+}
+
+.statusBar {
+  position: absolute;
+  inset: 3.6em 9em auto;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font: 600 4.6em/1 var(--font-sans);
+  letter-spacing: -0.01em;
+  z-index: 3;
+}
+
+.statusIcons {
+  display: flex;
+  align-items: center;
+  gap: 0.3em;
+}
+
+.bars {
+  display: flex;
+  align-items: flex-end;
+  gap: 0.08em;
+  height: 0.62em;
+}
+
+.bars span {
+  width: 0.14em;
+  border-radius: 0.05em;
+  background: currentColor;
+}
+
+.bars span:nth-child(1) { height: 35%; }
+.bars span:nth-child(2) { height: 55%; }
+.bars span:nth-child(3) { height: 78%; }
+.bars span:nth-child(4) { height: 100%; }
+
+.bars[data-signal="0"] span,
+.bars[data-signal="1"] span:nth-child(n + 2),
+.bars[data-signal="2"] span:nth-child(n + 3),
+.bars[data-signal="3"] span:nth-child(n + 4) {
+  opacity: 0.25;
+}
+
+.battery {
+  position: relative;
+  width: 1.45em;
+  height: 0.68em;
+  border-radius: 0.2em;
+  box-shadow: inset 0 0 0 0.07em currentColor;
+  opacity: 0.9;
+}
+
+.battery::before {
+  content: "";
+  position: absolute;
+  inset: 0.13em;
+  right: 0.35em;
+  border-radius: 0.08em;
+  background: currentColor;
+}
+
+.phoneBody {
+  position: absolute;
+  inset: 0;
+  padding-top: 14em;
+}
+
+/* Browser ---------------------------------------------------------------- */
+
+.browser {
+  overflow: hidden;
+  border-radius: 1.2em;
+  background: var(--page, #ffffff);
+  box-shadow:
+    0 0 0 0.08em rgb(255 255 255 / 0.12),
+    0 2.4em 6em -1.2em rgb(0 0 0 / 0.6);
+}
+
+.onLight .browser {
+  box-shadow:
+    0 0 0 0.08em rgb(0 0 0 / 0.08),
+    0 2.4em 5em -1.6em rgb(15 23 42 / 0.3);
+}
+
+.browserBar {
+  display: flex;
+  align-items: center;
+  gap: 0.6em;
+  height: 3.2em;
+  padding-inline: 1.3em;
+  background: #f4f4f5;
+  border-bottom: 0.08em solid #e4e4e7;
+}
+
+.darkChrome .browserBar {
+  background: #1b1c20;
+  border-bottom-color: #2a2b30;
+}
+
+.light {
+  width: 0.85em;
+  height: 0.85em;
+  border-radius: 50%;
+}
+
+.light:nth-child(1) { background: #ff5f57; }
+.light:nth-child(2) { background: #febc2e; }
+.light:nth-child(3) { background: #28c840; }
+
+.url {
+  margin-inline: auto;
+  min-width: 36%;
+  padding: 0.4em 1.6em;
+  border-radius: 99em;
+  background: #ffffff;
+  color: #71717a;
+  font: 500 1.05em/1.2 var(--font-sans);
+  text-align: center;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  box-shadow: inset 0 0 0 0.08em #e4e4e7;
+}
+
+.darkChrome .url {
+  background: #0f1013;
+  color: #a1a1a6;
+  box-shadow: inset 0 0 0 0.08em #2a2b30;
+}
+
+.browserBody {
+  position: relative;
+  aspect-ratio: var(--ratio, 16 / 10);
+  overflow: hidden;
+}
+
+/* Mac desktop ------------------------------------------------------------ */
+
+.desktop {
+  position: relative;
+  aspect-ratio: 16 / 10;
+  overflow: hidden;
+  border-radius: 1.2em;
+  background:
+    radial-gradient(70% 90% at 15% 0%, var(--wall-a, #4c1d95), transparent 70%),
+    radial-gradient(70% 90% at 100% 100%, var(--wall-b, #0c4a6e), transparent 70%),
+    #0b0b14;
+  color: #f5f5f7;
+  box-shadow:
+    0 0 0 0.08em rgb(255 255 255 / 0.12),
+    0 2.4em 6em -1.2em rgb(0 0 0 / 0.6);
+}
+
+.menubar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 2.6em;
+  padding-inline: 1.8em;
+  background: rgb(255 255 255 / 0.1);
+  font: 500 1.1em/1 var(--font-sans);
+}
+
+.menubar span + span {
+  margin-left: 1.6em;
+}
+
+.desktopBody {
+  position: absolute;
+  inset: 2.6em 0 0;
+}

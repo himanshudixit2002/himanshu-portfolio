@@ -1,4 +1,5 @@
 @import "tailwindcss";
+@import "./motion.css";
 
 /*
  * Design tokens. Every text/background pairing used on the site was checked
@@ -29,6 +30,10 @@
 
   --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
   --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
+  /* Steps between states in a scene: quick to leave, long to settle. */
+  --ease-emphasized: cubic-bezier(0.2, 0, 0, 1);
+  /* A spring with a slight overshoot, for things that arrive. */
+  --ease-spring: linear(0, 0.006, 0.025 2.8%, 0.101 6.1%, 0.539 18.9%, 0.721 25.3%, 0.849 31.5%, 0.937 38.1%, 0.968 41.8%, 0.991 45.7%, 1.006 50.1%, 1.015 55%, 1.017 63.9%, 1.001 85.9%, 1);
 
   --breakpoint-xs: 25rem;
 }
@@ -37,6 +42,12 @@
   --gutter: clamp(1rem, 4vw, 2.5rem);
   --section-y: clamp(4rem, 11vw, 10rem);
   --nav-h: 3.5rem;
+  /* Motion timing. Hover and press use micro; content changes use base; a
+     scene's steps use slow or cinematic. Nothing but ambient light is longer. */
+  --dur-micro: 160ms;
+  --dur-base: 320ms;
+  --dur-slow: 620ms;
+  --dur-cinematic: 900ms;
   color-scheme: dark;
 }
 

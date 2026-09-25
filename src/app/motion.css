@@ -1,0 +1,327 @@
+/*
+ * Scroll-driven motion.
+ *
+ * The sd-* utilities tie an entrance or a drift to an element's own position
+ * in the viewport with native scroll timelines, so they run on the compositor
+ * with no JavaScript per frame. They apply only where the browser supports
+ * scroll timelines and motion is on; everywhere else the element simply sits
+ * in its final state (pair it with data-reveal for RevealObserver's fade-up
+ * in browsers without scroll timelines). Keyframes use `transform`, which
+ * composes with Tailwind's translate/scale/rotate utilities rather than
+ * replacing them.
+ */
+
+@keyframes sd-rise {
+  from {
+    opacity: 0;
+    transform: translate3d(0, 2.25rem, 0);
+  }
+}
+
+@keyframes sd-scale-in {
+  from {
+    opacity: 0.5;
+    transform: scale(0.9);
+  }
+}
+
+@keyframes sd-tilt-flat {
+  from {
+    transform: perspective(1600px) rotateX(22deg) scale(0.92);
+  }
+}
+
+@keyframes sd-mask-up {
+  from {
+    clip-path: inset(100% 0 0 0);
+  }
+  to {
+    clip-path: inset(0 0 0 0);
+  }
+}
+
+@keyframes sd-parallax {
+  from {
+    transform: translate3d(0, var(--sd-shift, 3rem), 0);
+  }
+  to {
+    transform: translate3d(0, calc(var(--sd-shift, 3rem) * -1), 0);
+  }
+}
+
+@keyframes sd-dim-out {
+  to {
+    opacity: 0.3;
+    transform: scale(0.95);
+  }
+}
+
+@keyframes sd-grow-x {
+  from {
+    transform: scaleX(0);
+  }
+  to {
+    transform: scaleX(1);
+  }
+}
+
+@keyframes sd-word {
+  from {
+    opacity: 0.2;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@supports (animation-timeline: view()) {
+  /* Fully in place once its top is about a third of the way up the screen. */
+  html[data-motion="full"] .sd-rise {
+    animation: sd-rise linear both;
+    animation-timeline: view();
+    animation-range: cover 3vh cover 34vh;
+  }
+
+  html[data-motion="full"] .sd-scale-in {
+    animation: sd-scale-in linear both;
+    animation-timeline: view();
+    animation-range: cover 0% cover 62vh;
+  }
+
+  /* A device lying back that settles flat as it comes up the screen. */
+  html[data-motion="full"] .sd-tilt-flat {
+    animation: sd-tilt-flat linear both;
+    animation-timeline: view();
+    animation-range: cover 0% cover 70vh;
+    transform-origin: 50% 100%;
+  }
+
+  html[data-motion="full"] .sd-mask-up {
+    animation: sd-mask-up linear both;
+    animation-timeline: view();
+    animation-range: cover 4vh cover 40vh;
+  }
+
+  /* Drifts against the scroll; set --sd-shift for depth (bigger = nearer). */
+  html[data-motion="full"] .sd-parallax {
+    animation: sd-parallax linear both;
+    animation-timeline: view();
+    animation-range: cover 0% cover 100%;
+  }
+
+  /* Recedes while the next section covers it. */
+  html[data-motion="full"] .sd-dim-out {
+    animation: sd-dim-out linear both;
+    animation-timeline: view();
+    animation-range: exit 0% exit 100%;
+  }
+
+  /* Page reading progress. */
+  html[data-motion="full"] .sd-progress {
+    animation: sd-grow-x linear both;
+    animation-timeline: scroll(root block);
+    transform-origin: 0 50%;
+  }
+
+  /* WordReveal "scrub": each word lights as its paragraph crosses the
+     screen. --a and --b are the word's start and end, in percent of the
+     paragraph's cover range, written by the component. */
+  html[data-motion="full"] .wr-scrub {
+    display: block;
+    view-timeline: --wr block;
+  }
+
+  html[data-motion="full"] .wr-scrub .wr-w {
+    animation: sd-word linear both;
+    animation-timeline: --wr;
+    animation-range: cover calc(var(--a) * 1%) cover calc(var(--b) * 1%);
+  }
+}
+
+/* WordReveal "entrance": words blur up in turn on first paint. Plain CSS, so
+   it runs without JavaScript and always ends visible. */
+@keyframes wr-in {
+  from {
+    opacity: 0;
+    transform: translate3d(0, 0.32em, 0);
+    filter: blur(6px);
+  }
+}
+
+.wr-in .wr-w {
+  display: inline-block;
+  animation: wr-in 1000ms var(--ease-out) both;
+  animation-delay: calc(var(--wr-delay, 0ms) + var(--w, 0) * 55ms);
+}
+
+/* Eyebrow: the rule in "Selected work · 01 —— Title" draws in. */
+@keyframes eyebrow-rule {
+  from {
+    transform: scaleX(0);
+  }
+}
+
+.eyebrow-rule {
+  transform-origin: 0 50%;
+}
+
+@supports (animation-timeline: view()) {
+  html[data-motion="full"] .eyebrow-rule {
+    animation: eyebrow-rule linear both;
+    animation-timeline: view();
+    animation-range: cover 5vh cover 30vh;
+  }
+}
+
+/* ---------------------------------------------------------------------------
+ * Scenes (components/motion/ScrollScene). A scene is a pinned, scroll-scrubbed
+ * stage plus the same story as static frames. The stage needs JavaScript and
+ * full motion; phones get it only when the scene asks for a short pin, and
+ * otherwise see the frames — as swipeable cards where the scene says so.
+ * ------------------------------------------------------------------------- */
+
+.scene-track {
+  position: relative;
+  height: var(--len, 150lvh);
+}
+
+@media (min-width: 768px) {
+  .scene-track {
+    height: var(--len-md, 240lvh);
+  }
+}
+
+.scene-stage {
+  position: sticky;
+  top: 0;
+  height: 100svh;
+  overflow: hidden;
+}
+
+.scene-pin {
+  display: none;
+}
+
+html[data-js]:not([data-motion="reduce"]) .scene[data-mobile="pin"] > .scene-pin {
+  display: block;
+}
+
+html[data-js]:not([data-motion="reduce"]) .scene[data-mobile="pin"] > .scene-frames {
+  display: none;
+}
+
+@media (min-width: 768px) {
+  html[data-js]:not([data-motion="reduce"]) .scene > .scene-pin {
+    display: block;
+  }
+
+  html[data-js]:not([data-motion="reduce"]) .scene > .scene-frames {
+    display: none;
+  }
+}
+
+/* Step captions stacked in one cell; the current one is shown. */
+.scene-caption {
+  grid-area: 1 / 1;
+  transition:
+    opacity var(--dur-slow) var(--ease-emphasized),
+    transform var(--dur-slow) var(--ease-emphasized);
+}
+
+.scene-caption:not([data-current]) {
+  opacity: 0;
+  transform: translate3d(0, 0.75rem, 0);
+  pointer-events: none;
+}
+
+.scene-caption[data-past] {
+  transform: translate3d(0, -0.75rem, 0);
+}
+
+/* ---------------------------------------------------------------------------
+ * SnapGallery (components/motion/SnapGallery). A row of cards that snaps one
+ * at a time, bleeding to the screen edge so the next card peeks in. With
+ * data-stack="md" it becomes a plain vertical stack from 768px.
+ * ------------------------------------------------------------------------- */
+
+.snap-track {
+  display: flex;
+  gap: 0.875rem;
+  overflow-x: auto;
+  overscroll-behavior-x: contain;
+  scroll-snap-type: x mandatory;
+  scroll-padding-inline: var(--gutter);
+  padding-inline: var(--gutter);
+  margin-inline: calc(var(--gutter) * -1);
+  padding-block: 0.25rem 0.5rem;
+  scrollbar-width: none;
+  scroll-behavior: smooth;
+}
+
+html[data-motion="reduce"] .snap-track {
+  scroll-behavior: auto;
+}
+
+.snap-track::-webkit-scrollbar {
+  display: none;
+}
+
+.snap-item {
+  flex: 0 0 var(--snap-w, min(86%, 28rem));
+  scroll-snap-align: start;
+  scroll-snap-stop: always;
+  transition:
+    opacity var(--dur-base) var(--ease-out),
+    transform var(--dur-base) var(--ease-out);
+}
+
+html[data-js] .snap-gallery:not([data-static]) .snap-item:not([data-active]) {
+  opacity: 0.55;
+  transform: scale(0.96);
+}
+
+@media (min-width: 768px) {
+  .snap-gallery[data-stack="md"] .snap-track {
+    display: grid;
+    gap: 1.5rem;
+    overflow: visible;
+    margin-inline: 0;
+    padding: 0;
+  }
+
+  .snap-gallery[data-stack="md"] .snap-item {
+    opacity: 1 !important;
+    transform: none !important;
+  }
+
+  .snap-gallery[data-stack="md"] .snap-controls {
+    display: none;
+  }
+}
+
+/* ---------------------------------------------------------------------------
+ * Ambient accent light for heroes: a static glow that drifts by transform
+ * only, so the gradient is painted once and the compositor moves it.
+ * ------------------------------------------------------------------------- */
+
+@keyframes ambient-drift {
+  0%,
+  100% {
+    transform: translate3d(0, 0, 0);
+  }
+  33% {
+    transform: translate3d(-9%, 5%, 0);
+  }
+  66% {
+    transform: translate3d(5%, 9%, 0);
+  }
+}
+
+.ambient {
+  background: radial-gradient(50rem 28rem at 72% 14%, var(--ambient, rgb(92 164 255 / 0.16)), transparent 70%);
+  animation: ambient-drift 24s var(--ease-in-out) infinite;
+}
+
+html[data-motion="reduce"] .ambient {
+  animation: none;
+}
