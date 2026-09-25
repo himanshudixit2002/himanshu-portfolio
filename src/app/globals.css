@@ -1,0 +1,228 @@
+@import "tailwindcss";
+
+/*
+ * Design tokens. Every text/background pairing used on the site was checked
+ * for WCAG AA contrast (see README → "Palette"). Project artwork brings most
+ * other colour; the interface itself stays near-black, paper and one blue.
+ */
+@theme {
+  --color-ink: #08090b;
+  --color-ink-2: #15161a;
+  --color-ink-3: #1f2026;
+  --color-paper: #f5f5f7;
+  --color-snow: #ffffff;
+  --color-fg: #1d1d1f;
+  --color-fg-inverse: #f5f5f7;
+  --color-muted: #6e6e73; /* on paper/white */
+  --color-muted-inverse: #a1a1a6; /* on ink */
+  --color-dim-inverse: #86868b; /* on ink, secondary labels only */
+  --color-accent: #0a66d8; /* on paper/white */
+  --color-accent-bright: #5ca4ff; /* on ink */
+
+  /* SmartShelfKart's own palette (lib/config/theme.dart): teal on zinc. */
+  --color-ssk: #0d9488;
+  --color-ssk-bright: #2dd4bf;
+  --color-ssk-deep: #0f766e;
+
+  --font-sans: var(--font-inter), ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-mono: var(--font-jetbrains), ui-monospace, "SF Mono", Menlo, monospace;
+
+  --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
+
+  --breakpoint-xs: 25rem;
+}
+
+:root {
+  --gutter: clamp(1rem, 4vw, 2.5rem);
+  --section-y: clamp(4rem, 11vw, 10rem);
+  --nav-h: 3.5rem;
+  color-scheme: dark;
+}
+
+html {
+  scroll-padding-top: calc(var(--nav-h) + 1rem);
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+}
+
+body {
+  background: var(--color-ink);
+  color: var(--color-fg-inverse);
+  font-family: var(--font-sans);
+  font-feature-settings: "ss01", "cv11";
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+}
+
+::selection {
+  background: color-mix(in srgb, var(--color-accent-bright) 35%, transparent);
+}
+
+:focus-visible {
+  outline: 2px solid var(--color-accent-bright);
+  outline-offset: 3px;
+  border-radius: 6px;
+}
+
+.surface-light :focus-visible {
+  outline-color: var(--color-accent);
+}
+
+@utility container-page {
+  width: 100%;
+  max-width: calc(80rem + 2 * var(--gutter));
+  margin-inline: auto;
+  padding-inline: var(--gutter);
+}
+
+@utility section-y {
+  padding-block: var(--section-y);
+}
+
+@utility text-display {
+  font-weight: 650;
+  letter-spacing: -0.035em;
+  line-height: 0.98;
+}
+
+@utility text-title {
+  font-weight: 650;
+  letter-spacing: -0.028em;
+  line-height: 1.04;
+}
+
+@utility text-eyebrow {
+  font-size: 0.8125rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+}
+
+@utility text-lede {
+  font-size: clamp(1.125rem, 1.6vw, 1.3125rem);
+  line-height: 1.5;
+  letter-spacing: -0.01em;
+}
+
+/* ---------------------------------------------------------------------------
+ * Hero entrance. Plain CSS so the page is fully legible without JavaScript:
+ * the animation only ever runs toward the visible state.
+ * ------------------------------------------------------------------------- */
+
+@keyframes hero-rise {
+  from {
+    opacity: 0;
+    transform: translate3d(0, 18px, 0);
+  }
+}
+
+@keyframes hero-settle {
+  from {
+    opacity: 0;
+    transform: perspective(1600px) rotateX(9deg) translate3d(0, 48px, 0) scale(0.97);
+  }
+}
+
+.hero-rise {
+  animation: hero-rise 820ms var(--ease-out) both;
+  animation-delay: calc(var(--i, 0) * 70ms);
+}
+
+.hero-settle {
+  animation: hero-settle 1100ms var(--ease-out) 180ms both;
+}
+
+/* ---------------------------------------------------------------------------
+ * Section reveals. Elements are hidden only once the observer is running
+ * (data-reveal-ready), so content never depends on JavaScript to appear.
+ * ------------------------------------------------------------------------- */
+
+html[data-reveal-ready] [data-reveal]:not([data-shown]) {
+  opacity: 0;
+  transform: translate3d(0, 20px, 0);
+}
+
+[data-reveal] {
+  transition:
+    opacity 600ms var(--ease-out),
+    transform 600ms var(--ease-out);
+  transition-delay: calc(var(--reveal-i, 0) * 80ms);
+}
+
+/* ---------------------------------------------------------------------------
+ * Scene 02 has a pinned, scroll-linked version and a stacked static version.
+ * The pinned one needs JavaScript, a wide screen and full motion.
+ * ------------------------------------------------------------------------- */
+
+.scene-pinned {
+  display: none;
+}
+
+@media (min-width: 768px) {
+  html[data-js]:not([data-motion="reduce"]) .scene-pinned {
+    display: block;
+  }
+  html[data-js]:not([data-motion="reduce"]) .scene-static {
+    display: none;
+  }
+}
+
+/* ---------------------------------------------------------------------------
+ * Work filter — cards are all server-rendered; the client only sets
+ * data-filter on the grid.
+ * ------------------------------------------------------------------------- */
+
+[data-filter="product"] [data-card]:not([data-cats~="product"]),
+[data-filter="systems"] [data-card]:not([data-cats~="systems"]),
+[data-filter="ai-data"] [data-card]:not([data-cats~="ai-data"]),
+[data-filter="tools"] [data-card]:not([data-cats~="tools"]) {
+  display: none;
+}
+
+/* ---------------------------------------------------------------------------
+ * Reduced motion — the OS preference or the footer switch. Content stays;
+ * pinning, parallax, tilt and entrance movement go.
+ * ------------------------------------------------------------------------- */
+
+html[data-motion="reduce"] {
+  scroll-behavior: auto;
+}
+
+html[data-motion="reduce"] *,
+html[data-motion="reduce"] *::before,
+html[data-motion="reduce"] *::after {
+  animation-duration: 1ms !important;
+  animation-delay: 0ms !important;
+  animation-iteration-count: 1 !important;
+  transition-duration: 1ms !important;
+  transition-delay: 0ms !important;
+}
+
+html[data-motion="reduce"] [data-reveal] {
+  opacity: 1 !important;
+  transform: none !important;
+}
+
+html[data-motion="reduce"] [data-tilt] {
+  transform: none !important;
+}
+
+@media print {
+  [data-reveal] {
+    opacity: 1 !important;
+    transform: none !important;
+  }
+  .site-header,
+  .site-footer,
+  .no-print {
+    display: none !important;
+  }
+  body {
+    background: #fff !important;
+    color: #000 !important;
+  }
+  @page {
+    margin: 14mm 14mm 16mm;
+  }
+}

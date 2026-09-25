@@ -1,0 +1,700 @@
+/*
+ * Interface illustrations. Each frame is a size container and everything
+ * inside is measured in em against a font-size of 1cqw, so a drawing scales
+ * as one piece — like an image — at any width.
+ *
+ * Colours inside SmartShelfKart drawings follow the app's own theme
+ * (stock_management/lib/config/theme.dart): teal 600 on zinc.
+ */
+
+/* Layered below Tailwind's utilities, so classes passed in (absolute,
+   w-[74%]…) win over these defaults. */
+@layer components {
+  .frame {
+    container-type: inline-size;
+    position: relative;
+    width: 100%;
+  }
+}
+
+.window {
+  --z50: #fafafa;
+  --z100: #f4f4f5;
+  --z200: #e4e4e7;
+  --z300: #d4d4d8;
+  --z400: #a1a1aa;
+  --z500: #71717a;
+  --z600: #52525b;
+  --z900: #18181b;
+  --teal: #0d9488;
+  --teal-50: #f0fdfa;
+  --teal-100: #ccfbf1;
+  --amber: #d97706;
+  --amber-50: #fffbeb;
+  --red: #dc2626;
+  --red-50: #fef2f2;
+  --green: #16a34a;
+  --green-50: #f0fdf4;
+
+  font-size: 1cqw;
+  font-family: var(--font-sans);
+  letter-spacing: -0.01em;
+  line-height: 1.25;
+  color: var(--z900);
+  background: var(--z50);
+  border-radius: 1.2em;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  aspect-ratio: 16 / 10;
+  box-shadow:
+    0 0 0 0.08em rgb(255 255 255 / 0.1),
+    0 2.4em 6em -1.2em rgb(0 0 0 / 0.55),
+    0 1em 2em -1em rgb(0 0 0 / 0.35);
+}
+
+.onLight .window {
+  box-shadow:
+    0 0 0 0.08em rgb(0 0 0 / 0.08),
+    0 2.4em 5em -1.6em rgb(15 23 42 / 0.28),
+    0 0.8em 1.6em -0.8em rgb(15 23 42 / 0.18);
+}
+
+.chrome {
+  flex: none;
+  height: 3em;
+  display: flex;
+  align-items: center;
+  gap: 0.6em;
+  padding-inline: 1.2em;
+  background: var(--z100);
+  border-bottom: 0.08em solid var(--z200);
+}
+
+.dot {
+  width: 0.85em;
+  height: 0.85em;
+  border-radius: 50%;
+  background: var(--z300);
+}
+
+.dot:nth-child(1) {
+  background: #ff5f57;
+}
+.dot:nth-child(2) {
+  background: #febc2e;
+}
+.dot:nth-child(3) {
+  background: #28c840;
+}
+
+.url {
+  margin-inline: auto;
+  padding: 0.35em 2.4em;
+  font-size: 1.05em;
+  color: var(--z500);
+  background: #fff;
+  border-radius: 0.6em;
+  border: 0.08em solid var(--z200);
+}
+
+.app {
+  flex: 1;
+  min-height: 0;
+  display: grid;
+  grid-template-columns: 4.6em 1fr;
+}
+
+.sidebar {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1em;
+  padding-block: 1.4em;
+  background: #fff;
+  border-right: 0.08em solid var(--z200);
+}
+
+.logo {
+  width: 2.5em;
+  height: 2.5em;
+  margin-bottom: 0.6em;
+  border-radius: 0.7em;
+  background: linear-gradient(145deg, #2dd4bf, #0d9488 55%, #0f766e);
+  box-shadow: inset 0 0.08em 0 rgb(255 255 255 / 0.35);
+}
+
+.navIcon {
+  width: 1.7em;
+  height: 1.7em;
+  border-radius: 0.5em;
+  background: var(--z200);
+}
+
+.navIconActive {
+  background: var(--teal-100);
+  box-shadow: inset 0 0 0 0.12em var(--teal);
+}
+
+.main {
+  min-width: 0;
+  padding: 2em 2.4em;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5em;
+}
+
+.header {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 2em;
+}
+
+.h1 {
+  font-size: 2.1em;
+  font-weight: 650;
+  letter-spacing: -0.03em;
+}
+
+.sub {
+  margin-top: 0.3em;
+  font-size: 1.1em;
+  color: var(--z500);
+}
+
+.search {
+  width: 18em;
+  padding: 0.7em 1em;
+  font-size: 1.05em;
+  color: var(--z400);
+  background: #fff;
+  border: 0.08em solid var(--z200);
+  border-radius: 0.7em;
+}
+
+.stats {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1.1em;
+}
+
+.card {
+  background: #fff;
+  border: 0.08em solid var(--z200);
+  border-radius: 1em;
+  padding: 1.3em 1.4em;
+  min-width: 0;
+}
+
+.statLabel {
+  display: flex;
+  align-items: center;
+  gap: 0.6em;
+  font-size: 1.05em;
+  color: var(--z500);
+}
+
+.chip {
+  width: 1.5em;
+  height: 1.5em;
+  border-radius: 0.45em;
+  background: var(--teal-50);
+  box-shadow: inset 0 0 0 0.1em var(--teal);
+}
+
+.chipAmber {
+  background: var(--amber-50);
+  box-shadow: inset 0 0 0 0.1em var(--amber);
+}
+.chipRed {
+  background: var(--red-50);
+  box-shadow: inset 0 0 0 0.1em var(--red);
+}
+.chipBlue {
+  background: #eff6ff;
+  box-shadow: inset 0 0 0 0.1em #2563eb;
+}
+
+.statValue {
+  margin-top: 0.45em;
+  font-size: 2.5em;
+  font-weight: 650;
+  letter-spacing: -0.035em;
+  font-variant-numeric: tabular-nums;
+}
+
+.actions {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1.1em;
+}
+
+.action {
+  display: flex;
+  align-items: center;
+  gap: 0.8em;
+  padding: 0.9em 1.1em;
+  background: #fff;
+  border: 0.08em solid var(--z200);
+  border-radius: 0.9em;
+  font-size: 1.1em;
+  font-weight: 560;
+}
+
+.actionIcon {
+  width: 2em;
+  height: 2em;
+  border-radius: 0.6em;
+  background: var(--teal);
+  opacity: 0.9;
+}
+
+.actionSub {
+  display: block;
+  font-size: 0.85em;
+  font-weight: 400;
+  color: var(--z500);
+}
+
+.split {
+  flex: 1;
+  min-height: 0;
+  display: grid;
+  grid-template-columns: 1.55fr 1fr;
+  gap: 1.1em;
+}
+
+.cardTitle {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  font-size: 1.2em;
+  font-weight: 600;
+}
+
+.cardMeta {
+  font-size: 0.85em;
+  font-weight: 450;
+  color: var(--z500);
+}
+
+.chart {
+  display: block;
+  width: 100%;
+  height: calc(100% - 2.2em);
+  margin-top: 1em;
+  overflow: visible;
+}
+
+.rows {
+  display: flex;
+  flex-direction: column;
+  gap: 1.05em;
+  margin-top: 1.2em;
+}
+
+.row {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 0.5em 1em;
+  font-size: 1.05em;
+}
+
+.rowName {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.rowQty {
+  color: var(--z500);
+  font-variant-numeric: tabular-nums;
+}
+
+.bar {
+  grid-column: 1 / -1;
+  height: 0.45em;
+  border-radius: 1em;
+  background: var(--z100);
+  overflow: hidden;
+}
+
+.bar > i {
+  display: block;
+  height: 100%;
+  border-radius: inherit;
+  background: var(--amber);
+}
+
+/* Inventory list ---------------------------------------------------------- */
+
+.toolbar {
+  display: flex;
+  gap: 0.8em;
+  align-items: center;
+}
+
+.filter {
+  padding: 0.55em 1.1em;
+  font-size: 1.05em;
+  border-radius: 2em;
+  background: #fff;
+  border: 0.08em solid var(--z200);
+  color: var(--z600);
+}
+
+.filterOn {
+  background: var(--z900);
+  border-color: var(--z900);
+  color: #fff;
+}
+
+.primaryBtn {
+  margin-left: auto;
+  padding: 0.65em 1.3em;
+  font-size: 1.05em;
+  font-weight: 600;
+  color: #fff;
+  background: var(--teal);
+  border-radius: 0.7em;
+}
+
+.table {
+  flex: 1;
+  min-height: 0;
+  overflow: hidden;
+  padding: 0;
+}
+
+.tr {
+  display: grid;
+  grid-template-columns: 2.4fr 1.2fr 0.8fr 1fr;
+  align-items: center;
+  gap: 1em;
+  padding: 0.95em 1.4em;
+  font-size: 1.1em;
+  border-top: 0.08em solid var(--z100);
+}
+
+.tr:first-child {
+  border-top: 0;
+}
+
+.th {
+  font-size: 0.95em;
+  font-weight: 600;
+  color: var(--z500);
+  background: var(--z50);
+}
+
+.product {
+  display: flex;
+  align-items: center;
+  gap: 0.8em;
+  min-width: 0;
+}
+
+.thumb {
+  flex: none;
+  width: 2em;
+  height: 2em;
+  border-radius: 0.5em;
+  background: linear-gradient(135deg, var(--z200), var(--z100));
+}
+
+.mono {
+  font-family: var(--font-mono);
+  font-size: 0.92em;
+  color: var(--z500);
+}
+
+.num {
+  font-variant-numeric: tabular-nums;
+  font-weight: 560;
+}
+
+.pill {
+  justify-self: start;
+  padding: 0.25em 0.8em;
+  font-size: 0.9em;
+  font-weight: 560;
+  border-radius: 2em;
+  color: var(--green);
+  background: var(--green-50);
+}
+
+.pillLow {
+  color: #b45309;
+  background: var(--amber-50);
+}
+
+.pillOut {
+  color: var(--red);
+  background: var(--red-50);
+}
+
+
+/* Phone + Nova assistant ----------------------------------------------------
+ * 1em here is 1% of the phone's width. Elements that set their own font-size
+ * measure their padding against it, so those values are small.
+ */
+
+.phone {
+  --z100: #f4f4f5;
+  --z200: #e4e4e7;
+  --z400: #a1a1aa;
+  --z500: #71717a;
+  --z900: #18181b;
+  --teal: #0d9488;
+  --teal-50: #f0fdfa;
+
+  font-size: 1cqw;
+  font-family: var(--font-sans);
+  letter-spacing: -0.01em;
+  line-height: 1.3;
+  color: var(--z900);
+  aspect-ratio: 9 / 18.6;
+  padding: 3.2em;
+  border-radius: 15em;
+  background: linear-gradient(160deg, #3a3b40, #121316 40%, #0b0c0e);
+  box-shadow:
+    inset 0 0 0 0.6em #1c1d21,
+    0 0 0 0.4em rgb(255 255 255 / 0.06),
+    0 10em 20em -6em rgb(0 0 0 / 0.6);
+}
+
+.onLight .phone {
+  box-shadow:
+    inset 0 0 0 0.6em #1c1d21,
+    0 10em 16em -6em rgb(15 23 42 / 0.45);
+}
+
+.phoneScreen {
+  position: relative;
+  height: 100%;
+  border-radius: 12em;
+  overflow: hidden;
+  background: #fff;
+  display: flex;
+  flex-direction: column;
+}
+
+.island {
+  position: absolute;
+  top: 3em;
+  left: 50%;
+  width: 26em;
+  height: 7.5em;
+  translate: -50% 0;
+  border-radius: 4em;
+  background: #0b0c0e;
+}
+
+.novaHead {
+  display: flex;
+  align-items: center;
+  gap: 3em;
+  padding: 16em 6em 5em;
+  border-bottom: 0.3em solid var(--z100);
+}
+
+.novaMark {
+  flex: none;
+  width: 10em;
+  height: 10em;
+  border-radius: 3em;
+  background:
+    radial-gradient(circle at 30% 25%, #5eead4, transparent 55%),
+    linear-gradient(145deg, #14b8a6, #0f766e);
+}
+
+.novaTitle {
+  font-size: 5.6em;
+  font-weight: 650;
+  letter-spacing: -0.02em;
+}
+
+.novaSub {
+  font-size: 4em;
+  color: var(--z500);
+}
+
+.thread {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 5em;
+  padding: 6em;
+  overflow: hidden;
+}
+
+.bubbleUser {
+  align-self: flex-end;
+  max-width: 80%;
+  font-size: 4.6em;
+  padding: 0.7em 1em;
+  color: #fff;
+  background: var(--teal);
+  border-radius: 1em 1em 0.25em 1em;
+}
+
+.answer {
+  padding: 5em;
+  border-radius: 6em 6em 6em 2em;
+  background: var(--z100);
+}
+
+.answerText {
+  font-size: 4.4em;
+  line-height: 1.35;
+}
+
+.answerRows {
+  margin-top: 4em;
+  display: flex;
+  flex-direction: column;
+  gap: 2.6em;
+}
+
+.answerRow {
+  display: flex;
+  justify-content: space-between;
+  gap: 1em;
+  padding: 0.75em 0.95em;
+  font-size: 3.9em;
+  background: #fff;
+  border-radius: 0.8em;
+}
+
+.answerRow b {
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  color: #b45309;
+}
+
+.preview {
+  margin-top: 4em;
+  padding: 5em;
+  background: #fff;
+  border-radius: 5em;
+  box-shadow: inset 0 0 0 0.35em rgb(13 148 136 / 0.4);
+}
+
+.previewTag {
+  font-size: 3.3em;
+  font-weight: 650;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--teal);
+}
+
+.previewItem {
+  margin-top: 0.5em;
+  font-size: 5em;
+  font-weight: 620;
+  letter-spacing: -0.02em;
+}
+
+.previewDelta {
+  margin-top: 0.3em;
+  display: flex;
+  align-items: baseline;
+  gap: 0.5em;
+  font-size: 4.4em;
+  color: var(--z500);
+  font-variant-numeric: tabular-nums;
+}
+
+.previewDelta strong {
+  color: var(--z900);
+  font-size: 1.45em;
+  font-weight: 650;
+}
+
+.previewButtons {
+  margin-top: 4.4em;
+  display: grid;
+  grid-template-columns: 1fr 1.4fr;
+  gap: 3em;
+}
+
+.previewButtons span {
+  padding: 0.7em;
+  font-size: 4.2em;
+  font-weight: 600;
+  text-align: center;
+  border-radius: 0.7em;
+  background: var(--z100);
+}
+
+.previewButtons span:last-child {
+  color: #fff;
+  background: var(--teal);
+}
+
+.composer {
+  margin: 0 1.3em 1.7em;
+  padding: 0.8em 1.1em;
+  font-size: 4.2em;
+  color: var(--z400);
+  border-radius: 2em;
+  box-shadow: inset 0 0 0 0.08em var(--z200);
+}
+
+/* Terminal ------------------------------------------------------------------ */
+
+.terminal {
+  font-size: 1cqw;
+  background: #0d0e11;
+  border-radius: 2.4em;
+  overflow: hidden;
+  box-shadow:
+    0 0 0 0.16em rgb(255 255 255 / 0.1),
+    0 5em 10em -3em rgb(0 0 0 / 0.7);
+}
+
+.terminalBar {
+  display: flex;
+  align-items: center;
+  gap: 1.3em;
+  height: 6.4em;
+  padding-inline: 2.6em;
+  background: #17181c;
+  border-bottom: 0.16em solid rgb(255 255 255 / 0.06);
+}
+
+.terminalBar .dot {
+  width: 1.9em;
+  height: 1.9em;
+}
+
+.terminalTitle {
+  margin-inline: auto;
+  padding-right: 3em;
+  font-family: var(--font-mono);
+  font-size: 2.6em;
+  color: #8b8b93;
+}
+
+.terminalBody {
+  margin: 0;
+  padding: 1.1em 1.2em 1.3em;
+  font-family: var(--font-mono);
+  font-size: 3.3em;
+  line-height: 1.6;
+  color: #e4e4e7;
+  white-space: pre;
+}
+
+.prompt {
+  color: #6b6b73;
+}
+
+.reply {
+  color: #8b8b93;
+}
+
+.ok {
+  color: #4ade80;
+}

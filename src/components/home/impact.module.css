@@ -1,0 +1,128 @@
+/*
+ * Overlays for the "From interface to impact" stage. The stage box is a size
+ * container matching the drawing, so overlay positions are percentages and
+ * type is measured in cqw — overlays scale with the drawing beneath them.
+ */
+
+.stage {
+  container-type: size;
+  display: grid;
+  place-items: center;
+  min-height: 0;
+}
+
+.frameBox {
+  container-type: inline-size;
+  position: relative;
+  width: min(100cqw, calc(100cqh * 1.6));
+  aspect-ratio: 16 / 10;
+}
+
+.staticBox {
+  container-type: inline-size;
+  position: relative;
+  width: 100%;
+  aspect-ratio: 16 / 10;
+}
+
+.overlay {
+  position: absolute;
+  inset: 0;
+  font-size: clamp(3px, 1cqw, 12px);
+  pointer-events: none;
+}
+
+.scrim {
+  position: absolute;
+  inset: 0;
+  border-radius: 1.2cqw;
+  background: rgb(8 9 11 / 0.66);
+  backdrop-filter: blur(2px);
+}
+
+.links {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+}
+
+.links path {
+  fill: none;
+  stroke: #5ca4ff;
+  stroke-width: 1.5;
+  stroke-dasharray: 4 5;
+  vector-effect: non-scaling-stroke;
+  opacity: 0.8;
+}
+
+.node {
+  position: absolute;
+  translate: -50% -50%;
+  width: 21em;
+  padding: 1.3em 1.5em;
+  border-radius: 1.2em;
+  background: rgb(21 22 26 / 0.92);
+  box-shadow:
+    inset 0 0 0 0.1em rgb(255 255 255 / 0.14),
+    0 1.6em 3.2em -1em rgb(0 0 0 / 0.6);
+  color: #f5f5f7;
+  line-height: 1.25;
+}
+
+.nodeTitle {
+  display: flex;
+  align-items: center;
+  gap: 0.6em;
+  font-size: 1.55em;
+  font-weight: 600;
+  letter-spacing: -0.015em;
+}
+
+.nodeTitle::before {
+  content: "";
+  flex: none;
+  width: 0.5em;
+  height: 0.5em;
+  border-radius: 50%;
+  background: var(--dot, #5ca4ff);
+}
+
+.nodeSub {
+  margin-top: 0.35em;
+  font-size: 1.2em;
+  color: #a1a1a6;
+}
+
+.hub {
+  --dot: #2dd4bf;
+  width: 17em;
+}
+
+.badge {
+  position: absolute;
+  translate: -50% -50%;
+  display: flex;
+  align-items: center;
+  gap: 0.55em;
+  padding: 0.65em 1.1em 0.65em 0.7em;
+  border-radius: 3em;
+  background: #f5f5f7;
+  color: #08090b;
+  font-size: 1.3em;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  white-space: nowrap;
+  box-shadow: 0 1em 2.4em -0.8em rgb(0 0 0 / 0.7);
+}
+
+.badgeIcon {
+  display: grid;
+  place-items: center;
+  width: 1.5em;
+  height: 1.5em;
+  border-radius: 50%;
+  background: #0a66d8;
+  color: #fff;
+}

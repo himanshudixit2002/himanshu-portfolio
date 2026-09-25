@@ -1,0 +1,322 @@
+/*
+ * Chapter illustrations for Elepeia and Cue & Coffee. Same sizing model as
+ * art.module.css: 1em = 1% of the frame's width.
+ */
+
+@layer components {
+  .frame {
+    container-type: inline-size;
+    position: relative;
+    width: 100%;
+  }
+}
+
+/* Elepeia-style product page (sample product, no client branding) -------- */
+
+.shop {
+  font-size: 1cqw;
+  aspect-ratio: 16 / 10;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  border-radius: 1.2em;
+  background: #fbfaf8;
+  color: #1c1917;
+  font-family: var(--font-sans);
+  box-shadow:
+    0 0 0 0.08em rgb(0 0 0 / 0.08),
+    0 2.4em 5em -1.6em rgb(28 25 23 / 0.35);
+}
+
+.onDark .shop {
+  box-shadow:
+    0 0 0 0.08em rgb(255 255 255 / 0.1),
+    0 2.4em 6em -1.2em rgb(0 0 0 / 0.6);
+}
+
+.bar {
+  flex: none;
+  height: 3em;
+  display: flex;
+  align-items: center;
+  gap: 0.6em;
+  padding-inline: 1.2em;
+  background: #f1eee9;
+  border-bottom: 0.08em solid #e7e2da;
+}
+
+.dot {
+  width: 0.85em;
+  height: 0.85em;
+  border-radius: 50%;
+  background: #d6d3d1;
+}
+
+.url {
+  margin-inline: auto;
+  padding: 0.35em 2.4em;
+  font-size: 1.05em;
+  color: #78716c;
+  background: #fff;
+  border-radius: 0.6em;
+}
+
+.nav {
+  display: flex;
+  gap: 2.4em;
+  justify-content: center;
+  padding: 1.4em 0;
+  font-size: 1.1em;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: #57534e;
+  border-bottom: 0.08em solid #ede9e3;
+}
+
+.pdp {
+  flex: 1;
+  min-height: 0;
+  display: grid;
+  grid-template-columns: 1.1fr 1fr;
+  gap: 3.4em;
+  padding: 2.6em 4em;
+}
+
+.gallery {
+  display: grid;
+  grid-template-columns: 5em 1fr;
+  gap: 1em;
+  min-height: 0;
+}
+
+.thumbs {
+  display: flex;
+  flex-direction: column;
+  gap: 1em;
+}
+
+.thumb {
+  aspect-ratio: 4 / 5;
+  border-radius: 0.5em;
+  background: linear-gradient(160deg, #e7dccb, #c9b79c);
+}
+
+.thumb:nth-child(2) {
+  background: linear-gradient(160deg, #d9ccb8, #b8a283);
+}
+.thumb:nth-child(3) {
+  background: linear-gradient(160deg, #ece4d7, #d4c4ab);
+}
+
+.hero {
+  position: relative;
+  border-radius: 0.8em;
+  background: radial-gradient(90% 70% at 50% 30%, #efe7da, #d8c9b1);
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+}
+
+.garment {
+  width: 70%;
+}
+
+.info {
+  display: flex;
+  flex-direction: column;
+  gap: 1.3em;
+  padding-top: 1em;
+}
+
+.crumb {
+  font-size: 1em;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: #a8a29e;
+}
+
+.name {
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: 3.2em;
+  line-height: 1.05;
+  letter-spacing: -0.01em;
+}
+
+.price {
+  font-size: 1.7em;
+  font-weight: 600;
+}
+
+.tax {
+  font-size: 0.6em;
+  font-weight: 400;
+  color: #78716c;
+  margin-left: 0.6em;
+}
+
+.sizes {
+  display: flex;
+  gap: 0.8em;
+}
+
+.size {
+  min-width: 3.4em;
+  padding: 0.7em 0;
+  text-align: center;
+  font-size: 1.1em;
+  border-radius: 0.4em;
+  box-shadow: inset 0 0 0 0.08em #d6d3d1;
+}
+
+.sizeOn {
+  background: #1c1917;
+  color: #fff;
+  box-shadow: none;
+}
+
+.bag {
+  margin-top: 0.4em;
+  padding: 1em;
+  text-align: center;
+  font-size: 1.2em;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: #fff;
+  background: #1c1917;
+  border-radius: 0.4em;
+}
+
+.note {
+  font-size: 1em;
+  color: #78716c;
+}
+
+/* Cue & Coffee table floor (sample data) ---------------------------------- */
+
+.tablet {
+  font-size: 1cqw;
+  aspect-ratio: 16 / 10.5;
+  padding: 2.2em;
+  border-radius: 4em;
+  background: linear-gradient(160deg, #2a2b30, #111215);
+  box-shadow:
+    inset 0 0 0 0.4em #1b1c20,
+    0 3em 6em -2em rgb(15 23 42 / 0.5);
+}
+
+.screen {
+  height: 100%;
+  display: grid;
+  grid-template-columns: 1fr 0.42fr;
+  gap: 2em;
+  padding: 2.6em;
+  border-radius: 2.4em;
+  overflow: hidden;
+  background: #0d1411;
+  color: #ecfdf5;
+  font-family: var(--font-sans);
+}
+
+.floorHead {
+  grid-column: 1 / -1;
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+}
+
+.floorTitle {
+  font-size: 2.6em;
+  font-weight: 650;
+  letter-spacing: -0.02em;
+}
+
+.floorClock {
+  font-family: var(--font-mono);
+  font-size: 2em;
+  color: #6ee7b7;
+}
+
+.tables {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.4em;
+  align-content: start;
+}
+
+.tableCard {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  min-height: 11em;
+  padding: 1.4em;
+  border-radius: 1.4em;
+  background: rgb(255 255 255 / 0.04);
+  box-shadow: inset 0 0 0 0.12em rgb(255 255 255 / 0.08);
+}
+
+.running {
+  background: rgb(52 211 153 / 0.12);
+  box-shadow: inset 0 0 0 0.14em rgb(52 211 153 / 0.55);
+}
+
+.billing {
+  background: rgb(251 191 36 / 0.1);
+  box-shadow: inset 0 0 0 0.14em rgb(251 191 36 / 0.5);
+}
+
+.tableName {
+  font-size: 1.5em;
+  font-weight: 600;
+}
+
+.tableMeta {
+  font-family: var(--font-mono);
+  font-size: 1.35em;
+  color: #a7f3d0;
+}
+
+.tableFree {
+  font-size: 1.35em;
+  color: #6b7280;
+}
+
+.kitchen {
+  display: flex;
+  flex-direction: column;
+  gap: 1em;
+  padding: 1.6em;
+  border-radius: 1.4em;
+  background: rgb(255 255 255 / 0.04);
+}
+
+.kitchenTitle {
+  font-size: 1.4em;
+  font-weight: 600;
+  color: #d1fae5;
+}
+
+.ticket {
+  display: flex;
+  justify-content: space-between;
+  gap: 0.6em;
+  font-size: 1.2em;
+}
+
+.status {
+  padding: 0.1em 0.7em;
+  border-radius: 1em;
+  font-size: 0.9em;
+}
+
+.pending {
+  background: rgb(255 255 255 / 0.08);
+  color: #d1d5db;
+}
+.preparing {
+  background: rgb(251 191 36 / 0.18);
+  color: #fde68a;
+}
+.ready {
+  background: rgb(52 211 153 / 0.2);
+  color: #a7f3d0;
+}

@@ -1,0 +1,93 @@
+import type { CSSProperties } from "react";
+import { profile } from "@/content/profile";
+import { KvTerminalArt } from "@/components/art/KvTerminalArt";
+import { NovaPhoneArt, SskOverviewArt } from "@/components/art/SmartShelfKartArt";
+import { ButtonLink } from "@/components/ui/ButtonLink";
+import { ArrowDown } from "@/components/ui/icons";
+import { HeroTilt } from "./HeroTilt";
+
+const rise = (i: number) => ({ "--i": i }) as CSSProperties;
+
+export function Hero() {
+  const [first, second] = profile.headline;
+  const [firstA, firstB] = first.split(" ");
+  const [secondA, secondB] = second.split(" ");
+
+  return (
+    <section
+      id="top"
+      aria-labelledby="hero-title"
+      className="relative isolate overflow-hidden bg-ink pt-[calc(var(--nav-h)+clamp(3rem,9vw,7rem))]"
+    >
+      <div
+        aria-hidden="true"
+        className="pointer-events-none absolute inset-x-0 top-0 -z-10 h-[70rem] bg-[radial-gradient(60rem_36rem_at_70%_18%,rgb(92_164_255/0.14),transparent_70%),radial-gradient(40rem_30rem_at_12%_40%,rgb(45_212_191/0.08),transparent_70%)]"
+      />
+
+      <div className="container-page">
+        <h1 id="hero-title">
+          <span className="hero-rise block text-[0.9375rem] font-semibold text-fg-inverse" style={rise(0)}>
+            {profile.name}
+          </span>
+          {/* Two lines from 640px up, three intentional lines on phones. */}
+          <span
+            className="hero-rise mt-5 block text-display text-[clamp(2.75rem,8.6vw,7rem)] text-balance"
+            style={rise(1)}
+          >
+            {firstA}
+            <br className="sm:hidden" /> {firstB}
+            <br className="max-sm:hidden" /> {secondA}
+            <br className="sm:hidden" /> {secondB}
+          </span>
+        </h1>
+
+        <div className="mt-8 flex flex-col gap-8 md:mt-10 lg:flex-row lg:items-end lg:justify-between">
+          <div className="hero-rise max-w-[36rem]" style={rise(2)}>
+            <p className="text-lede text-muted-inverse">{profile.intro}</p>
+            <p className="mt-3 text-sm text-dim-inverse">
+              {profile.role} · {profile.location}
+            </p>
+          </div>
+          <div className="hero-rise flex flex-wrap gap-3" style={rise(3)}>
+            <ButtonLink href="#work">
+              Explore my work
+              <ArrowDown className="size-4 transition-transform duration-200 group-hover:translate-y-0.5" />
+            </ButtonLink>
+            <ButtonLink href="/resume" variant="secondary">
+              View résumé
+            </ButtonLink>
+          </div>
+        </div>
+        <div data-nav-sentinel aria-hidden="true" className="h-px" />
+      </div>
+
+      <div className="relative mx-auto mt-14 w-full max-w-[90rem] px-(--gutter) md:mt-20">
+        <HeroTilt>
+          <div className="hero-settle relative aspect-[100/98] md:aspect-[100/52]">
+            <SskOverviewArt
+              label="Illustration of the SmartShelfKart dashboard with sample data."
+              className="absolute top-0 left-[3%] w-[94%] md:left-[13%] md:w-[74%]"
+            />
+            <NovaPhoneArt
+              conversation="low-stock"
+              label="Illustration of the Nova assistant answering “What's running low?” with four sample products."
+              className="absolute top-[27%] left-[1%] w-[36%] md:top-[31%] md:left-[3%] md:w-[17%]"
+            />
+            <KvTerminalArt
+              label="Illustration of a KVStore terminal session: SET, GET and DEL commands with their replies."
+              className="absolute top-[48%] right-[2%] hidden w-[27%] md:block"
+            />
+          </div>
+        </HeroTilt>
+        <div
+          aria-hidden="true"
+          className="pointer-events-none absolute inset-x-0 bottom-0 h-1/4 bg-linear-to-b from-transparent to-ink"
+        />
+      </div>
+
+      <p className="container-page relative pt-4 pb-10 text-right text-xs text-dim-inverse">
+        Interface illustrations with sample data
+      </p>
+    </section>
+  );
+}
