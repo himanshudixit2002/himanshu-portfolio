@@ -6,6 +6,7 @@ import { CaseHero } from "@/components/case/CaseHero";
 import { LocalNav } from "@/components/case/LocalNav";
 import { Decisions, Metrics, NextProject, Proof } from "@/components/case/Sections";
 import { SurfaceSystem } from "@/components/home/SurfaceSystem";
+import { hasScene, SignatureScene } from "@/components/scenes/SignatureScene";
 import { SignatureVisual } from "@/components/visuals/SignatureVisual";
 
 export const dynamicParams = false;
@@ -64,8 +65,10 @@ export default async function CaseStudy({ params }: PageProps<"/work/[slug]">) {
             How it works
           </h2>
         </div>
+        <SignatureScene project={project} />
         {project.slug === "smartshelfkart" && <SurfaceSystem />}
         <div id="try" className="container-page mt-8">
+          {hasScene(project.slug) && <p className="mb-5 text-eyebrow text-dim-inverse">Now try it</p>}
           <SignatureVisual id={project.visual} />
         </div>
       </section>

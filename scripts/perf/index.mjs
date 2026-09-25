@@ -154,7 +154,7 @@ async function shots() {
         );
         for (const [n, t] of tracks.entries()) {
           for (const p of [0, 0.5, 1]) {
-            await page.evaluate((y) => window.scrollTo({ top: y, behavior: "instant" }), t.top + p * (t.height - innerHeight));
+            await page.evaluate(([top, height, p]) => window.scrollTo({ top: top + p * (height - window.innerHeight), behavior: "instant" }), [t.top, t.height, p]);
             await page.waitForTimeout(700);
             await page.screenshot({ path: join(dir, `${slug}-scene${n}-${p}-${width}-${variant}.png`) });
           }

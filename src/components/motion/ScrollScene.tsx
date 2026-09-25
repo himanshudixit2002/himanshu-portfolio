@@ -16,8 +16,14 @@ type Props = {
   mobile?: "pin" | "frames";
   /** The pinned stage, drawn from scroll progress (0 → 1 across the track). */
   children: (progress: MotionValue<number>) => ReactNode;
-  /** The same story as static frames: without JavaScript, with reduced motion, and on phones unless mobile="pin". */
-  frames: ReactNode;
+  /**
+   * The same story as static frames, for reduced motion and — unless
+   * mobile="pin" — phones. A node is rendered on the server (use it when the
+   * frames are what phones see). A function is drawn on the client, and only
+   * when the stage isn't showing, so nobody else parses or hydrates frames
+   * they'll never see; give such a scene a <noscript> copy for no-JS.
+   */
+  frames: ReactNode | (() => ReactNode);
   className?: string;
 };
 
@@ -33,20 +39,25 @@ export function ScrollScene({ label, length = { base: "150lvh", md: "240lvh" }, 
   const shown = usePinShown(track);
 
   const style = { "--len": length.base, "--len-md": length.md } as CSSProperties;
+  const staticFrames = typeof frames === "function" ? (shown === false ? frames() : null) : frames;
 
   return (
     <div role="group" aria-label={label} className={`scene ${className}`} data-mobile={mobile}>
       <div ref={track} className="scene-pin scene-track" style={style}>
         <div className="scene-stage">{shown ? children(scrollYProgress) : null}</div>
       </div>
-      <div className="scene-frames">{frames}</div>
+      <div className="scene-frames">{staticFrames}</div>
     </div>
   );
 }
 
-/** Whether the pinned track is displayed right now; follows resizes and the motion switch. */
+/**
+ * Whether the pinned track is displayed right now; follows resizes and the
+ * motion switch. `null` until measured, so nothing is drawn on the server or
+ * before the first check.
+ */
 function usePinShown(ref: RefObject<HTMLElement | null>) {
-  const [shown, setShown] = useState(false);
+  const [shown, setShown] = useState<boolean | null>(null);
   const { reduced } = useMotionPreference();
 
   useLayoutEffect(() => {

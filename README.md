@@ -65,7 +65,7 @@ Only ScopeForge has real screenshots (its repository's synthetic demo workspace)
 - Client-side navigations fade the new page up (`app/template.tsx`, `app/work/template.tsx` → `PageTransition`). It is a Web Animations fade, not a view transition: snapshotting the 15,000px homepage froze a frame for about 250ms.
 - The mobile menu and the Surface / System layers open with `.disclosure` (a 0fr→1fr grid row). Closed panels are `inert` and hidden once they finish closing.
 - The `/work` filter morphs cards with a view transition where `view-transition-name: match-element` is supported; cards are named only while it runs. Elsewhere it filters instantly.
-- Interactive visuals fetch their code when the page goes idle and mount 1000px before they scroll into view. Their reserved heights in `LazyVisual.tsx` are measured per breakpoint so nothing shifts when they arrive — re-measure after changing a visual's layout.
+- Interactive visuals fetch their code and mount while the page is idle, one per idle period, as interruptible transitions — so the burst of rendering and layout lands while you're reading, not mid-scroll. Scrolled to first, one mounts 1000px before it arrives. Their reserved heights in `LazyVisual.tsx` are measured per breakpoint so nothing shifts when they arrive — re-measure after changing a visual's layout.
 - **Motion caveat:** Motion 13 hands scroll-linked `opacity` to a native `ViewTimeline`. If a `useTransform` input range does not start at 0 and end at 1, the browser fills the missing keyframes from the element's base style and values drift outside the intended range. Always anchor ranges: `[0, 0.36, 0.46, 1] → [0, 0, 1, 1]`.
 
 ### Motion primitives
@@ -80,6 +80,16 @@ Only ScopeForge has real screenshots (its repository's synthetic demo workspace)
 ### Case studies
 
 `/work/[slug]` reads like a product page (`src/components/case`): `CaseHero` puts the project on its device (`HeroDevice`: a MacBook, browser or desktop around its drawing or real screenshots, or its signature mark where it has neither) under a drifting glow in its accent; `LocalNav` is the sticky sub-nav that appears once the hero has passed, marks the section being read and draws reading progress; `Metrics` gives each figure a small exact picture of itself (`lib/metric-viz.ts` reads every number from the metric's own value and label, and draws nothing where no honest picture exists); decisions sit in a `SnapGallery`; the story section rises as a rounded sheet (`sd-sheet`); evidence and limits tick in; `NextProject` is the door onward.
+
+### Signature scenes
+
+Before its interactive ("Now try it"), a case study tells one short story by scrolling — SmartShelfKart's question travelling the layers, Elepeia's page losing its weight, a key landing in KVStore, a cache losing a node and healing, what Vitals costs the Mac. Each scene is:
+
+- `src/lib/scenes/<name>.ts` — its steps (captions restating the project's own content; a scene adds pictures, not claims), a note on what is real, and a pure `frameAt(step)` built on the same simulation engines as the interactives. Tested in `tests/unit/scenes.test.ts`.
+- `src/components/scenes/visuals/*Visual.tsx` — the drawing for a frame, in SVG so it scales to whatever the pinned stage leaves it, in two compositions: `wide` from 768px and `tall` for phones (portrait, type sized to read, not a shrunk copy). Moves are transforms and fades on transitions keyed to the step; nothing animates per scroll frame.
+- `src/components/scenes/live/*Scene.tsx` — the client scene (`LiveScene`), each in its own chunk loaded by `SceneLoader`, so a case page fetches only its own.
+
+The stage draws only the composition for the screen it's on. Reduced motion gets static frames drawn on demand; without JavaScript, the `<noscript>` in `SignatureScene` lists the steps as text. Neither is in anyone else's HTML.
 
 ### Checking performance
 

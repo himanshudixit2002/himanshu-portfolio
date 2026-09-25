@@ -1,0 +1,115 @@
+/*
+ * Scene drawings are SVG, scaled to whatever the stage leaves them. Moves
+ * are transforms and fades on transitions keyed to the step, so a step
+ * change glides and nothing animates per scroll frame.
+ */
+
+.svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+  font-family: var(--font-sans);
+}
+
+.mono {
+  font-family: var(--font-mono);
+}
+
+.t {
+  transition:
+    transform var(--dur-slow) var(--ease-emphasized),
+    opacity var(--dur-slow) var(--ease-emphasized),
+    fill var(--dur-base) var(--ease-out),
+    stroke var(--dur-base) var(--ease-out);
+}
+
+.slow {
+  transition-duration: var(--dur-cinematic);
+}
+
+.pop {
+  transform-box: fill-box;
+  transform-origin: center;
+  transition:
+    transform 560ms var(--ease-spring),
+    opacity var(--dur-base) var(--ease-out);
+}
+
+.blur {
+  transition: filter var(--dur-cinematic) var(--ease-emphasized);
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.spin {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes blink {
+  50% {
+    opacity: 0;
+  }
+}
+
+.blink {
+  animation: blink 1s steps(1) infinite;
+}
+
+@keyframes typing {
+  0%,
+  80%,
+  100% {
+    opacity: 0.25;
+  }
+  40% {
+    opacity: 1;
+  }
+}
+
+.typing {
+  animation: typing 1.2s var(--ease-in-out) infinite;
+}
+
+@keyframes pulse {
+  0% {
+    opacity: 0.9;
+    transform: scale(0.6);
+  }
+  100% {
+    opacity: 0;
+    transform: scale(2.2);
+  }
+}
+
+.pulse {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: pulse 1.6s var(--ease-out) infinite;
+}
+
+@keyframes sweep {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.sweep {
+  transform-origin: var(--cx, 0) var(--cy, 0);
+  animation: sweep 2.4s var(--ease-in-out) infinite;
+}
+
+/* Static frames sit still: loops stop, transitions don't run on first paint. */
+.still .spin,
+.still .blink,
+.still .typing,
+.still .pulse,
+.still .sweep {
+  animation: none;
+}

@@ -1,7 +1,7 @@
 "use client";
 
 import dynamic from "next/dynamic";
-import { useEffect, type ComponentType } from "react";
+import { startTransition, useEffect, useState, type ComponentType } from "react";
 import { useNearViewport } from "./useNearViewport";
 
 export type InteractiveId =
@@ -73,32 +73,64 @@ const COMPONENTS = Object.fromEntries(
   ]),
 ) as Record<InteractiveId, ComponentType<Record<string, unknown>>>;
 
-/** Fetches a visual's code once the page has gone quiet, so it is ready before it is scrolled to. */
-function usePreload(id: InteractiveId) {
-  useEffect(() => {
-    const load = () => void LOADERS[id]().catch(() => {});
-    if (typeof window.requestIdleCallback === "function") {
-      const handle = window.requestIdleCallback(load, { timeout: 4000 });
-      return () => window.cancelIdleCallback(handle);
-    }
-    const handle = window.setTimeout(load, 1500);
-    return () => window.clearTimeout(handle);
-  }, [id]);
+/*
+ * Idle-time work, one piece per idle period, in the order it was asked for.
+ * Mounting an interactive is a burst of rendering and layout; done while the
+ * page is idle — usually while the reader is still on the hero — it never
+ * lands in the middle of a scroll.
+ */
+const queue: (() => void)[] = [];
+let draining = false;
+const later = (fn: () => void) => (typeof window.requestIdleCallback === "function" ? window.requestIdleCallback(fn) : window.setTimeout(fn, 200));
+
+function whenIdle(task: () => void) {
+  queue.push(task);
+  if (draining) return;
+  draining = true;
+  const next = () => {
+    queue.shift()?.();
+    if (queue.length) later(next);
+    else draining = false;
+  };
+  later(next);
 }
 
 /**
- * Mounts an interactive visual as it approaches the viewport. Its code is
- * fetched earlier, while the page is idle, so it arrives without a loading
- * state. Until then — and without JavaScript — a same-sized placeholder holds
- * its place, and the surrounding page text carries the content.
+ * Fetches the visual's code in one idle period and mounts it in a later one,
+ * as an interruptible transition. Returns whether it has been mounted.
+ */
+function useIdleMount(id: InteractiveId) {
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => {
+    let cancelled = false;
+    whenIdle(() => {
+      if (cancelled) return;
+      LOADERS[id]().then(
+        () => whenIdle(() => !cancelled && startTransition(() => setMounted(true))),
+        () => {},
+      );
+    });
+    return () => {
+      cancelled = true;
+    };
+  }, [id]);
+  return mounted;
+}
+
+/**
+ * An interactive visual, mounted while the page is idle — or, if it is
+ * scrolled to first, as it approaches. Until then, and without JavaScript, a
+ * same-sized placeholder holds its place and the surrounding text carries
+ * the content.
  */
 export function LazyVisual({ id }: { id: InteractiveId }) {
   const [ref, near] = useNearViewport<HTMLDivElement>("1000px");
-  usePreload(id);
+  const mounted = useIdleMount(id);
+  const show = near || mounted;
   const Component = COMPONENTS[id];
   return (
-    <div ref={ref} data-visual={id} className={near ? undefined : HEIGHT[id]}>
-      {near ? <Component compact={id === "kv-explorer-compact"} /> : <div className={`${HEIGHT[id]} rounded-[1.75rem] bg-ink-2 ring-1 ring-white/8`} />}
+    <div ref={ref} data-visual={id} className={show ? undefined : HEIGHT[id]}>
+      {show ? <Component compact={id === "kv-explorer-compact"} /> : <div className={`${HEIGHT[id]} rounded-[1.75rem] bg-ink-2 ring-1 ring-white/8`} />}
     </div>
   );
 }
