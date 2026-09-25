@@ -8,13 +8,16 @@ import type { VisualId } from "@/content/types";
 export function MiniVisual({ id, accent }: { id: VisualId; accent: string }) {
   return (
     <svg viewBox="0 0 160 100" className="block h-full w-full" aria-hidden="true" focusable="false">
+      {/* The glow is an ellipse centred at (80, 40), 112 × 70 in radius, drawn
+          past the viewBox: where a large card letterboxes the drawing, it keeps
+          fading instead of stopping at a hard edge. */}
       <defs>
-        <radialGradient id={`glow-${id}`} cx="0.5" cy="0.4" r="0.7">
+        <radialGradient id={`glow-${id}`} gradientUnits="userSpaceOnUse" cx="0" cy="0" r="1" gradientTransform="translate(80 40) scale(112 70)">
           <stop offset="0" stopColor={accent} stopOpacity="0.22" />
           <stop offset="1" stopColor={accent} stopOpacity="0" />
         </radialGradient>
       </defs>
-      <rect width="160" height="100" fill={`url(#glow-${id})`} />
+      <rect x="-400" y="-300" width="960" height="700" fill={`url(#glow-${id})`} />
       {DRAW[id](accent)}
     </svg>
   );

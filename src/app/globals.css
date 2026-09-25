@@ -40,10 +40,23 @@
   color-scheme: dark;
 }
 
+/*
+ * In-page links (#work, back to top) glide rather than jump. Route changes
+ * still land instantly: <html data-scroll-behavior="smooth"> tells Next.js to
+ * switch this off while it scrolls a new page into place. The reduced-motion
+ * rules below turn it off again.
+ */
 html {
+  scroll-behavior: smooth;
   scroll-padding-top: calc(var(--nav-h) + 1rem);
   -webkit-text-size-adjust: 100%;
   text-size-adjust: 100%;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html:not([data-motion="full"]) {
+    scroll-behavior: auto;
+  }
 }
 
 body {
@@ -103,6 +116,35 @@ body {
   font-size: clamp(1.125rem, 1.6vw, 1.3125rem);
   line-height: 1.5;
   letter-spacing: -0.01em;
+}
+
+/*
+ * Disclosure panels (mobile menu, Surface / System layers) grow their one row
+ * from 0fr to 1fr. Visibility switches on at once when opening, so focus can
+ * move in straight away, and off only after the row has closed, so closed
+ * content is never focused or read out. Pair with `inert` while closed. In
+ * the components layer so utilities such as md:hidden still win.
+ */
+@layer components {
+  .disclosure {
+    display: grid;
+    grid-template-rows: 0fr;
+    visibility: hidden;
+    transition:
+      grid-template-rows 320ms var(--ease-out),
+      visibility 0s linear 320ms;
+  }
+
+  .disclosure[data-open] {
+    grid-template-rows: 1fr;
+    visibility: visible;
+    transition: grid-template-rows 320ms var(--ease-out);
+  }
+
+  .disclosure > * {
+    min-height: 0;
+    overflow: hidden;
+  }
 }
 
 /* ---------------------------------------------------------------------------
@@ -180,6 +222,30 @@ html[data-reveal-ready] [data-reveal]:not([data-shown]) {
   display: none;
 }
 
+/* While a filter change animates, each card is its own snapshot: the ones
+   that stay slide to their new cells, the rest fade out or in. */
+@supports (view-transition-name: match-element) {
+  [data-animating] [data-card] {
+    view-transition-name: match-element;
+    view-transition-class: work-card;
+  }
+}
+
+::view-transition {
+  /* Clicks during a transition reach the live page, not the overlay. */
+  pointer-events: none;
+}
+
+::view-transition-group(.work-card) {
+  animation-duration: 420ms;
+  animation-timing-function: var(--ease-out);
+}
+
+::view-transition-old(.work-card),
+::view-transition-new(.work-card) {
+  animation-duration: 260ms;
+}
+
 /* ---------------------------------------------------------------------------
  * Reduced motion — the OS preference or the footer switch. Content stays;
  * pinning, parallax, tilt and entrance movement go.
@@ -206,6 +272,12 @@ html[data-motion="reduce"] [data-reveal] {
 
 html[data-motion="reduce"] [data-tilt] {
   transform: none !important;
+}
+
+html[data-motion="reduce"]::view-transition-group(*),
+html[data-motion="reduce"]::view-transition-old(*),
+html[data-motion="reduce"]::view-transition-new(*) {
+  animation: none !important;
 }
 
 @media print {

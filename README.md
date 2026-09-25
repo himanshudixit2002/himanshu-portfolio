@@ -36,7 +36,7 @@ src/components/home/     homepage scenes (also reused by case studies and /about
 src/components/visuals/  signature visuals, the Stage frame, and LazyVisual (loads interactives near the viewport)
 src/components/work/     project cards and the /work filter
 src/components/layout/   header, footer, monogram
-src/components/motion/   motion preference provider + switch, reveal observer, inline script helper
+src/components/motion/   motion preference provider + switch, reveal observer, page transition, inline script helper
 src/components/ui/       link buttons, icons, print button
 src/content/             typed public content: profile, experience, projects/, Surface/System
 src/content/editorial/   build-time only: sources for every claim, and open questions
@@ -61,6 +61,11 @@ Only ScopeForge has real screenshots (its repository's synthetic demo workspace)
 - One preference, two consumers. `<html data-motion="reduce|full">` is set by an inline script **before first paint** from the footer switch (stored in `localStorage`) or the OS setting. CSS reads the attribute; React reads it via `MotionPreferences`, which also drives `MotionConfig`.
 - Content never depends on JavaScript. The hero entrance is a CSS animation toward the visible state; section reveals only hide content once `RevealObserver` is running; Scene 02 falls back to the stacked layout without JS.
 - Scroll-linked values never set React state per frame. Scene 02 changes state three times across the whole scene.
+- In-page links (`#work`, back to top) scroll smoothly; route changes still land instantly because `<html data-scroll-behavior="smooth">` tells Next.js to suspend it while navigating. Reduced motion turns it off.
+- Client-side navigations fade the new page up (`app/template.tsx`, `app/work/template.tsx` → `PageTransition`). It is a Web Animations fade, not a view transition: snapshotting the 15,000px homepage froze a frame for about 250ms.
+- The mobile menu and the Surface / System layers open with `.disclosure` (a 0fr→1fr grid row). Closed panels are `inert` and hidden once they finish closing.
+- The `/work` filter morphs cards with a view transition where `view-transition-name: match-element` is supported; cards are named only while it runs. Elsewhere it filters instantly.
+- Interactive visuals fetch their code when the page goes idle and mount 1000px before they scroll into view. Their reserved heights in `LazyVisual.tsx` are measured per breakpoint so nothing shifts when they arrive — re-measure after changing a visual's layout.
 - **Motion caveat:** Motion 13 hands scroll-linked `opacity` to a native `ViewTimeline`. If a `useTransform` input range does not start at 0 and end at 1, the browser fills the missing keyframes from the element's base style and values drift outside the intended range. Always anchor ranges: `[0, 0.36, 0.46, 1] → [0, 0, 1, 1]`.
 
 ## Palette

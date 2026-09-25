@@ -1,7 +1,7 @@
 "use client";
 
 import dynamic from "next/dynamic";
-import type { ComponentType } from "react";
+import { useEffect, type ComponentType } from "react";
 import { useNearViewport } from "./useNearViewport";
 
 export type InteractiveId =
@@ -19,57 +19,85 @@ export type InteractiveId =
   | "hex-map"
   | "fan-out";
 
+type Loader = () => Promise<{ default: ComponentType<Record<string, unknown>> }>;
+
+const LOADERS: Record<InteractiveId, Loader> = {
+  "kv-explorer": () => import("./KvExplorer"),
+  "kv-explorer-compact": () => import("./KvExplorer"),
+  "cluster-lab": () => import("./ClusterLab"),
+  "cafe-night": () => import("./ClubNight"),
+  "elepeia-teardown": () => import("./ElepeiaTeardown"),
+  "shortener-lab": () => import("./ShortenerLab"),
+  "fraud-graph": () => import("./FraudGraph"),
+  "gateway-anomaly": () => import("./AnomalyScatter"),
+  "rx-sync": () => import("./SyncQueue"),
+  "two-sum": () => import("./TwoSumStepper"),
+  "ssk-agent": () => import("./SskAgentChecks"),
+  "hex-map": () => import("./HexPriceMap"),
+  "fan-out": () => import("./FanOut"),
+};
+
+/**
+ * Reserved heights keep the page from shifting when a visual arrives. Each is
+ * the visual's rendered height at a typical width inside that breakpoint
+ * (390, 700, 900, 1152 and 1440px), to the nearest rem. Visuals span the
+ * container except the fan-out, which sits in a half column on /about from lg.
+ * The compact explorer isn't placed on any page yet, so it has not been
+ * measured. Re-measure after changing a visual's layout.
+ */
+const HEIGHT: Record<InteractiveId, string> = {
+  "kv-explorer": "min-h-[79rem] sm:min-h-[54rem] lg:min-h-[37rem]",
+  "kv-explorer-compact": "min-h-[40rem]",
+  "cluster-lab": "min-h-[73rem] sm:min-h-[62rem] lg:min-h-[37rem]",
+  "cafe-night": "min-h-[75rem] sm:min-h-[69rem] md:min-h-[60rem] lg:min-h-[47rem] xl:min-h-[46rem]",
+  "elepeia-teardown": "min-h-[57rem] sm:min-h-[51rem] md:min-h-[35rem] lg:min-h-[33rem]",
+  "shortener-lab": "min-h-[78rem] sm:min-h-[59rem] md:min-h-[57rem] lg:min-h-[37rem] xl:min-h-[35rem]",
+  "fraud-graph": "min-h-[43rem] sm:min-h-[44rem] md:min-h-[48rem] lg:min-h-[58rem] xl:min-h-[66rem]",
+  "gateway-anomaly": "min-h-[37rem] sm:min-h-[44rem] md:min-h-[48rem] lg:min-h-[58rem] xl:min-h-[67rem]",
+  "rx-sync": "min-h-[50rem] sm:min-h-[44rem] md:min-h-[43rem] lg:min-h-[27rem] xl:min-h-[26rem]",
+  "two-sum": "min-h-[37rem] sm:min-h-[35rem] md:min-h-[28rem]",
+  "ssk-agent": "min-h-[66rem] sm:min-h-[65rem] md:min-h-[68rem] lg:min-h-[37rem] xl:min-h-[38rem]",
+  "hex-map": "min-h-[58rem] sm:min-h-[71rem] md:min-h-[78rem] lg:min-h-[48rem] xl:min-h-[56rem]",
+  "fan-out": "min-h-[39rem] sm:min-h-[43rem] md:min-h-[49rem] lg:min-h-[40rem] xl:min-h-[44rem]",
+};
+
 const placeholder = (height: string) =>
   function Placeholder() {
     return <div className={`${height} animate-pulse rounded-[1.75rem] bg-ink-2 ring-1 ring-white/8`} />;
   };
 
-/** Reserved heights keep the page from shifting when a visual arrives. */
-const HEIGHT: Record<InteractiveId, string> = {
-  "kv-explorer": "min-h-[40rem] lg:min-h-[34rem]",
-  "kv-explorer-compact": "min-h-[40rem]",
-  "cluster-lab": "min-h-[44rem] lg:min-h-[36rem]",
-  "cafe-night": "min-h-[48rem] lg:min-h-[38rem]",
-  "elepeia-teardown": "min-h-[34rem] lg:min-h-[28rem]",
-  "shortener-lab": "min-h-[48rem] lg:min-h-[30rem]",
-  "fraud-graph": "min-h-[34rem]",
-  "gateway-anomaly": "min-h-[34rem]",
-  "rx-sync": "min-h-[34rem] lg:min-h-[28rem]",
-  "two-sum": "min-h-[26rem]",
-  "ssk-agent": "min-h-[58rem] lg:min-h-[32rem]",
-  "hex-map": "min-h-[40rem] lg:min-h-[30rem]",
-  "fan-out": "min-h-[28rem]",
-};
+const COMPONENTS = Object.fromEntries(
+  (Object.keys(LOADERS) as InteractiveId[]).map((id) => [
+    id,
+    dynamic(LOADERS[id], { ssr: false, loading: placeholder(HEIGHT[id]) }),
+  ]),
+) as Record<InteractiveId, ComponentType<Record<string, unknown>>>;
 
-const load = (id: InteractiveId, loader: () => Promise<{ default: ComponentType<Record<string, unknown>> }>) =>
-  dynamic(loader, { ssr: false, loading: placeholder(HEIGHT[id]) });
-
-const COMPONENTS: Record<InteractiveId, ComponentType<Record<string, unknown>>> = {
-  "kv-explorer": load("kv-explorer", () => import("./KvExplorer")),
-  "kv-explorer-compact": load("kv-explorer-compact", () => import("./KvExplorer")),
-  "cluster-lab": load("cluster-lab", () => import("./ClusterLab")),
-  "cafe-night": load("cafe-night", () => import("./ClubNight")),
-  "elepeia-teardown": load("elepeia-teardown", () => import("./ElepeiaTeardown")),
-  "shortener-lab": load("shortener-lab", () => import("./ShortenerLab")),
-  "fraud-graph": load("fraud-graph", () => import("./FraudGraph")),
-  "gateway-anomaly": load("gateway-anomaly", () => import("./AnomalyScatter")),
-  "rx-sync": load("rx-sync", () => import("./SyncQueue")),
-  "two-sum": load("two-sum", () => import("./TwoSumStepper")),
-  "ssk-agent": load("ssk-agent", () => import("./SskAgentChecks")),
-  "hex-map": load("hex-map", () => import("./HexPriceMap")),
-  "fan-out": load("fan-out", () => import("./FanOut")),
-};
+/** Fetches a visual's code once the page has gone quiet, so it is ready before it is scrolled to. */
+function usePreload(id: InteractiveId) {
+  useEffect(() => {
+    const load = () => void LOADERS[id]().catch(() => {});
+    if (typeof window.requestIdleCallback === "function") {
+      const handle = window.requestIdleCallback(load, { timeout: 4000 });
+      return () => window.cancelIdleCallback(handle);
+    }
+    const handle = window.setTimeout(load, 1500);
+    return () => window.clearTimeout(handle);
+  }, [id]);
+}
 
 /**
- * Loads an interactive visual's code only as it approaches the viewport.
- * Until then — and without JavaScript — a same-sized placeholder holds its
- * place, and the surrounding page text carries the content.
+ * Mounts an interactive visual as it approaches the viewport. Its code is
+ * fetched earlier, while the page is idle, so it arrives without a loading
+ * state. Until then — and without JavaScript — a same-sized placeholder holds
+ * its place, and the surrounding page text carries the content.
  */
 export function LazyVisual({ id }: { id: InteractiveId }) {
-  const [ref, near] = useNearViewport<HTMLDivElement>();
+  const [ref, near] = useNearViewport<HTMLDivElement>("1000px");
+  usePreload(id);
   const Component = COMPONENTS[id];
   return (
-    <div ref={ref} className={near ? undefined : HEIGHT[id]}>
+    <div ref={ref} data-visual={id} className={near ? undefined : HEIGHT[id]}>
       {near ? <Component compact={id === "kv-explorer-compact"} /> : <div className={`${HEIGHT[id]} rounded-[1.75rem] bg-ink-2 ring-1 ring-white/8`} />}
     </div>
   );

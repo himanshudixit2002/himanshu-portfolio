@@ -61,7 +61,7 @@ export function SiteHeader({ name, items, resume }: Props) {
     <header
       className={`site-header fixed inset-x-0 top-0 z-50 transition-[background-color,box-shadow,backdrop-filter] duration-200 ${
         solid
-          ? "bg-ink/72 shadow-[inset_0_-1px_0_rgb(255_255_255/0.08)] backdrop-blur-xl backdrop-saturate-150"
+          ? `${open ? "bg-ink/95" : "bg-ink/72"} shadow-[inset_0_-1px_0_rgb(255_255_255/0.08)] backdrop-blur-xl backdrop-saturate-150`
           : "bg-transparent"
       }`}
     >
@@ -109,38 +109,32 @@ export function SiteHeader({ name, items, resume }: Props) {
         </button>
       </div>
 
-      <div
-        id={menuId}
-        ref={panelRef}
-        hidden={!open}
-        className="border-t border-white/8 md:hidden"
-      >
-        <nav aria-label="Primary" className="container-page pt-2 pb-6">
-          <ul>
-            {live.map((item) => (
-              <li key={item.href}>
-                <Link
-                  href={item.href}
-                  onClick={() => setOpen(false)}
-                  className="flex min-h-13 items-center border-b border-white/8 text-2xl font-semibold tracking-[-0.02em]"
+      {/* Slides open rather than appearing; closed, it is inert and invisible,
+          as `hidden` was (see .disclosure in globals.css). */}
+      <div id={menuId} ref={panelRef} inert={!open} data-open={open || undefined} className="disclosure md:hidden">
+        <div>
+          <nav aria-label="Primary" className="container-page border-t border-white/8 pt-2 pb-6">
+            <ul>
+              {[...live, ...(resumeLink ? [resumeLink] : [])].map((item, i) => (
+                <li
+                  key={item.href}
+                  style={{ transitionDelay: open ? `${60 + i * 35}ms` : "0ms" }}
+                  className={`transition-[opacity,translate] duration-300 ease-(--ease-out) ${
+                    open ? "translate-y-0 opacity-100" : "-translate-y-1.5 opacity-0"
+                  }`}
                 >
-                  {item.label}
-                </Link>
-              </li>
-            ))}
-            {resumeLink && (
-              <li>
-                <Link
-                  href={resumeLink.href}
-                  onClick={() => setOpen(false)}
-                  className="flex min-h-13 items-center border-b border-white/8 text-2xl font-semibold tracking-[-0.02em]"
-                >
-                  {resumeLink.label}
-                </Link>
-              </li>
-            )}
-          </ul>
-        </nav>
+                  <Link
+                    href={item.href}
+                    onClick={() => setOpen(false)}
+                    className="flex min-h-13 items-center border-b border-white/8 text-2xl font-semibold tracking-[-0.02em]"
+                  >
+                    {item.label}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </nav>
+        </div>
       </div>
     </header>
   );

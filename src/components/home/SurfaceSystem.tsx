@@ -374,10 +374,13 @@ function Panel({ state, step, dispatch, onStop, stepHeadingRef, baseId }: PanelP
   );
 }
 
+/** Grows open and shut; closed, it is inert and invisible, as `hidden` was (see .disclosure). */
 function Collapse({ id, open, children }: { id: string; open: boolean; children: ReactNode }) {
   return (
-    <div id={id} hidden={!open} className="pb-5">
-      {children}
+    <div id={id} inert={!open} data-open={open || undefined} className="disclosure">
+      <div>
+        <div className={`pb-5 transition-opacity duration-300 ${open ? "opacity-100" : "opacity-0"}`}>{children}</div>
+      </div>
     </div>
   );
 }
