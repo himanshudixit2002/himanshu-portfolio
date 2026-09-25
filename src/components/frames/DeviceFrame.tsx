@@ -121,6 +121,11 @@ export function DesktopFrame({
           <span>9:41</span>
         </div>
         <div className={s.desktopBody}>{children}</div>
+        <div className={s.dock} aria-hidden="true">
+          {["#60a5fa", "#f5f5f7", "#34d399", "#fbbf24", "#f472b6", "#a78bfa"].map((c) => (
+            <span key={c} style={{ background: c }} />
+          ))}
+        </div>
         <span className={s.glare} aria-hidden="true" />
       </div>
     </div>

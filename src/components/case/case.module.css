@@ -1,0 +1,101 @@
+/*
+ * Case-study pieces. Everything here rests in its final state; the reveal
+ * states only apply once RevealObserver is running (data-reveal-ready) and
+ * before the tile has been seen (no data-shown), and never with reduced motion.
+ */
+
+/* Metric figures ---------------------------------------------------------- */
+
+.figure {
+  display: block;
+  overflow: visible;
+}
+
+.unit {
+  transform-box: fill-box;
+  transform-origin: center;
+  transition:
+    opacity 420ms var(--ease-out),
+    transform 520ms var(--ease-spring);
+  transition-delay: calc(140ms + var(--u, 0) * 16ms);
+}
+
+.fill {
+  transform-box: fill-box;
+  transform-origin: 0 50%;
+  transition: transform 1100ms var(--ease-emphasized) 160ms;
+}
+
+.shrink {
+  transform-box: fill-box;
+  transform-origin: 0 100%;
+  transition: transform 1300ms var(--ease-emphasized) 260ms;
+}
+
+.draw {
+  stroke-dasharray: 1;
+  stroke-dashoffset: 0;
+  transition: stroke-dashoffset 1000ms var(--ease-emphasized);
+  transition-delay: calc(160ms + var(--u, 0) * 180ms);
+}
+
+:global(html[data-reveal-ready]:not([data-motion="reduce"])) :global([data-reveal]:not([data-shown])) .unit {
+  opacity: 0.12;
+  transform: scale(0.35);
+}
+
+:global(html[data-reveal-ready]:not([data-motion="reduce"])) :global([data-reveal]:not([data-shown])) .fill {
+  transform: scaleX(0);
+}
+
+/* The 68× square starts at the size of what it replaced, then shrinks. */
+:global(html[data-reveal-ready]:not([data-motion="reduce"])) :global([data-reveal]:not([data-shown])) .shrink {
+  transform: scale(var(--from, 1));
+}
+
+:global(html[data-reveal-ready]:not([data-motion="reduce"])) :global([data-reveal]:not([data-shown])) .draw {
+  stroke-dashoffset: 1;
+}
+
+/* Proof icons -------------------------------------------------------------- */
+
+.tick {
+  stroke-dasharray: 1;
+  stroke-dashoffset: 0;
+  transition: stroke-dashoffset 600ms var(--ease-emphasized);
+  transition-delay: calc(200ms + var(--u, 0) * 90ms);
+}
+
+:global(html[data-reveal-ready]:not([data-motion="reduce"])) :global([data-reveal]:not([data-shown])) .tick {
+  stroke-dashoffset: 1;
+}
+
+/* Next project ------------------------------------------------------------- */
+
+.next {
+  --lift: 0;
+  transition:
+    transform 600ms var(--ease-out),
+    box-shadow 600ms var(--ease-out);
+}
+
+.next:hover {
+  transform: scale(1.012);
+}
+
+.next:active {
+  transform: scale(0.992);
+  transition-duration: var(--dur-micro);
+}
+
+.nextGlow {
+  opacity: 0.7;
+  transition:
+    opacity 600ms var(--ease-out),
+    transform 900ms var(--ease-out);
+}
+
+.next:hover .nextGlow {
+  opacity: 1;
+  transform: scale(1.08);
+}

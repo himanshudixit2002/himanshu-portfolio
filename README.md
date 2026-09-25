@@ -77,9 +77,15 @@ Only ScopeForge has real screenshots (its repository's synthetic demo workspace)
 - **`<SnapGallery>`.** Apple-style card row: snaps, peeks, dot pager and paddles, still swipeable without JavaScript; `stackFrom="md"` makes it a plain stack on wider screens.
 - **Device frames** (`src/components/frames`). `MacBookFrame`, `PhoneFrame`, `BrowserFrame`, `DesktopFrame`, sized like the art so they scale as one piece. Their glare follows `--mx`, set by `usePointerLight` on fine pointers.
 
+### Case studies
+
+`/work/[slug]` reads like a product page (`src/components/case`): `CaseHero` puts the project on its device (`HeroDevice`: a MacBook, browser or desktop around its drawing or real screenshots, or its signature mark where it has neither) under a drifting glow in its accent; `LocalNav` is the sticky sub-nav that appears once the hero has passed, marks the section being read and draws reading progress; `Metrics` gives each figure a small exact picture of itself (`lib/metric-viz.ts` reads every number from the metric's own value and label, and draws nothing where no honest picture exists); decisions sit in a `SnapGallery`; the story section rises as a rounded sheet (`sd-sheet`); evidence and limits tick in; `NextProject` is the door onward.
+
 ### Checking performance
 
-`npm run perf -- <scroll|load|heights|shots>` runs Playwright against a running build (`--base`, default `http://localhost:3000`). `scroll` reports frame gaps, layout shift and long tasks per route; `load` median FCP and blocking time, with `--compare <url>` for an A/B against another build; `heights` checks each lazy visual's reserved height; `shots` saves screenshots, with `--scenes` at three points through every pinned scene and `--reduced` / `--nojs` variants. Budgets: CLS 0 on every route, no frame over 50ms while scrolling (also at `--throttle 4`), and blocking time within 10% of the previous build.
+`npm run perf -- <scroll|load|heights|shots>` runs Playwright against a running build (`--base`, default `http://localhost:3000`). `scroll` reports frame gaps, layout shift and long tasks per route; `load` median FCP and blocking time, with `--compare <url>` for an A/B against another build; `heights` checks each lazy visual's reserved height; `shots` saves screenshots, with `--scenes` at three points through every pinned scene and `--reduced` / `--nojs` variants. Budgets: CLS 0 on every route, no frame over 50ms while scrolling, and blocking time within 10% of the previous build — or, where a page gains new content above the fold, the growth measured and stated. At `--throttle 4` a long frame should be one the previous build also had.
+
+The drawings are the expensive part of any page: each is a container sized in `cqw`, and laying one out costs more than its node count suggests (roughly 50–100ms per drawing at 4× CPU). Add them where they carry the story, not as decoration; below the fold on phones, `content-visibility: auto` with a height estimate defers one (see `CaseHero`).
 
 ## Palette
 

@@ -7,8 +7,10 @@ type Props = {
   /** Accessible name for the list of cards. */
   label: string;
   items: ReactNode[];
-  /** Become a plain vertical stack from 768px up. */
+  /** Become a plain grid from 768px up… */
   stackFrom?: "md";
+  /** …with this many columns. */
+  columns?: number;
   /** Card width, as a CSS length. */
   itemWidth?: string;
   tone?: "dark" | "light";
@@ -21,7 +23,7 @@ type Props = {
  * the row scrolls with a finger, trackpad, keyboard or the controls. Without
  * JavaScript it is still a swipeable, snapping row.
  */
-export function SnapGallery({ label, items, stackFrom, itemWidth, tone = "dark", className = "" }: Props) {
+export function SnapGallery({ label, items, stackFrom, columns = 1, itemWidth, tone = "dark", className = "" }: Props) {
   const track = useRef<HTMLOListElement>(null);
   const [active, setActive] = useState(0);
   // Whether the row is wider than its box; if every card fits there is nothing to page through.
@@ -49,7 +51,7 @@ export function SnapGallery({ label, items, stackFrom, itemWidth, tone = "dark",
       cancelAnimationFrame(frame);
       frame = requestAnimationFrame(measure);
     };
-    measure();
+    // ResizeObserver reports once on observe, after layout — the first measure.
     const resize = new ResizeObserver(onScroll);
     resize.observe(root);
     root.addEventListener("scroll", onScroll, { passive: true });
@@ -65,7 +67,7 @@ export function SnapGallery({ label, items, stackFrom, itemWidth, tone = "dark",
     target?.scrollIntoView({ inline: "start", block: "nearest" });
   };
 
-  const style = itemWidth ? ({ "--snap-w": itemWidth } as CSSProperties) : undefined;
+  const style = { ...(itemWidth ? { "--snap-w": itemWidth } : {}), "--stack-cols": columns } as CSSProperties;
   const control = `grid size-11 place-items-center rounded-full transition-[background-color,opacity,transform] duration-(--dur-micro) active:scale-95 disabled:opacity-30 ${
     light ? "bg-black/6 text-fg enabled:hover:bg-black/10" : "bg-white/8 text-fg-inverse enabled:hover:bg-white/14"
   }`;

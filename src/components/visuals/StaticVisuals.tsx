@@ -53,12 +53,17 @@ export function VitalsEfficiency() {
   );
 }
 
-function VitalsHud() {
+/**
+ * `glass`: blur what's behind it, as the real HUD does. Off where the HUD
+ * sits on a plain wallpaper that moves with scroll — the blur would repaint
+ * every frame and show nothing a tinted fill doesn't.
+ */
+export function VitalsHud({ glass = true }: { glass?: boolean }) {
   return (
     <div
       role="img"
       aria-label="Illustration of the Vitals HUD: a translucent card with CPU and memory rings, a next-event countdown and a small spectrum."
-      className="relative mx-auto w-full max-w-[17rem] rounded-[1.75rem] bg-white/8 p-5 ring-1 ring-white/15 backdrop-blur-xl"
+      className={`relative mx-auto w-full max-w-[17rem] rounded-[1.75rem] p-5 ring-1 ring-white/15 ${glass ? "bg-white/8 backdrop-blur-xl" : "bg-[#1b1830]/80"}`}
       style={{ boxShadow: "0 0 0 1px rgb(167 139 250 / 0.25), 0 0 40px -8px rgb(167 139 250 / 0.45)" }}
     >
       <div className="flex justify-around">

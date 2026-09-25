@@ -48,7 +48,14 @@
   --dur-base: 320ms;
   --dur-slow: 620ms;
   --dur-cinematic: 900ms;
+  /* Height of the fixed bars at the top: the site header, plus a case
+     study's local nav where there is one. Pinned stages start below it. */
+  --chrome-h: var(--nav-h);
   color-scheme: dark;
+}
+
+html:has(.local-nav) {
+  --chrome-h: calc(var(--nav-h) + 3rem);
 }
 
 /*
@@ -59,7 +66,7 @@
  */
 html {
   scroll-behavior: smooth;
-  scroll-padding-top: calc(var(--nav-h) + 1rem);
+  scroll-padding-top: calc(var(--chrome-h) + 1rem);
   -webkit-text-size-adjust: 100%;
   text-size-adjust: 100%;
 }

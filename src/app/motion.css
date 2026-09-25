@@ -74,7 +74,32 @@
   }
 }
 
+/* Reading progress rests empty where scroll timelines are missing. */
+.sd-progress {
+  transform: scaleX(0);
+  transform-origin: 0 50%;
+}
+
+@keyframes sd-sheet {
+  from {
+    border-top-left-radius: 2.5rem;
+    border-top-right-radius: 2.5rem;
+  }
+  to {
+    border-top-left-radius: 0;
+    border-top-right-radius: 0;
+  }
+}
+
 @supports (animation-timeline: view()) {
+  /* A light section rises like a sheet: rounded as it comes up, square
+     once it reaches the top. */
+  html[data-motion="full"] .sd-sheet {
+    animation: sd-sheet linear both;
+    animation-timeline: view();
+    animation-range: entry 0% entry 100%;
+  }
+
   /* Fully in place once its top is about a third of the way up the screen. */
   html[data-motion="full"] .sd-rise {
     animation: sd-rise linear both;
@@ -283,6 +308,7 @@ html[data-js] .snap-gallery:not([data-static]) .snap-item:not([data-active]) {
 @media (min-width: 768px) {
   .snap-gallery[data-stack="md"] .snap-track {
     display: grid;
+    grid-template-columns: repeat(var(--stack-cols, 1), minmax(0, 1fr));
     gap: 1.5rem;
     overflow: visible;
     margin-inline: 0;

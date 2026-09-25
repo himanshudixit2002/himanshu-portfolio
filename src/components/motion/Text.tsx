@@ -4,7 +4,9 @@ type WordRevealProps = {
   text: string;
   /**
    * `entrance`: words blur up in turn on first paint (for titles near the top).
-   * `scrub`: words light up as the text crosses the screen, Apple-style.
+   * `scrub`: words light up as the text crosses the screen, Apple-style. For
+   * short statements only: on a long paragraph it slows reading and costs a
+   * span and an animation per word.
    */
   mode?: "entrance" | "scrub";
   /** Entrance only: wait this long before the first word. */
