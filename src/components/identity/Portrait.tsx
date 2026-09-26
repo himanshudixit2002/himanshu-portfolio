@@ -41,29 +41,55 @@ const lines = () => (window.matchMedia("(hover: hover) and (pointer: fine)").mat
  * parts until script removes it (and for good without script); the disc
  * holds the place instead.
  *
- * Tap it and he hops, the ring whirls and a speech bubble says the next
- * line; the line is also announced politely to screen readers.
+ * He says hello by himself as he comes into view: he hops, the ring whirls
+ * and a speech bubble opens with the first line, and it stays up. Each tap
+ * says the next line; those are also announced politely to screen readers
+ * (the greeting isn't, since nobody asked for it).
  */
 export function Portrait({ className = "" }: { className?: string }) {
   const ref = usePointerLight<HTMLDivElement>();
   const { src, alt } = profile.photo;
+  const button = useRef<HTMLButtonElement>(null);
+  const said = useRef(0);
   const [taps, setTaps] = useState(0);
   const [line, setLine] = useState("");
-  const [talking, setTalking] = useState(false);
-  const quiet = useRef(0);
-  useEffect(() => () => window.clearTimeout(quiet.current), []);
+  const [announced, setAnnounced] = useState("");
 
-  const hello = () => {
+  const speak = (asked: boolean) => {
     const say = lines();
+    const n = said.current;
     const ctrl = /Mac|iPhone|iPad/.test(navigator.platform) ? "⌘K" : "Ctrl+K";
-    setLine(say[taps % say.length].replace("⌘K", ctrl));
+    const text = say[n % say.length].replace("⌘K", ctrl);
+    setLine(text);
+    if (asked) setAnnounced(text);
     // Heard every line: a discovery.
-    if (taps + 1 === say.length) discover("hello");
-    setTaps((n) => n + 1);
-    setTalking(true);
-    window.clearTimeout(quiet.current);
-    quiet.current = window.setTimeout(() => setTalking(false), 4200);
+    if (n + 1 === say.length) discover("hello");
+    said.current = n + 1;
+    setTaps(n + 1);
   };
+  const hello = () => speak(true);
+
+  // Hello, unprompted, once he's well in view (and only if nobody has tapped yet).
+  useEffect(() => {
+    const el = button.current;
+    if (!el) return;
+    let timer = 0;
+    const seen = new IntersectionObserver(
+      ([entry]) => {
+        if (!entry.isIntersecting) return;
+        seen.disconnect();
+        timer = window.setTimeout(() => {
+          if (said.current === 0) speak(false);
+        }, 650);
+      },
+      { threshold: 0.6 },
+    );
+    seen.observe(el);
+    return () => {
+      seen.disconnect();
+      window.clearTimeout(timer);
+    };
+  }, []);
 
   // Alternate between two identical animations so each tap starts a fresh one.
   const beat = taps ? (taps % 2 ? "a" : "b") : undefined;
@@ -90,13 +116,13 @@ export function Portrait({ className = "" }: { className?: string }) {
           </div>
         </div>
       </div>
-      <button type="button" onClick={hello} className={s.hi} aria-label="Say hi" />
-      <p aria-hidden="true" className={s.bubble} data-show={talking || undefined} data-beat={beat}>
+      <button ref={button} type="button" onClick={hello} className={s.hi} aria-label="Say hi" />
+      <p aria-hidden="true" className={s.bubble} data-show={taps > 0 || undefined} data-beat={beat}>
         {line === LINES.keys[0] && <Wave />}
         {line}
       </p>
       <p role="status" className="sr-only">
-        {line}
+        {announced}
       </p>
     </div>
   );

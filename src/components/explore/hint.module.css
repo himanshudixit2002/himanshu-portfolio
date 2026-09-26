@@ -1,12 +1,18 @@
 /*
  * A "try me" note: hand-written words and an arrow that draws itself in.
- * The words rise into place and the arrow's shaft then head are drawn
- * (pathLength="1" strokes); leaving is a fade. Under reduced motion it
- * simply appears.
+ * The words rise into place, a marker stroke sweeps under them, then the
+ * arrow's shaft and head are drawn (pathLength="1" strokes). After that the
+ * note nudges toward what it points at a few times, then rests. Leaving is a
+ * fade. Everything that moves is transform or opacity. Under reduced motion
+ * it simply appears.
  */
 
 .hint {
   --hint: var(--color-accent-bright);
+  --glow: rgb(92 164 255 / 0.4);
+  /* Which way the nudge goes: toward the arrow's point. */
+  --nx: -0.3rem;
+  --ny: 0.3rem;
   position: absolute;
   z-index: 5;
   display: flex;
@@ -15,24 +21,35 @@
   gap: 0.1rem;
   color: var(--hint);
   font-family: var(--font-hand);
-  font-size: 1.3rem;
-  font-weight: 600;
+  font-size: 1.5rem;
+  font-weight: 700;
   line-height: 1;
+  letter-spacing: 0;
+  text-transform: none;
   white-space: nowrap;
   pointer-events: none;
   opacity: 0;
   transition: opacity 250ms var(--ease-out);
 }
 
+@media (min-width: 768px) {
+  .hint {
+    font-size: 1.65rem;
+  }
+}
+
 .hint[data-tone="light"] {
   --hint: var(--color-accent);
+  --glow: rgb(255 255 255 / 0.95);
 }
 
 .hint[data-arrow="down-left"] .text {
   margin-left: 2.4rem;
 }
 
-.hint[data-arrow="down-right"] {
+.hint[data-arrow="down-right"],
+.hint[data-arrow="up-right"] {
+  --nx: 0.3rem;
   align-items: flex-end;
 }
 
@@ -40,32 +57,66 @@
   margin-right: 2.4rem;
 }
 
+/* Pointing up, the words sit beside the arrow's tail, so the note stays
+   no taller than its arrow and fits in a gap between blocks. */
+.hint[data-arrow="up-left"],
+.hint[data-arrow="up-right"] {
+  --ny: -0.3rem;
+  flex-direction: row;
+  align-items: flex-end;
+  gap: 0.15rem;
+}
+
+/* The arrow comes after the words in the markup; up-left draws it first. */
+.hint[data-arrow="up-left"] .arrow {
+  order: -1;
+}
+
 .hint[data-arrow="left"] {
+  --nx: -0.4rem;
+  --ny: 0rem;
   flex-direction: row-reverse;
   align-items: center;
   gap: 0.35rem;
 }
 
 .text {
+  position: relative;
   display: block;
+  padding: 0 0.15em;
+  text-shadow: 0 0 0.55em var(--glow);
   transform: translateY(0.35rem) rotate(-4deg);
   transition: transform 520ms var(--ease-spring);
 }
 
+/* A marker stroke under the words, swept in from the left. */
+.text::before {
+  content: "";
+  position: absolute;
+  inset: 58% 0 6%;
+  z-index: -1;
+  border-radius: 0.3em 0.15em 0.35em 0.1em;
+  background: color-mix(in oklab, var(--hint) 24%, transparent);
+  transform: scaleX(0);
+  transform-origin: 0 50%;
+  transition: transform 420ms var(--ease-out) 380ms;
+}
+
 .arrow {
-  width: 3rem;
+  width: 3.1rem;
   height: auto;
   overflow: visible;
+  filter: drop-shadow(0 0 0.35rem var(--glow));
 }
 
 .hint[data-arrow="left"] .arrow {
-  width: 3.25rem;
+  width: 3.4rem;
 }
 
 .arrow path {
   fill: none;
   stroke: currentColor;
-  stroke-width: 2;
+  stroke-width: 2.4;
   stroke-linecap: round;
   stroke-linejoin: round;
   stroke-dasharray: 1;
@@ -86,13 +137,57 @@
   transform: rotate(-4deg);
 }
 
+.hint[data-shown] .text::before {
+  transform: none;
+}
+
 .hint[data-shown] .arrow path {
   stroke-dashoffset: 0;
 }
 
-/* Touch hints ("swipe") only where there is no hover. */
+/* Once drawn: a few pokes toward the target, then rest. */
+:global(html[data-motion="full"]) .hint[data-shown] {
+  animation: nudge 2.8s var(--ease-in-out) 1.4s 4;
+}
+
+@keyframes nudge {
+  0%,
+  55%,
+  100% {
+    translate: 0 0;
+  }
+  65% {
+    translate: var(--nx) var(--ny);
+  }
+  75% {
+    translate: 0 0;
+  }
+  83% {
+    translate: calc(var(--nx) / 2) calc(var(--ny) / 2);
+  }
+}
+
+/* Touch hints ("swipe") only where there is no hover; `fine` ones only where there is. */
 @media (hover: hover) {
   .hint[data-touch] {
+    display: none;
+  }
+}
+
+@media not (hover: hover) {
+  .hint[data-fine] {
+    display: none;
+  }
+}
+
+@media (max-width: 47.99rem) {
+  .hint[data-at="wide"] {
+    display: none;
+  }
+}
+
+@media (min-width: 48rem) {
+  .hint[data-at="narrow"] {
     display: none;
   }
 }
@@ -105,6 +200,7 @@
 
 :global(html[data-motion="reduce"]) .hint,
 :global(html[data-motion="reduce"]) .text,
+:global(html[data-motion="reduce"]) .text::before,
 :global(html[data-motion="reduce"]) .arrow path {
   transition: none;
 }

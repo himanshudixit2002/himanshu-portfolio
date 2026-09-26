@@ -4,7 +4,7 @@ import { useEffect, useRef, useState, useSyncExternalStore } from "react";
 import { dismissHint, hintsSnapshot, parseList, subscribeExplored } from "@/lib/explored";
 import s from "./hint.module.css";
 
-type Arrow = "down-left" | "down-right" | "left";
+type Arrow = "down-left" | "down-right" | "up-left" | "up-right" | "left";
 
 type Props = {
   /** Remembered per id: once acted on, this hint doesn't come back. */
@@ -17,22 +17,34 @@ type Props = {
   className?: string;
   /** Only on touch screens (a "swipe"). */
   touch?: boolean;
+  /** Only where there's a hover (a "point at…"). */
+  fine?: boolean;
+  /** Only below 768px, or only from it, for a note placed differently on each. */
+  at?: "narrow" | "wide";
+  /** How long after it's fully in view it draws in, in ms. */
+  delay?: number;
+  /** Also retire when a mouse merely points at its parent (for things that react to hover). */
+  hover?: boolean;
 };
 
 const ARROWS: Record<Arrow, { box: string; shaft: string; head: string }> = {
   "down-left": { box: "0 0 48 38", shaft: "M44 5 C 30 2, 13 10, 8 31", head: "M3 23 L8 33 L15 25" },
   "down-right": { box: "0 0 48 38", shaft: "M4 5 C 18 2, 35 10, 40 31", head: "M45 23 L40 33 L33 25" },
+  "up-left": { box: "0 0 48 38", shaft: "M44 33 C 30 36, 13 28, 8 7", head: "M3 15 L8 5 L15 13" },
+  "up-right": { box: "0 0 48 38", shaft: "M4 33 C 18 36, 35 28, 40 7", head: "M45 15 L40 5 L33 13" },
   left: { box: "0 0 52 26", shaft: "M50 16 C 38 4, 20 24, 5 12", head: "M12 5 L4 12 L13 17" },
 };
 
 /**
  * A hand-written "try me" note with a drawn arrow, for an interactive that
- * doesn't look like one at first glance. It draws itself in once it's fully
- * in view and leaves, for good, the first time its parent is touched, typed
- * in or (for touch hints) scrolled. Decorative: what it invites is already
- * in the text around it. Positioned absolutely, so it never moves anything.
+ * doesn't look like one at first glance. Once it's fully in view it draws
+ * itself in — the words, a marker stroke under them, then the arrow — and
+ * nudges toward what it points at a few times. It leaves, for good, the
+ * first time its parent is touched, typed in, pointed at (with `hover`) or,
+ * for touch hints, scrolled. Decorative: what it invites is already in the
+ * text around it. Positioned absolutely, so it never moves anything.
  */
-export function Hint({ id, children, arrow = "down-left", tone = "dark", className = "", touch = false }: Props) {
+export function Hint({ id, children, arrow = "down-left", tone = "dark", className = "", touch = false, fine = false, at, delay = 450, hover = false }: Props) {
   const raw = useSyncExternalStore<string | null>(subscribeExplored, hintsSnapshot, () => null);
   const done = raw === null || parseList(raw).includes(id);
   const ref = useRef<HTMLSpanElement>(null);
@@ -48,7 +60,7 @@ export function Hint({ id, children, arrow = "down-left", tone = "dark", classNa
       ([entry]) => {
         if (!entry.isIntersecting) return;
         seen.disconnect();
-        timer = window.setTimeout(() => setShown(true), 450);
+        timer = window.setTimeout(() => setShown(true), delay);
       },
       { threshold: 1, rootMargin: "0px 0px -12% 0px" },
     );
@@ -56,17 +68,18 @@ export function Hint({ id, children, arrow = "down-left", tone = "dark", classNa
 
     const used = (event: Event) => {
       if (event instanceof KeyboardEvent && ["Tab", "Shift", "Escape"].includes(event.key)) return;
+      if (event.type === "pointerover" && (event as PointerEvent).pointerType !== "mouse") return;
       setLeaving(true);
       dismissHint(id);
     };
-    const events = touch ? ["scroll", "pointerdown"] : ["pointerdown", "keydown", "input"];
+    const events = touch ? ["scroll", "pointerdown"] : ["pointerdown", "keydown", "input", ...(hover ? ["pointerover"] : [])];
     events.forEach((type) => host.addEventListener(type, used, { capture: true, passive: true }));
     return () => {
       seen.disconnect();
       window.clearTimeout(timer);
       events.forEach((type) => host.removeEventListener(type, used, { capture: true }));
     };
-  }, [id, done, touch]);
+  }, [id, done, touch, delay, hover]);
 
   if (done && !leaving) return null;
   const a = ARROWS[arrow];
@@ -78,6 +91,8 @@ export function Hint({ id, children, arrow = "down-left", tone = "dark", classNa
       data-arrow={arrow}
       data-tone={tone}
       data-touch={touch || undefined}
+      data-fine={fine || undefined}
+      data-at={at}
       data-shown={(shown && !leaving) || undefined}
     >
       <span className={s.text}>{children}</span>

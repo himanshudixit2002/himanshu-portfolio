@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { capabilities, cleartrip } from "@/content/experience";
 import { projects } from "@/content/projects";
+import { Hint } from "@/components/explore/Hint";
 import { formatPeriod } from "@/lib/format";
 import { Stage } from "./Stage";
 
@@ -35,6 +36,9 @@ export function Timeline() {
       xray="Server-rendered · each bar grows from its start date on a CSS view timeline · its period shows on hover or focus"
     >
       <div className="relative">
+        <Hint id="timeline" fine hover arrow="down-left" className="bottom-[calc(100%-0.25rem)] left-[42%]">
+          point at a bar
+        </Hint>
         <ol className="tl-list grid gap-1.5">
           {rows.map((r) => {
             const left = pct(r.period.start);

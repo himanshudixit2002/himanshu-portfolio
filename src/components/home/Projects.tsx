@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { projects, projectSlugs } from "@/content/projects";
 import { ExploredPill, SurpriseMe } from "@/components/explore/Explored";
+import { Hint } from "@/components/explore/Hint";
 import { SnapGallery } from "@/components/motion/SnapGallery";
 import { ArrowRight } from "@/components/ui/icons";
 import { CardGrid } from "@/components/work/CardFocus";
@@ -30,7 +31,12 @@ export function Projects() {
             </p>
           </div>
           <div className="flex flex-wrap items-center gap-3">
-            <SurpriseMe slugs={projectSlugs} />
+            <span className="relative inline-flex">
+              <SurpriseMe slugs={projectSlugs} />
+              <Hint id="surprise" arrow="up-left" className="top-[calc(100%-0.35rem)] left-8">
+                feeling lucky?
+              </Hint>
+            </span>
             <ExploredPill slugs={projectSlugs} />
           </div>
         </div>

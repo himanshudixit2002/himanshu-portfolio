@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import { Hint } from "@/components/explore/Hint";
 import { Check, Copy } from "@/components/ui/icons";
 
 type Status = "idle" | "copied" | "failed";
@@ -46,6 +47,9 @@ export function CopyEmailButton({ email }: { email: string }) {
             {status === "copied" ? "Copied" : "Copy email"}
           </span>
         </button>
+        <Hint id="copy" tone="light" arrow="left" className="inset-y-0 left-[calc(100%+0.35rem)]">
+          watch it fly
+        </Hint>
         {flights > 0 && (
           <svg key={flights} viewBox="0 0 24 24" className="paper-plane" aria-hidden="true" focusable="false">
             <path d="M3 11.5 21 3l-6.5 18-3.2-7.3L3 11.5Z" fill="currentColor" fillOpacity="0.14" stroke="currentColor" strokeWidth="1.6" strokeLinejoin="round" />

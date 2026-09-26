@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { SurfaceSystem } from "@/components/home/SurfaceSystem";
 import { getProject } from "@/content/projects";
+import { Hint } from "@/components/explore/Hint";
 import { ArrowRight } from "@/components/ui/icons";
 import { MiniVisual } from "@/components/visuals/MiniVisual";
 import { LazyVisual, type InteractiveId } from "@/components/visuals/LazyVisual";
@@ -58,8 +59,11 @@ export default function LabPage() {
         <p className="text-eyebrow text-accent-bright">Lab</p>
         <h1 className="mt-4 max-w-4xl text-display text-[clamp(2.5rem,7vw,5.5rem)] text-balance">
           {/* Poke it (Fx): it wobbles. */}
-          <span data-wobble="" className="poke">
+          <span data-wobble="" className="poke relative">
             Poke
+            <Hint id="poke" arrow="down-left" hover delay={900} className="bottom-[calc(100%-0.6rem)] left-[40%]">
+              go on, poke it
+            </Hint>
           </span>{" "}
           at the ideas.
         </h1>

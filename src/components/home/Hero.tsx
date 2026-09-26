@@ -2,6 +2,7 @@ import type { CSSProperties } from "react";
 import { profile } from "@/content/profile";
 import { KvTerminalArt } from "@/components/art/KvTerminalArt";
 import { NovaPhoneArt, SskOverviewArt } from "@/components/art/SmartShelfKartArt";
+import { Hint } from "@/components/explore/Hint";
 import { ButtonLink } from "@/components/ui/ButtonLink";
 import { ArrowDown, ArrowRight } from "@/components/ui/icons";
 import { HeroSpotlight } from "./HeroSpotlight";
@@ -66,6 +67,9 @@ export function Hero() {
               {secondB.endsWith(".") && (
                 <span data-bounce="" className="hero-dot">
                   .
+                  <Hint id="bounce" arrow="left" hover delay={1700} className="bottom-[0.15rem] left-[calc(100%+0.2rem)]">
+                    boop it
+                  </Hint>
                 </span>
               )}
             </span>
@@ -118,6 +122,9 @@ export function Hero() {
                 />
                 {/* Tap the phone for its other sample conversation (Fx flips data-swapped). */}
                 <button type="button" data-swap="" aria-label="Show the phone's other sample conversation" className="needs-js absolute inset-0 cursor-pointer rounded-[12%]" />
+                <Hint id="swap" arrow="down-right" at="wide" className="right-[42%] bottom-[calc(100%+0.1rem)]">
+                  poke the phone
+                </Hint>
               </div>
               <div
                 className="hero-depth absolute top-[48%] right-[2%] hidden w-[27%] md:block"

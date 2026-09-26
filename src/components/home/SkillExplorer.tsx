@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useState, type CSSProperties } from "react";
 import type { SkillEvidence } from "@/content/skills";
+import { Hint } from "@/components/explore/Hint";
 import s from "./skills.module.css";
 
 type Group = { group: string; skills: SkillEvidence[] };
@@ -28,8 +29,13 @@ export function SkillExplorer({ groups, projects }: { groups: Group[]; projects:
     <div className={s.explorer} data-choosing={current ? "" : undefined}>
       <div className="grid gap-7">
         {groups.map((g, gi) => (
-          <div key={g.group} data-reveal style={{ "--reveal-i": gi } as CSSProperties}>
+          <div key={g.group} data-reveal className="relative" style={{ "--reveal-i": gi } as CSSProperties}>
             <p className="text-eyebrow text-dim-inverse">{g.group}</p>
+            {gi === 0 && (
+              <Hint id="skills" arrow="down-left" className="-top-4 left-[5.5rem]">
+                pick a skill
+              </Hint>
+            )}
             <ul className="mt-3 flex flex-wrap gap-2">
               {g.skills.map((k) => {
                 const shown = k.projects.length > 0 || k.cleartrip;

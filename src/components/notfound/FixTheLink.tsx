@@ -1,7 +1,8 @@
 "use client";
 
 import { useEffect, useRef, useState, type CSSProperties, type PointerEvent as ReactPointerEvent } from "react";
-import { discover } from "@/lib/explored";
+import { Hint } from "@/components/explore/Hint";
+import { discover, dismissHint } from "@/lib/explored";
 import s from "./fix.module.css";
 
 /** How far each half can travel toward the other, in drawing units; they meet at 12 each. */
@@ -43,6 +44,7 @@ export function FixTheLink({ idle }: { idle: { half: string; left: string; right
     place();
     setFixed(true);
     discover("fixer");
+    dismissHint("fix");
   };
 
   const reset = () => {
@@ -96,33 +98,42 @@ export function FixTheLink({ idle }: { idle: { half: string; left: string; right
       className="relative flex flex-wrap items-center gap-x-6 gap-y-3"
       data-xray="Client · the halves follow the pointer by transform and spring home or together · a button does it from the keyboard"
     >
-      <svg
-        ref={svg}
-        viewBox="0 16 160 68"
-        className={`${s.link} -ml-4 w-56 text-accent-bright`}
-        data-fixed={fixed || undefined}
-        data-dragging={dragging || undefined}
-        aria-hidden="true"
-        focusable="false"
-      >
-        <g fill="none" stroke="currentColor" strokeWidth="5" strokeLinecap="round">
-          <g ref={left} className={s.mover}>
-            <path className={fixed ? undefined : `${idle.half} ${idle.left}`} d="M68 38 H34 a12 12 0 0 0 0 24 H68" />
-            {/* A wide, invisible edge to grab. */}
-            <path d="M68 38 H34 a12 12 0 0 0 0 24 H68" className={s.grab} onPointerDown={(e) => grab("left", e)} />
+      <span className="relative -ml-4 block w-56">
+        <svg
+          ref={svg}
+          viewBox="0 16 160 68"
+          className={`${s.link} block w-full text-accent-bright`}
+          data-fixed={fixed || undefined}
+          data-dragging={dragging || undefined}
+          aria-hidden="true"
+          focusable="false"
+        >
+          <g fill="none" stroke="currentColor" strokeWidth="5" strokeLinecap="round">
+            <g ref={left} className={s.mover}>
+              <path className={fixed ? undefined : `${idle.half} ${idle.left}`} d="M68 38 H34 a12 12 0 0 0 0 24 H68" />
+              {/* A wide, invisible edge to grab. */}
+              <path d="M68 38 H34 a12 12 0 0 0 0 24 H68" className={s.grab} onPointerDown={(e) => grab("left", e)} />
+            </g>
+            <g ref={right} className={s.mover}>
+              <path className={fixed ? undefined : `${idle.half} ${idle.right}`} d="M92 38 H126 a12 12 0 0 1 0 24 H92" />
+              <path d="M92 38 H126 a12 12 0 0 1 0 24 H92" className={s.grab} onPointerDown={(e) => grab("right", e)} />
+            </g>
+            {fixed && <path d="M68 50 H92" pathLength={1} className={s.bridge} />}
           </g>
-          <g ref={right} className={s.mover}>
-            <path className={fixed ? undefined : `${idle.half} ${idle.right}`} d="M92 38 H126 a12 12 0 0 1 0 24 H92" />
-            <path d="M92 38 H126 a12 12 0 0 1 0 24 H92" className={s.grab} onPointerDown={(e) => grab("right", e)} />
+          <g stroke="currentColor" strokeWidth="2.5" strokeLinecap="round">
+            {SPARKS.map(([x1, y1, x2, y2], i) => (
+              <line key={i} className={fixed ? s.burst : idle.spark} style={{ "--k": i } as CSSProperties} x1={x1} y1={y1} x2={x2} y2={y2} />
+            ))}
           </g>
-          {fixed && <path d="M68 50 H92" pathLength={1} className={s.bridge} />}
-        </g>
-        <g stroke="currentColor" strokeWidth="2.5" strokeLinecap="round">
-          {SPARKS.map(([x1, y1, x2, y2], i) => (
-            <line key={i} className={fixed ? s.burst : idle.spark} style={{ "--k": i } as CSSProperties} x1={x1} y1={y1} x2={x2} y2={y2} />
-          ))}
-        </g>
-      </svg>
+        </svg>
+        {/* Beside the drawing on phones (the words wrap below it), under it from 768px. */}
+        <Hint id="fix" arrow="left" at="narrow" delay={800} className="inset-y-0 left-[calc(100%-0.75rem)]">
+          drag me
+        </Hint>
+        <Hint id="fix" arrow="up-left" at="wide" delay={800} className="top-[88%] left-[60%]">
+          drag me
+        </Hint>
+      </span>
       <div className="grid gap-1">
         {/* Always two lines, before and after, in either font: nothing below it
             moves. The invitation needs script, so without it there's one line. */}

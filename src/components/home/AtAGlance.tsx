@@ -54,7 +54,7 @@ export function AtAGlance() {
               <Portrait />
               <Monogram />
               <Hint id="portrait" arrow="left" className="bottom-1 left-[9.25rem] md:bottom-4 md:left-[13.5rem]">
-                say hi
+                say hi back
               </Hint>
             </div>
             <div className="relative">
@@ -122,7 +122,11 @@ export function AtAGlance() {
 
           {/* Practice: the figure as text, and — from 768px — that many dots. */}
           <Tile label="Practice" className="md:col-span-2 lg:col-span-4" i={0}>
-            <div className="grid items-center gap-6 md:grid-cols-[auto_1fr] md:gap-10">
+            <div className="relative grid items-center gap-6 md:grid-cols-[auto_1fr] md:gap-10">
+              {/* The dots clip what paints outside them, so the note lives here. */}
+              <Hint id="dots" tone="light" arrow="down-left" at="wide" className="right-6 -top-9">
+                tap the dots
+              </Hint>
               <div>
                 <p className="text-display text-[clamp(2.5rem,5vw,4rem)] tabular-nums">{figure}</p>
                 <p className="mt-2 max-w-[20rem] text-sm leading-relaxed text-muted">{practice}</p>
