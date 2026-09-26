@@ -97,7 +97,7 @@ export function SurfaceSystem() {
           </p>
         </header>
 
-        <div className="relative mt-16 flex flex-wrap items-center gap-3">
+        <div className="needs-js relative mt-16 flex flex-wrap items-center gap-3">
           <Hint id="system" arrow="down-left" className="bottom-[calc(100%+0.125rem)] left-[10.75rem]">
             take it apart
           </Hint>
@@ -358,7 +358,7 @@ function Panel({ state, step, dispatch, onStop, stepHeadingRef, baseId }: PanelP
                 aria-expanded={open}
                 aria-controls={regionId}
                 onClick={() => dispatch({ type: "layer", layer: layer.id })}
-                className="flex min-h-14 w-full items-center justify-between gap-4 py-3 text-left"
+                className="js-action flex min-h-14 w-full items-center justify-between gap-4 py-3 text-left"
               >
                 <span>
                   <span className={`block font-semibold ${open ? "text-accent-bright" : "text-fg-inverse"}`}>{layer.name}</span>

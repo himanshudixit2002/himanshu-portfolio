@@ -95,7 +95,7 @@ export function SnapGallery({ label, items, stackFrom, columns = 1, itemWidth, t
         ))}
       </ol>
       {items.length > 1 && overflowing && (
-        <div className="snap-controls mt-5 flex items-center justify-between gap-4">
+        <div className="snap-controls needs-js mt-5 flex items-center justify-between gap-4">
           <div className="flex items-center gap-1.5" role="group" aria-label={`${label}: choose a card`}>
             {items.map((_, i) => (
               <button

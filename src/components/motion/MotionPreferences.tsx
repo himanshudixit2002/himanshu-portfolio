@@ -67,7 +67,7 @@ export function MotionToggle({ className = "" }: { className?: string }) {
       role="switch"
       aria-checked={reduced}
       onClick={() => setReduced(!reduced)}
-      className={`group inline-flex min-h-11 items-center gap-3 rounded-full py-2 text-sm text-muted-inverse transition-colors hover:text-fg-inverse ${className}`}
+      className={`needs-js group inline-flex min-h-11 items-center gap-3 rounded-full py-2 text-sm text-muted-inverse transition-colors hover:text-fg-inverse ${className}`}
     >
       <span
         aria-hidden="true"

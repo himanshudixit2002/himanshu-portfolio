@@ -32,6 +32,7 @@ export function Timeline() {
       title="Work over time"
       kind="Diagram"
       caption="Project spans come from each repository's first and last commits (or file dates where there is no repository). Open-ended bars are still active."
+      xray="Server-rendered · each bar grows from its start date on a CSS view timeline · its period shows on hover or focus"
     >
       <div className="relative">
         <ol className="tl-list grid gap-1.5">
@@ -81,6 +82,7 @@ export function CapabilityMap() {
       title="Capabilities, with the evidence"
       kind="Diagram"
       caption="No skill bars or percentages — each capability is claimed only where a project, or the Cleartrip role, demonstrates it. Select a project to read the case study."
+      xray="Server-rendered from the content · on wider screens a table whose row and column light under the pointer (CSS :has, no script)"
     >
       {/* Phones: chips per capability */}
       <ul className="grid gap-5 md:hidden">

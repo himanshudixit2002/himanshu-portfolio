@@ -11,12 +11,22 @@ const SIZES = "(min-width: 768px) 19rem, 13rem";
 
 /** What the portrait says, one line per tap, round and round. Invitations only; the shortcuts where there's a keyboard. */
 const LINES = {
-  keys: ["Hi, I’m Himanshu.", "Everything here is live — poke the cards.", "Psst… press ⌘K.", "Try x for x-ray mode.", "Can’t pick one? Hit Surprise me."],
+  keys: [
+    "Hi, I’m Himanshu.",
+    "Everything here is live — poke the cards.",
+    "Bet you can’t bounce the full stop up there.",
+    "Psst… press ⌘K.",
+    "Try x for x-ray mode.",
+    "Even the 404 page can be fixed.",
+    "Can’t pick one? Hit Surprise me.",
+  ],
   touch: [
     "Hi, I’m Himanshu.",
     "Everything here is live — poke the cards.",
+    "Bet you can’t bounce the full stop up there.",
     "Psst… try the search button up top.",
     "Flip on X-ray in the footer.",
+    "Even the 404 page can be fixed.",
     "Can’t pick one? Hit Surprise me.",
   ],
 };

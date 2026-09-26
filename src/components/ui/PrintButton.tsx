@@ -6,7 +6,7 @@ export function PrintButton({ className = "" }: { className?: string }) {
       type="button"
       onClick={() => window.print()}
       data-ripple=""
-      className={`print-button group inline-flex min-h-11 items-center justify-center gap-2 rounded-full bg-accent pr-5 pl-4 text-[0.9375rem] font-medium text-white transition-colors hover:bg-[#0858bd] ${className}`}
+      className={`print-button needs-js group inline-flex min-h-11 items-center justify-center gap-2 rounded-full bg-accent pr-5 pl-4 text-[0.9375rem] font-medium text-white transition-colors hover:bg-[#0858bd] ${className}`}
     >
       {/* A printer; its page slides out under the pointer. */}
       <svg viewBox="0 0 24 24" className="size-5 flex-none" aria-hidden="true" focusable="false">

@@ -44,7 +44,7 @@ export function SkillExplorer({ groups, projects }: { groups: Group[]; projects:
                         onPointerLeave={() => setPreview(null)}
                         onFocus={() => setPreview(k.name)}
                         onBlur={() => setPreview(null)}
-                        className={s.chip}
+                        className={`${s.chip} js-action`}
                         data-current={current?.name === k.name || undefined}
                       >
                         {k.name}

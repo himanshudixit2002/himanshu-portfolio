@@ -67,7 +67,11 @@ export default function LabPage() {
           Small, honest simulations of the systems behind my projects. They run entirely in your browser on sample data — each one says exactly what it models and what it leaves out.
         </p>
         {/* Every lab at a glance: each with its project's signature, playing under the pointer. */}
-        <nav aria-label="The labs" className="mt-10 grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-6">
+        <nav
+          aria-label="The labs"
+          className="relative mt-10 grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-6"
+          data-xray="Server-rendered links · each signature is a CSS loop that plays under the pointer (data-loops)"
+        >
           {LABS.map((lab) => {
             const p = getProject(lab.slug)!;
             return (

@@ -33,7 +33,7 @@ export function CopyEmailButton({ email }: { email: string }) {
 
   return (
     <>
-      <span className="relative inline-flex">
+      <span className="needs-js relative inline-flex">
         <button
           type="button"
           onClick={copy}

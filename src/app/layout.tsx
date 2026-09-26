@@ -68,7 +68,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
           <main id="main" tabIndex={-1} className="outline-none">
             {children}
           </main>
-          <SiteFooter name={profile.name} />
+          <SiteFooter name={profile.name} links={[...navigation, resume].filter((item) => item.status === "live")} />
           <RevealObserver />
           <PaletteHost entries={places} email={profile.email} />
           <XRayHost />

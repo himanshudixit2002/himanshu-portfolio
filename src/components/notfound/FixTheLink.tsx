@@ -92,7 +92,10 @@ export function FixTheLink({ idle }: { idle: { half: string; left: string; right
   });
 
   return (
-    <div className="flex flex-wrap items-center gap-x-6 gap-y-3">
+    <div
+      className="relative flex flex-wrap items-center gap-x-6 gap-y-3"
+      data-xray="Client · the halves follow the pointer by transform and spring home or together · a button does it from the keyboard"
+    >
       <svg
         ref={svg}
         viewBox="0 16 160 68"
@@ -130,7 +133,7 @@ export function FixTheLink({ idle }: { idle: { half: string; left: string; right
             {fixed ? "Now, where to?" : "Drag the halves together to fix it."}
           </span>
         </p>
-        <button type="button" onClick={fixed ? reset : mend} className="needs-js justify-self-start text-sm font-medium text-accent-bright underline-offset-4 hover:underline">
+        <button type="button" onClick={fixed ? reset : mend} className="needs-js hit justify-self-start text-sm font-medium text-accent-bright underline-offset-4 hover:underline">
           {fixed ? "Break it again" : "Fix it for me"}
         </button>
       </div>

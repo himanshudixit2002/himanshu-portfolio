@@ -33,7 +33,7 @@ export function DidYouMean({ places }: { places: Place[] }) {
   const shown = [...ranked, ...places.filter((p) => FALLBACK.includes(p.id) && !ranked.includes(p))].slice(0, 3);
 
   return (
-    <div className="mt-10">
+    <div className="relative mt-10" data-xray="Client · ranked after load with the palette's own matching · three fixed-size cards keyed by slot, so nothing moves">
       <p className="text-eyebrow text-dim-inverse">{ranked.length ? "Maybe you meant" : "Try one of these"}</p>
       <ul className="mt-4 grid gap-2 sm:grid-cols-3">
         {/* Keyed by slot, not by place: when the ranked list arrives, the three cards

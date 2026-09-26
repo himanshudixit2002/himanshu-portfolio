@@ -19,11 +19,11 @@ export const DISCOVERIES: Discovery[] = [
   { id: "palette", name: "Command line", hint: "⌘K, Ctrl+K or / opens a shortcut to everything." },
   { id: "xray", name: "X-ray vision", hint: "Press x, or find the switch in the footer." },
   { id: "bounce", name: "Bouncy", hint: "The headline's full stop looks restless.", href: "/#top" },
-  { id: "ripple", name: "Ripple", hint: "Six hundred dots, waiting for a tap.", href: "/#hello" },
+  { id: "ripple", name: "Ripple", hint: "On a wider screen, six hundred dots are waiting for a tap.", href: "/#hello" },
   { id: "explorer", name: "Completionist", hint: "Open every project.", href: "/work" },
-  { id: "pull", name: "Pull through", hint: "At the end of a case study, keep scrolling.", href: "/work/smartshelfkart" },
+  { id: "pull", name: "Pull through", hint: "With a mouse or trackpad, keep scrolling at the end of a case study.", href: "/work/smartshelfkart" },
   { id: "fixer", name: "Fixer", hint: "Some links are broken on purpose. Find one and mend it.", href: "/this-page-is-not-here" },
-  { id: "konami", name: "Old school", hint: "A classic cheat code works here." },
+  { id: "konami", name: "Old school", hint: "On a keyboard, a classic cheat code works here." },
 ];
 
 export const discoveryName = (id: string) => DISCOVERIES.find((d) => d.id === id)?.name ?? id;

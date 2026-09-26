@@ -174,7 +174,7 @@ export function SiteHeader({ name, items, resume }: Props) {
             <button
               ref={buttonRef}
               type="button"
-              className="-mr-2 inline-flex size-11 items-center justify-center rounded-full text-fg-inverse md:hidden"
+              className="needs-js -mr-2 inline-flex size-11 items-center justify-center rounded-full text-fg-inverse md:hidden"
               aria-expanded={open}
               aria-controls={menuId}
               onClick={() => setOpen((v) => !v)}
@@ -182,6 +182,10 @@ export function SiteHeader({ name, items, resume }: Props) {
               <span aria-hidden="true" className="menu-bars" />
               <span className="sr-only">{open ? "Close menu" : "Open menu"}</span>
             </button>
+            {/* Without script the menu can't open: a link to the footer's nav instead. */}
+            <a href="#site-nav" className="no-js-only inline-flex min-h-11 items-center px-1 text-sm text-fg-inverse md:hidden">
+              Menu
+            </a>
           </div>
         </div>
 

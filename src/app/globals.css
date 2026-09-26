@@ -1106,6 +1106,18 @@ html:not([data-js]) .needs-js {
   display: none;
 }
 
+/* Their stand-ins without script (the header's "Menu" link to the footer's nav). */
+html[data-js] .no-js-only {
+  display: none;
+}
+
+/* Controls that are also content (a skill, a layer): without script they
+   stay as text, and stop looking pressable. */
+html:not([data-js]) .js-action {
+  pointer-events: none;
+  cursor: default;
+}
+
 @layer components {
   .xray-hud {
     position: fixed;
