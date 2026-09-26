@@ -8,7 +8,6 @@ import { Portrait } from "@/components/identity/Portrait";
 import { ButtonLink } from "@/components/ui/ButtonLink";
 import { ArrowDown, ArrowRight } from "@/components/ui/icons";
 import { HeroSpotlight } from "./HeroSpotlight";
-import { StreakBoard } from "./StreakBoard";
 import s from "./glance.module.css";
 
 const k = (n: number) => ({ "--k": n }) as CSSProperties;
@@ -19,8 +18,8 @@ const word = (i: number) => ({ "--w": i }) as CSSProperties;
  * The first screen: who Himanshu is, directly. His name as the headline
  * (its full stop is a ball that bounces when poked), what he does, and the
  * way to the work, beside the portrait that says hello by itself; then the
- * facts as tiles — the Cleartrip role, VIT, the certifications — and the
- * practice figure as a streak board. Every fact is the site's own content.
+ * facts as tiles — the Cleartrip role, VIT, the certifications and the
+ * practice figure. Every fact is the site's own content.
  * Everything rises in on load with CSS; the monogram writes itself.
  */
 export function AtAGlance() {
@@ -33,7 +32,7 @@ export function AtAGlance() {
     <section
       id="hello"
       aria-labelledby="hello-title"
-      data-xray="Server-rendered first screen · rises in on load with CSS · the streak board fills once in view (layer transforms) and paints under a pointer on a canvas"
+      data-xray="Server-rendered first screen · rises in on load with CSS · the portrait, the pointer spotlight and the notes are the only client islands"
       data-tone="dark"
       className="relative isolate overflow-clip bg-ink pt-[calc(var(--nav-h)+clamp(1.75rem,5vw,4.5rem))] pb-(--section-y) [--xray-top:calc(var(--nav-h)+0.5rem)]"
     >
@@ -175,33 +174,16 @@ export function AtAGlance() {
             </Tile>
           </div>
 
-          {/* Practice: the figure, and a streak board with a square for each problem. */}
-          <Tile label="Practice" className="relative overflow-clip lg:col-span-12" i={9}>
-            <div aria-hidden="true" className="pointer-events-none absolute -right-24 -bottom-40 size-[28rem] rounded-full bg-[radial-gradient(closest-side,rgb(57_211_83/0.14),transparent)]" />
-            <div className="relative grid gap-6 md:grid-cols-[minmax(0,14rem)_minmax(0,1fr)] md:items-center md:gap-10">
-              <div>
-                <p className="flex items-baseline gap-2">
-                  <span className="bg-linear-to-br from-[#9be15d] to-[#2cbb5d] bg-clip-text text-display text-[clamp(3rem,6vw,4.5rem)] text-transparent tabular-nums">
-                    {figure}
-                  </span>
-                  <span className="text-lg font-semibold text-fg-inverse">problems</span>
-                </p>
-                <p className="mt-2 text-sm leading-relaxed text-muted-inverse">{practice}</p>
-                <p className="mt-4 inline-flex items-center gap-2 rounded-full bg-white/5 px-3 py-1 text-xs text-dim-inverse ring-1 ring-white/10 ring-inset">
-                  <span className="font-semibold tracking-wide text-muted-inverse uppercase">Illustration</span>
-                  One square per problem, not a calendar
-                </p>
-              </div>
-              {/* On phones the note needs its own room above the board. */}
-              <div className="relative min-w-0 pt-14 md:pt-0">
-                <StreakBoard count={Number.parseInt(figure, 10) || 0} />
-                <Hint id="streak" arrow="down-left" at="narrow" className="top-0 right-6">
-                  paint a streak
-                </Hint>
-                <Hint id="streak" arrow="down-left" at="wide" className="right-10 bottom-[calc(100%-0.5rem)]">
-                  paint a streak
-                </Hint>
-              </div>
+          {/* Practice: the figure, and the line it comes from. */}
+          <Tile label="Practice" className="lg:col-span-12" i={9}>
+            <div className="flex flex-col gap-2 md:flex-row md:items-baseline md:gap-6">
+              <p className="flex flex-none items-baseline gap-2">
+                <span className="bg-linear-to-br from-[#9be15d] to-[#2cbb5d] bg-clip-text text-display text-[clamp(2.75rem,5vw,3.75rem)] text-transparent tabular-nums">
+                  {figure}
+                </span>
+                <span className="text-lg font-semibold text-fg-inverse">problems</span>
+              </p>
+              <p className="text-sm leading-relaxed text-muted-inverse md:text-base">{practice}</p>
             </div>
           </Tile>
         </div>

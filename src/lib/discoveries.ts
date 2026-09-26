@@ -19,7 +19,6 @@ export const DISCOVERIES: Discovery[] = [
   { id: "palette", name: "Command line", hint: "⌘K, Ctrl+K or / opens a shortcut to everything." },
   { id: "xray", name: "X-ray vision", hint: "Press x, or find the switch in the footer." },
   { id: "bounce", name: "Bouncy", hint: "The headline's full stop looks restless.", href: "/#hello" },
-  { id: "streak", name: "On a streak", hint: "Paint across the practice squares on the homepage.", href: "/#hello" },
   { id: "explorer", name: "Completionist", hint: "Open every project.", href: "/work" },
   { id: "pull", name: "Pull through", hint: "With a mouse or trackpad, keep scrolling at the end of a case study.", href: "/work/smartshelfkart" },
   { id: "fixer", name: "Fixer", hint: "Some links are broken on purpose. Find one and mend it.", href: "/this-page-is-not-here" },

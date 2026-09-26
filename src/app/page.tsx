@@ -18,7 +18,7 @@ const SECTIONS = [
 
 /*
  * The homepage, direct: who Himanshu is, first (name, what he does, the way
- * to the work, the portrait, the facts and the practice streak board), then
+ * to the work, the portrait and the facts), then
  * the Cleartrip role, every project (three flagships as stacking cards,
  * then the rest as a bento wall), the skills tied to that work, and
  * contact. The deeper walkthroughs live on the case studies, /about and

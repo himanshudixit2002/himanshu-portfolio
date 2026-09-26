@@ -82,11 +82,7 @@ Only ScopeForge has real screenshots (its repository's synthetic demo workspace)
   - **At a glance, first** (`AtAGlance`, a dark stage; it replaced a hero with a tagline over project art):
     - **Who, directly:** the availability badge, the headline "Hi, I'm Himanshu." (two lines at every width, so a font swap moves nothing; its full stop is a ball that bounces when poked, `data-bounce`), the role, the one-line intro, and the way to the work, the résumé, GitHub and LinkedIn.
     - **Beside it:** the portrait, which plays its opening on load here (`intro="load"`) and then greets you, and the monogram writing itself.
-    - **Then the facts as tiles:** the Cleartrip role, VIT and the certifications. Everything rises in on load (`hero-rise`, `wr-in`), and the header turns frosted as soon as the section starts to scroll under it.
-  - **Streak board** (`StreakBoard`, `StreakPaint`, `streak.module.css`). The practice figure in the style of a coding site's activity calendar, but labelled an **Illustration**: one square for each of the 600+ problems, 7×86 from 768px and 14×43 on phones. It has no dates and no per-day shading, so nothing reads as data it doesn't have.
-    - **Fill:** once the board is well in view (`data-lit`), a green fill runs left to right with a feathered front edge and a flickering flame riding it. The flame then stays at the end, and a light sweeps across now and then. Each is one layer moved by transform, never the 600 squares: the green copy sits in a window that slides in while its contents slide back, so the squares stay put.
-    - **Paint:** a pointer (or a finger dragging sideways) paints the squares it passes, and a press sends a ring of light out through the board. It's a canvas drawn only while something is happening. Painting a streak is a discovery.
-    - **At rest:** without JavaScript or under reduced motion, it's simply full.
+    - **Then the facts as tiles:** the Cleartrip role, VIT, the certifications and the practice figure. Everything rises in on load (`hero-rise`, `wr-in`), and the header turns frosted as soon as the section starts to scroll under it.
   - **Experience:** the achievements are a swipeable row on phones (`SnapGallery`, `stackFrom="md"`). The hex map and the other walkthroughs are on `/about`.
   - **Work** (`Projects`):
     - **Flagships** (`Featured`): the three are sticky cards that pile up as you scroll. Each settles back and dims on the next card's named view timeline, scoped to the list with `timeline-scope`. Every card shows the idea, its own figures, its stack and the way in.
@@ -116,8 +112,8 @@ Only ScopeForge has real screenshots (its repository's synthetic demo workspace)
   - **Hints.** `<Hint>` is a hand-written note (Caveat, not preloaded) for anything that doesn't look interactive at first glance. Once it's fully in view the words rise in, a marker stroke sweeps under them and the arrow draws itself; then the note nudges toward its target a few times and rests. It has a soft glow, so it reads on dark sections and over the drawings.
     - **Retiring:** its parent is what it points at, and the first touch, keypress or input there retires it for good (`hover` adds a mouse pointing at it, for things that react to hover).
     - **Where:** `touch` hints ("swipe", on `SnapGallery`'s `swipeHint`) show only where there's no hover and retire on the first scroll; `fine` ones ("point at a bar") only where there is. `at="narrow"` or `"wide"` places one note differently below and from 768px (two notes, one id).
-    - **Current notes:** the headline's full stop ("boop it"), the portrait ("say hi back"), the streak board ("paint a streak"), the first skill group, Surprise me, Copy email ("watch it fly"), the 404's link ("drag me"), the lab's "Poke", the About timeline, the SSK layers, the hex map and each case study's "Try it".
-    - **Placement:** it's positioned absolutely, so it never moves anything. Keep it clear of text and inside any `overflow: clip` box, or it's cut off and never counts as fully in view (the streak board clips, so its note sits on the board's wrapper, with room made for it on phones). Pointing up, the words sit beside the arrow's tail, so the note is no taller than its arrow.
+    - **Current notes:** the headline's full stop ("boop it"), the portrait ("say hi back"), the first skill group, Surprise me, Copy email ("watch it fly"), the 404's link ("drag me"), the lab's "Poke", the About timeline, the SSK layers, the hex map and each case study's "Try it".
+    - **Placement:** it's positioned absolutely, so it never moves anything. Keep it clear of text and inside any `overflow: clip` box, or it's cut off and never counts as fully in view (an `overflow: clip` box cuts off a note that reaches past it). Pointing up, the words sit beside the arrow's tail, so the note is no taller than its arrow.
   - **Spotlight** (the homepage's first screen, fine pointers). A lens follows the pointer and the dot grid inside it moves the other way, so the dots stay fixed while the light passes over them: the practice dots' counter-moving technique. Its layers are promoted only while it's lit.
   - **Site-wide touches** (`src/components/fx/Fx.tsx`, one client component in the layout, one listener per job):
     - **Accent wipe:** a link to a case study sends a circle in that project's accent from the click to cover the screen, then it lifts away. It's a 160px circle scaled up, compositor only. The palette and Surprise me start it with `wipeTo`. While `html[data-wiping]` is set, `PageTransition` holds the incoming page until the circle has covered the screen, so the new page rises as it lifts. Off under reduced motion.
@@ -137,7 +133,6 @@ Only ScopeForge has real screenshots (its repository's synthetic demo workspace)
     - opening the palette
     - x-ray mode
     - bouncing the headline's full stop
-    - painting a streak on the practice board
     - exploring every project
     - pulling through to the next project
     - fixing the 404's broken link

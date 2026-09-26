@@ -1,8 +1,7 @@
 /*
  * At a glance, the first screen. The HD monogram writes itself stroke by
  * stroke as the page loads, and again under a pointer or a tap; it rests
- * written under reduced motion and without JavaScript. (The practice
- * streak board has its own styles: streak.module.css.)
+ * written under reduced motion and without JavaScript.
  */
 
 /* ── Monogram ─────────────────────────────────────────────────────────── */
