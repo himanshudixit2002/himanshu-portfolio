@@ -55,8 +55,8 @@ export function SiteHeader({ name, items, resume }: Props) {
     return () => resize.disconnect();
   }, [pathname]);
 
-  // On the homepage the bar turns frosted once the hero's text has scrolled
-  // under it, before any artwork can pass behind the name.
+  // On the homepage the bar turns frosted once the first screen starts to
+  // scroll under it, before any tile can pass behind the name.
   useEffect(() => {
     const sentinel = heroPage ? document.querySelector("[data-nav-sentinel]") : null;
     if (!sentinel) return;
@@ -111,7 +111,7 @@ export function SiteHeader({ name, items, resume }: Props) {
           data-xray-wide
           className="container-page relative flex h-(--nav-h) items-center justify-between [--xray-left:auto] [--xray-right:max(var(--gutter),env(safe-area-inset-right))] [--xray-top:calc(100%+0.375rem)]"
         >
-          <Link href="/#top" className="group flex min-h-11 items-center gap-2.5 rounded-lg text-[0.9375rem] font-semibold tracking-[-0.01em]">
+          <Link href="/#hello" className="group flex min-h-11 items-center gap-2.5 rounded-lg text-[0.9375rem] font-semibold tracking-[-0.01em]">
             <Avatar />
             {name}
           </Link>

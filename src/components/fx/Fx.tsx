@@ -35,7 +35,7 @@ const scatter = (i: number) => {
  *   lifting away once the new page is in.
  * - Buttons marked [data-ripple] ripple from where they're pressed.
  * - [data-launch] links launch their arrow before the page scrolls.
- * - [data-bounce], [data-redraw] and [data-swap] react to a poke.
+ * - [data-bounce], [data-wobble] and [data-redraw] react to a poke.
  * - Finding a discovery shows a note under the header.
  * - The Konami code bursts sparks in every project's accent.
  * - A hidden tab asks you to come back; developers get a hello in the console.
@@ -147,7 +147,7 @@ export function Fx({ projects }: { projects: Slim[] }) {
   // ── Things that react to a poke ─────────────────────────────────────
   // [data-bounce] bounces under a fine pointer or a tap, at most once per
   // bounce; [data-redraw] replays its drawing on a tap (hover does it in
-  // CSS); [data-swap] shows the other chat in its [data-swap-root].
+  // CSS).
   useEffect(() => {
     let bouncedAt = 0;
     const bounce = (el: HTMLElement) => {
@@ -179,17 +179,11 @@ export function Fx({ projects }: { projects: Slim[] }) {
       const drawing = target?.closest?.<HTMLElement>("[data-redraw]");
       if (drawing && event.pointerType !== "mouse") drawing.dataset.redrawing = drawing.dataset.redrawing === "a" ? "b" : "a";
     };
-    const onClick = (event: MouseEvent) => {
-      const swap = (event.target as Element | null)?.closest?.("[data-swap]")?.closest<HTMLElement>("[data-swap-root]");
-      if (swap) swap.dataset.swapped = swap.dataset.swapped === "alt" ? "main" : "alt";
-    };
     document.addEventListener("pointerover", onOver, { passive: true });
     document.addEventListener("pointerdown", onDown, { passive: true });
-    document.addEventListener("click", onClick);
     return () => {
       document.removeEventListener("pointerover", onOver);
       document.removeEventListener("pointerdown", onDown);
-      document.removeEventListener("click", onClick);
     };
   }, []);
 

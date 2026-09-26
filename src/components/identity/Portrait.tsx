@@ -12,18 +12,18 @@ const SIZES = "(min-width: 768px) 19rem, 13rem";
 /** What the portrait says, one line per tap, round and round. Invitations only; the shortcuts where there's a keyboard. */
 const LINES = {
   keys: [
-    "Hi, I’m Himanshu.",
+    "Nice to meet you!",
     "Everything here is live — poke the cards.",
-    "Bet you can’t bounce the full stop up there.",
+    "Bet you can’t bounce that full stop.",
     "Psst… press ⌘K.",
     "Try x for x-ray mode.",
     "Even the 404 page can be fixed.",
     "Can’t pick one? Hit Surprise me.",
   ],
   touch: [
-    "Hi, I’m Himanshu.",
+    "Nice to meet you!",
     "Everything here is live — poke the cards.",
-    "Bet you can’t bounce the full stop up there.",
+    "Bet you can’t bounce that full stop.",
     "Psst… try the search button up top.",
     "Flip on X-ray in the footer.",
     "Even the 404 page can be fixed.",
@@ -46,7 +46,7 @@ const lines = () => (window.matchMedia("(hover: hover) and (pointer: fine)").mat
  * says the next line; those are also announced politely to screen readers
  * (the greeting isn't, since nobody asked for it).
  */
-export function Portrait({ className = "" }: { className?: string }) {
+export function Portrait({ className = "", intro = "scroll" }: { className?: string; intro?: "scroll" | "load" }) {
   const ref = usePointerLight<HTMLDivElement>();
   const { src, alt } = profile.photo;
   const button = useRef<HTMLButtonElement>(null);
@@ -78,9 +78,13 @@ export function Portrait({ className = "" }: { className?: string }) {
       ([entry]) => {
         if (!entry.isIntersecting) return;
         seen.disconnect();
-        timer = window.setTimeout(() => {
-          if (said.current === 0) speak(false);
-        }, 650);
+        // On the first screen, after its opening has played.
+        timer = window.setTimeout(
+          () => {
+            if (said.current === 0) speak(false);
+          },
+          intro === "load" ? 1500 : 650,
+        );
       },
       { threshold: 0.6 },
     );
@@ -89,13 +93,18 @@ export function Portrait({ className = "" }: { className?: string }) {
       seen.disconnect();
       window.clearTimeout(timer);
     };
-  }, []);
+  }, [intro]);
 
   // Alternate between two identical animations so each tap starts a fresh one.
   const beat = taps ? (taps % 2 ? "a" : "b") : undefined;
 
   return (
-    <div ref={ref} data-xray="Client · one photo download, layered in 3D with CSS · warms to colour on a view timeline" className={`${s.portrait} ${className}`}>
+    <div
+      ref={ref}
+      data-intro={intro}
+      data-xray={`Client · one photo download, layered in 3D with CSS · warms to colour ${intro === "load" ? "as the page loads" : "on a view timeline"}`}
+      className={`${s.portrait} ${className}`}
+    >
       <div className={s.float}>
         <div className={s.hop} data-beat={beat}>
           <div className={s.stage}>
@@ -108,8 +117,9 @@ export function Portrait({ className = "" }: { className?: string }) {
             <span aria-hidden="true" className={s.disc} />
             <div className={s.person}>
               <div className={s.rise}>
-                <Image src={src} alt={alt} sizes={SIZES} className={s.photo} />
-                <Image src={src} alt="" aria-hidden="true" sizes={SIZES} className={`${s.photo} ${s.gray}`} />
+                {/* On the first screen it's needed at once (both share one URL). */}
+                <Image src={src} alt={alt} sizes={SIZES} loading={intro === "load" ? "eager" : undefined} className={s.photo} />
+                <Image src={src} alt="" aria-hidden="true" sizes={SIZES} loading={intro === "load" ? "eager" : undefined} className={`${s.photo} ${s.gray}`} />
               </div>
             </div>
             <span aria-hidden="true" className={`${s.status} live-dot`} />

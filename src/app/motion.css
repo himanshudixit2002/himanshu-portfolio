@@ -171,42 +171,6 @@
 }
 
 /*
- * The homepage hero, as it scrolls away: its layers lift at different speeds
- * (--sd-shift: bigger = nearer) and the composition dims as the next scene
- * covers it. Both run on the hero's own exit, so nothing moves at rest.
- */
-@keyframes sd-lift {
-  to {
-    transform: translate3d(0, calc(var(--sd-shift, 3rem) * -1), 0);
-  }
-}
-
-@keyframes hero-recede {
-  to {
-    opacity: 0.4;
-    transform: scale(0.97);
-  }
-}
-
-@supports (animation-timeline: view()) {
-  html[data-motion="full"] .hero-scroll {
-    view-timeline: --hero block;
-  }
-
-  html[data-motion="full"] .hero-depth {
-    animation: sd-lift linear both;
-    animation-timeline: --hero;
-    animation-range: exit 0% exit 100%;
-  }
-
-  html[data-motion="full"] .hero-recede {
-    animation: hero-recede linear both;
-    animation-timeline: --hero;
-    animation-range: exit 25% exit 100%;
-  }
-}
-
-/*
  * A chat that plays out as it crosses the screen: each [data-bubble] (with
  * --i for its turn) rises in on the .bubble-seq element's own timeline.
  */

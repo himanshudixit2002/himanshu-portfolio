@@ -255,6 +255,28 @@
   }
 }
 
+/* On the first screen there's no arrival to scroll through: the same
+   opening plays once, on load. The shorthand resets the timeline. */
+:global(html[data-motion="full"]) .portrait[data-intro="load"] .disc {
+  animation: open 700ms var(--ease-out) 150ms both;
+}
+
+:global(html[data-motion="full"]) .portrait[data-intro="load"] .ringBox {
+  animation: ring-in 1000ms var(--ease-out) 250ms both;
+}
+
+:global(html[data-motion="full"]) .portrait[data-intro="load"] .rise {
+  animation: rise 850ms var(--ease-out) 380ms both;
+}
+
+:global(html[data-motion="full"]) .portrait[data-intro="load"] .gray {
+  animation: to-colour 1100ms var(--ease-out) 650ms both;
+}
+
+:global(html[data-motion="full"]) .portrait[data-intro="load"] .status {
+  animation: pop 420ms var(--ease-spring) 1150ms both;
+}
+
 /* ── Saying hi ──────────────────────────────────────────────────────── */
 
 .hi {

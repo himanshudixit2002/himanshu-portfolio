@@ -350,21 +350,11 @@ body {
   }
 }
 
-@keyframes hero-settle {
-  from {
-    opacity: 0;
-    transform: perspective(1600px) rotateX(9deg) translate3d(0, 48px, 0) scale(0.97);
-  }
-}
-
 .hero-rise {
   animation: hero-rise 820ms var(--ease-out) both;
   animation-delay: calc(var(--i, 0) * 70ms);
 }
 
-.hero-settle {
-  animation: hero-settle 1100ms var(--ease-out) 180ms both;
-}
 
 /* ---------------------------------------------------------------------------
  * Section reveals. Where scroll timelines exist they are tied to scroll, like
@@ -1079,24 +1069,6 @@ html[data-xray] [data-xray]::before {
       transform: translateY(0.9rem);
     }
   }
-}
-
-/* A phone with two sample chats: the second shows once the phone is
-   tapped, and whichever arrives plays in bubble by bubble. Unlayered, so
-   it beats the art's own display for its threads. */
-[data-swap-root] [data-thread="alt"],
-[data-swap-root][data-swapped="alt"] [data-thread="main"] {
-  display: none;
-}
-
-[data-swap-root][data-swapped="alt"] [data-thread="alt"] {
-  display: flex;
-}
-
-html[data-motion="full"] [data-swap-root][data-swapped] [data-bubble] {
-  transform-origin: 100% 100%;
-  animation: bubble-in 480ms var(--ease-spring) both;
-  animation-delay: calc(var(--i, 0) * 260ms);
 }
 
 /* Two sections of the same tone in a row read as one band: the second needs

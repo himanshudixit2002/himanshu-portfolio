@@ -5,134 +5,203 @@ import { profile } from "@/content/profile";
 import { formatPeriod } from "@/lib/format";
 import { Hint } from "@/components/explore/Hint";
 import { Portrait } from "@/components/identity/Portrait";
-import { DotRipple } from "./DotRipple";
 import { ButtonLink } from "@/components/ui/ButtonLink";
-import { ArrowRight } from "@/components/ui/icons";
+import { ArrowDown, ArrowRight } from "@/components/ui/icons";
+import { HeroSpotlight } from "./HeroSpotlight";
+import { StreakBoard } from "./StreakBoard";
 import s from "./glance.module.css";
 
 const k = (n: number) => ({ "--k": n }) as CSSProperties;
-const rise = (i: number) => ({ "--sd-i": i }) as CSSProperties;
-
+const rise = (i: number) => ({ "--i": i }) as CSSProperties;
+const word = (i: number) => ({ "--w": i }) as CSSProperties;
 
 /**
- * Right after the hero: who Himanshu is, on one screen. Every fact is the
- * site's own content — the profile, the Cleartrip role, education,
- * certifications and the practice figure — laid out as an Apple-style
- * bento that rises as a sheet over the hero.
+ * The first screen: who Himanshu is, directly. His name as the headline
+ * (its full stop is a ball that bounces when poked), what he does, and the
+ * way to the work, beside the portrait that says hello by itself; then the
+ * facts as tiles — the Cleartrip role, VIT, the certifications — and the
+ * practice figure as a streak board. Every fact is the site's own content.
+ * Everything rises in on load with CSS; the monogram writes itself.
  */
 export function AtAGlance() {
   const practice = achievements[0];
   const figure = practice.match(/\d[\d,]*\+?/)?.[0] ?? "";
   const school = education.school.match(/\(([^)]+)\)/)?.[1] ?? education.school;
+  const first = profile.name.split(" ")[0];
 
   return (
     <section
       id="hello"
       aria-labelledby="hello-title"
-      data-xray="Server-rendered bento · the monogram, dots and matrix draw on CSS view timelines"
-      data-tone="light"
-      className="surface-light sd-sheet relative section-y bg-paper text-fg"
+      data-xray="Server-rendered first screen · rises in on load with CSS · the streak board fills once in view (layer transforms) and paints under a pointer on a canvas"
+      data-tone="dark"
+      className="relative isolate overflow-clip bg-ink pt-[calc(var(--nav-h)+clamp(1.75rem,5vw,4.5rem))] pb-(--section-y) [--xray-top:calc(var(--nav-h)+0.5rem)]"
     >
-      <div className="container-page">
-        <p data-reveal className="text-eyebrow text-muted">
-          At a glance
-        </p>
-        <h2 id="hello-title" data-reveal className="mt-4 max-w-4xl text-display text-[clamp(2.25rem,5.6vw,4.5rem)]">
-          Hello, I&rsquo;m {profile.name.split(" ")[0]}.
-        </h2>
-        <p data-reveal className="text-lede mt-5 max-w-3xl text-muted">
-          {profile.bio[0]}
-        </p>
+      <div
+        aria-hidden="true"
+        className="drift pointer-events-none absolute -inset-x-[12%] -top-48 -z-10 h-[76rem] bg-[radial-gradient(56rem_34rem_at_78%_16%,rgb(92_164_255/0.16),transparent_70%),radial-gradient(40rem_30rem_at_8%_38%,rgb(45_212_191/0.09),transparent_70%)]"
+      />
+      <HeroSpotlight />
 
-        <div className="mt-12 grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-          {/* Who: the portrait opens and warms to colour; the monogram writes itself beside it. */}
-          <div
-            className={`${s.monoTile} sd-rise relative flex flex-col justify-between gap-8 overflow-clip rounded-[1.75rem] bg-ink p-7 text-fg-inverse md:col-span-2 lg:row-span-2 lg:p-9`}
-            style={rise(0)}
-          >
-            <div aria-hidden="true" className="pointer-events-none absolute -top-24 -right-24 size-80 rounded-full bg-[radial-gradient(closest-side,rgb(92_164_255/0.28),transparent)]" />
-            <div className="relative flex items-center gap-5 md:gap-8">
-              <Portrait />
-              <Monogram />
-              <Hint id="portrait" arrow="left" className="bottom-1 left-[9.25rem] md:bottom-4 md:left-[13.5rem]">
-                say hi back
-              </Hint>
-            </div>
-            <div className="relative">
-              <p className="text-title text-[clamp(1.75rem,3vw,2.5rem)]">{profile.name}</p>
-              <p className="mt-2 text-muted-inverse">
-                {profile.role} · {profile.location}
-              </p>
-              <ul className="mt-5 flex flex-wrap gap-x-6">
+      <div className="container-page">
+        {/* The header turns frosted as soon as this passes under it, before any tile can. */}
+        <div data-nav-sentinel aria-hidden="true" className="h-px" />
+        <div className="grid gap-4 lg:grid-cols-12 lg:gap-5">
+          {/* Who, directly. */}
+          <div className="flex flex-col justify-center py-2 lg:col-span-7 lg:py-6 lg:pr-6">
+            <a
+              href="#contact"
+              className="hero-rise group inline-flex min-h-11 items-center gap-2.5 self-start rounded-full bg-white/6 pr-4 pl-3.5 text-sm font-medium text-fg-inverse ring-1 ring-white/12 transition-[background-color,scale] duration-(--dur-micro) ring-inset hover:bg-white/10 active:scale-[0.97]"
+              style={rise(0)}
+            >
+              <span aria-hidden="true" className="live-dot" />
+              {profile.availability}
+              <ArrowRight className="size-3.5 text-muted-inverse transition-transform duration-(--dur-base) ease-(--ease-out) group-hover:translate-x-0.5" />
+            </a>
+            {/* Two lines at every width, whatever the font: its arrival moves nothing. */}
+            <h1
+              id="hello-title"
+              className="wr-in mt-6 text-display text-[clamp(3rem,1.6rem+6vw,6.5rem)]"
+              style={{ "--wr-delay": "90ms" } as CSSProperties}
+            >
+              <span className="wr-w" style={word(0)}>
+                Hi,
+              </span>{" "}
+              <span className="wr-w" style={word(1)}>
+                I&rsquo;m
+              </span>
+              <br />
+              <span className="wr-w" style={word(2)}>
+                {first}
+                {/* The full stop is a ball: it bounces when poked (Fx). */}
+                <span data-bounce="" className="hero-dot">
+                  .
+                  <Hint id="bounce" arrow="left" at="wide" hover delay={1700} className="bottom-[0.15rem] left-[calc(100%+0.2rem)]">
+                    boop it
+                  </Hint>
+                  <Hint id="bounce" arrow="down-left" at="narrow" hover delay={1700} className="bottom-[calc(100%-0.6rem)] left-[40%]">
+                    boop it
+                  </Hint>
+                </span>
+              </span>
+            </h1>
+            <p className="hero-rise mt-5 text-lg font-medium text-fg-inverse" style={rise(3)}>
+              {profile.role} · {profile.location}
+            </p>
+            <p className="hero-rise text-lede mt-2 max-w-xl text-muted-inverse" style={rise(4)}>
+              {profile.intro}
+            </p>
+            <div className="hero-rise mt-8 flex flex-wrap items-center gap-3" style={rise(5)}>
+              <ButtonLink href="#work">
+                See my work
+                <span className="cue-nudge inline-flex">
+                  <ArrowDown className="size-4" />
+                </span>
+              </ButtonLink>
+              <ButtonLink href="/resume" variant="secondary">
+                Résumé
+              </ButtonLink>
+              <span className="flex gap-x-5 px-2">
                 {[profile.links.github, profile.links.linkedin].map((link) => (
-                  <li key={link.href}>
-                    <ButtonLink href={link.href} variant="text" external>
-                      {link.label}
-                    </ButtonLink>
-                  </li>
+                  <ButtonLink key={link.href} href={link.href} variant="text" external>
+                    {link.label}
+                  </ButtonLink>
                 ))}
-              </ul>
+              </span>
+            </div>
+          </div>
+
+          {/* The portrait says hello by itself; the monogram writes itself beside it. */}
+          <div
+            className={`${s.monoTile} hero-rise relative flex items-center overflow-clip rounded-[2rem] bg-ink-2 p-6 ring-1 ring-white/8 md:p-8 lg:col-span-5`}
+            style={rise(2)}
+          >
+            <div aria-hidden="true" className="pointer-events-none absolute -top-24 -right-24 size-96 rounded-full bg-[radial-gradient(closest-side,rgb(92_164_255/0.3),transparent)]" />
+            <div aria-hidden="true" className="pointer-events-none absolute -bottom-32 -left-20 size-80 rounded-full bg-[radial-gradient(closest-side,rgb(45_212_191/0.16),transparent)]" />
+            <div className="relative flex w-full items-center justify-center gap-5 md:gap-8">
+              {/* The note's parent is what it points at: the portrait. */}
+              <div className="relative">
+                <Portrait intro="load" />
+                <Hint id="portrait" arrow="left" className="bottom-1 left-[calc(100%-1.25rem)] md:bottom-4 md:left-[calc(100%-1.75rem)]">
+                  say hi back
+                </Hint>
+              </div>
+              <Monogram />
             </div>
           </div>
 
           {/* Now. */}
-          <Tile label="Now" className="md:col-span-2" i={1}>
-            <p className="flex items-center gap-3 text-title text-[clamp(1.5rem,2.4vw,2rem)]">
-              <span aria-hidden="true" className="live-dot" />
-              {profile.availability}
+          <Tile label="Most recently" className="lg:col-span-5" i={6}>
+            <p className="text-title text-[clamp(1.4rem,2.2vw,1.85rem)]">{cleartrip.title}</p>
+            <p className="mt-2 leading-relaxed text-muted-inverse">
+              {cleartrip.company} ({cleartrip.via}) · {formatPeriod(cleartrip.period)} · {cleartrip.location}
             </p>
-            <p className="mt-3 leading-relaxed text-muted">
-              Most recently {cleartrip.title} at {cleartrip.company} ({cleartrip.via}), {formatPeriod(cleartrip.period)}, in {cleartrip.location}.
-            </p>
-            <Link href="#contact" className="group mt-5 inline-flex min-h-11 items-center gap-2 font-medium text-accent">
-              <span className="link-draw">Get in touch</span>
+            <Link href="#experience" className="group mt-4 inline-flex min-h-11 items-center gap-2 font-medium text-accent-bright">
+              <span className="link-draw">What I did there</span>
               <ArrowRight className="size-4 transition-transform duration-(--dur-base) ease-(--ease-out) group-hover:translate-x-0.5" />
             </Link>
           </Tile>
 
-          {/* Education. */}
-          <Tile label="Education" i={1}>
-            <p className="text-display text-5xl">{school}</p>
-            <p className="mt-3 text-sm leading-relaxed text-muted">
-              {education.degree}. {education.specialization}.
-            </p>
-            <p className="mt-2 font-mono text-xs text-muted">
-              {education.period.start}–{education.period.end} · {education.location}
-            </p>
-          </Tile>
+          <div className="grid gap-4 sm:grid-cols-2 lg:col-span-7 lg:gap-5">
+            {/* Education. */}
+            <Tile label="Education" i={7}>
+              <p className="bg-linear-to-br from-[#8ec1ff] to-[#2dd4bf] bg-clip-text text-display text-5xl text-transparent">{school}</p>
+              <p className="mt-3 text-sm leading-relaxed text-muted-inverse">
+                {education.degree}. {education.specialization}.
+              </p>
+              <p className="mt-2 font-mono text-xs text-dim-inverse">
+                {education.period.start}–{education.period.end} · {education.location}
+              </p>
+            </Tile>
 
-          {/* Certifications. */}
-          <Tile label="Certified" i={2}>
-            <ul className="grid gap-4">
-              {certifications.map((c) => (
-                <li key={c.name} className="flex gap-3">
-                  <Cloud />
-                  <p className="text-sm leading-snug">
-                    <a href={c.href} target="_blank" rel="noopener noreferrer" className="link-draw font-semibold">
-                      {c.name}
-                      <span className="sr-only"> (opens in a new tab)</span>
-                    </a>
-                    <span className="block text-muted">
-                      {c.issuer}, {c.year}
-                    </span>
-                  </p>
-                </li>
-              ))}
-            </ul>
-          </Tile>
+            {/* Certifications. */}
+            <Tile label="Certified" i={8}>
+              <ul className="grid gap-4">
+                {certifications.map((c) => (
+                  <li key={c.name} className="flex gap-3">
+                    <Cloud />
+                    <p className="text-sm leading-snug">
+                      <a href={c.href} target="_blank" rel="noopener noreferrer" className="link-draw font-semibold text-fg-inverse">
+                        {c.name}
+                        <span className="sr-only"> (opens in a new tab)</span>
+                      </a>
+                      <span className="block text-muted-inverse">
+                        {c.issuer}, {c.year}
+                      </span>
+                    </p>
+                  </li>
+                ))}
+              </ul>
+            </Tile>
+          </div>
 
-          {/* Practice: the figure as text, and — from 768px — that many dots. */}
-          <Tile label="Practice" className="md:col-span-2 lg:col-span-4" i={0}>
-            <div className="relative grid items-center gap-6 md:grid-cols-[auto_1fr] md:gap-10">
-              {/* The dots clip what paints outside them, so the note lives here. */}
-              <Hint id="dots" tone="light" arrow="down-left" at="wide" className="right-6 -top-9">
-                tap the dots
-              </Hint>
+          {/* Practice: the figure, and a streak board with a square for each problem. */}
+          <Tile label="Practice" className="relative overflow-clip lg:col-span-12" i={9}>
+            <div aria-hidden="true" className="pointer-events-none absolute -right-24 -bottom-40 size-[28rem] rounded-full bg-[radial-gradient(closest-side,rgb(57_211_83/0.14),transparent)]" />
+            <div className="relative grid gap-6 md:grid-cols-[minmax(0,14rem)_minmax(0,1fr)] md:items-center md:gap-10">
               <div>
-                <p className="text-display text-[clamp(2.5rem,5vw,4rem)] tabular-nums">{figure}</p>
-                <p className="mt-2 max-w-[20rem] text-sm leading-relaxed text-muted">{practice}</p>
+                <p className="flex items-baseline gap-2">
+                  <span className="bg-linear-to-br from-[#9be15d] to-[#2cbb5d] bg-clip-text text-display text-[clamp(3rem,6vw,4.5rem)] text-transparent tabular-nums">
+                    {figure}
+                  </span>
+                  <span className="text-lg font-semibold text-fg-inverse">problems</span>
+                </p>
+                <p className="mt-2 text-sm leading-relaxed text-muted-inverse">{practice}</p>
+                <p className="mt-4 inline-flex items-center gap-2 rounded-full bg-white/5 px-3 py-1 text-xs text-dim-inverse ring-1 ring-white/10 ring-inset">
+                  <span className="font-semibold tracking-wide text-muted-inverse uppercase">Illustration</span>
+                  One square per problem, not a calendar
+                </p>
               </div>
-              <PracticeDots count={Number.parseInt(figure, 10) || 0} />
+              {/* On phones the note needs its own room above the board. */}
+              <div className="relative min-w-0 pt-14 md:pt-0">
+                <StreakBoard count={Number.parseInt(figure, 10) || 0} />
+                <Hint id="streak" arrow="down-left" at="narrow" className="top-0 right-6">
+                  paint a streak
+                </Hint>
+                <Hint id="streak" arrow="down-left" at="wide" className="right-10 bottom-[calc(100%-0.5rem)]">
+                  paint a streak
+                </Hint>
+              </div>
             </div>
           </Tile>
         </div>
@@ -143,8 +212,8 @@ export function AtAGlance() {
 
 function Tile({ label, className = "", i, children }: { label: string; className?: string; i: number; children: ReactNode }) {
   return (
-    <div className={`sd-rise rounded-[1.75rem] bg-snow p-6 ring-1 ring-black/5 lg:p-7 ${className}`} style={rise(i)}>
-      <p className="mb-4 text-eyebrow text-muted">{label}</p>
+    <div className={`hero-rise rounded-[1.75rem] bg-white/[0.035] p-6 ring-1 ring-white/8 lg:p-7 ${className}`} style={rise(i)}>
+      <p className="mb-4 text-eyebrow text-dim-inverse">{label}</p>
       {children}
     </div>
   );
@@ -160,7 +229,7 @@ function Monogram() {
     "M104 16 H126 C160 16 178 36 178 60 C178 84 160 104 126 104 H104",
   ];
   return (
-    <svg viewBox="0 0 200 120" data-redraw="" className="relative w-28 md:w-40" aria-hidden="true" focusable="false">
+    <svg viewBox="0 0 200 120" data-redraw="" className="relative w-24 flex-none sm:w-32 md:w-40" aria-hidden="true" focusable="false">
       <defs>
         {/* In the drawing's own units: a bounding-box gradient doesn't paint a straight stroke, whose box has no width or height. */}
         <linearGradient id="mono-ink" gradientUnits="userSpaceOnUse" x1="20" y1="10" x2="180" y2="110">
@@ -179,33 +248,8 @@ function Monogram() {
 
 function Cloud() {
   return (
-    <svg viewBox="0 0 24 24" className="mt-0.5 size-5 flex-none text-accent" aria-hidden="true" focusable="false">
+    <svg viewBox="0 0 24 24" className="mt-0.5 size-5 flex-none text-accent-bright" aria-hidden="true" focusable="false">
       <path d="M7 18h10.5a4 4 0 0 0 .5-7.97A5.5 5.5 0 0 0 7.4 9.1 4.5 4.5 0 0 0 7 18Z" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinejoin="round" />
     </svg>
-  );
-}
-
-/** One dot per problem, in rows of 60; a band of light crosses them as the tile passes. Wider screens only: on a phone the figure says it. */
-function PracticeDots({ count }: { count: number }) {
-  const cols = 60;
-  const rows = Math.ceil(count / cols);
-  const dots = (fill: string) => (
-    <svg viewBox={`0 0 ${cols * 10} ${rows * 10}`} className="block h-full w-full" preserveAspectRatio="xMidYMid meet">
-      <defs>
-        <pattern id={`dot-${fill.replace(/\W/g, "")}`} width="10" height="10" patternUnits="userSpaceOnUse">
-          <circle cx="5" cy="5" r="2.1" fill={fill} />
-        </pattern>
-      </defs>
-      <rect width={cols * 10} height={rows * 10} fill={`url(#dot-${fill.replace(/\W/g, "")})`} />
-    </svg>
-  );
-  return (
-    <div aria-hidden="true" className={`${s.dots} relative hidden w-full cursor-pointer md:block`} style={{ aspectRatio: `${cols} / ${rows}` }}>
-      {dots("rgb(0 0 0 / 0.13)")}
-      <div className={s.band}>
-        <div className={s.bandDots}>{dots("#0a66d8")}</div>
-      </div>
-      <DotRipple cols={cols} rows={rows} />
-    </div>
   );
 }

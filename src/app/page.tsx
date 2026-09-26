@@ -2,7 +2,6 @@ import type { Metadata } from "next";
 import { AtAGlance } from "@/components/home/AtAGlance";
 import { ContactClose } from "@/components/home/ContactClose";
 import { Experience } from "@/components/home/Experience";
-import { Hero } from "@/components/home/Hero";
 import { Projects } from "@/components/home/Projects";
 import { SectionRail } from "@/components/home/SectionRail";
 import { Skills } from "@/components/home/Skills";
@@ -18,16 +17,16 @@ const SECTIONS = [
 ];
 
 /*
- * The homepage, direct: the opening statement, who Himanshu is at a glance,
+ * The homepage, direct: who Himanshu is, first (name, what he does, the way
+ * to the work, the portrait, the facts and the practice streak board), then
  * the Cleartrip role, every project (three flagships as stacking cards,
  * then the rest with their stacks), the skills tied to that work, and
  * contact. The deeper walkthroughs live on the case studies, /about and
- * /lab. Light and dark sections alternate.
+ * /lab.
  */
 export default function Home() {
   return (
     <>
-      <Hero />
       <AtAGlance />
       <Experience />
       <Projects />

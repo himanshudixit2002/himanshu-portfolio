@@ -194,11 +194,7 @@ export function SskInventoryArt(props: ArtProps) {
 }
 
 type Conversation = "low-stock" | "confirm-write";
-type NovaProps = ArtProps & {
-  conversation: Conversation;
-  /** Also draw the other sample conversation, hidden until a [data-swap-root] around it is marked data-swapped (Fx). */
-  both?: boolean;
-};
+type NovaProps = ArtProps & { conversation: Conversation };
 const bubble = (i: number) => ({ "--i": i }) as CSSProperties;
 
 function Thread({ conversation }: { conversation: Conversation }) {
@@ -247,8 +243,7 @@ function Thread({ conversation }: { conversation: Conversation }) {
   );
 }
 
-export function NovaPhoneArt({ label, onLight, className = "", conversation, both = false }: NovaProps) {
-  const other: Conversation = conversation === "low-stock" ? "confirm-write" : "low-stock";
+export function NovaPhoneArt({ label, onLight, className = "", conversation }: NovaProps) {
   return (
     <div role="img" aria-label={label} className={`${s.frame} ${onLight ? s.onLight : ""} ${className}`}>
       <div className={s.phone}>
@@ -261,14 +256,9 @@ export function NovaPhoneArt({ label, onLight, className = "", conversation, bot
               <div className={s.novaSub}>Inventory assistant</div>
             </div>
           </div>
-          <div className={s.thread} data-thread={both ? "main" : undefined}>
+          <div className={s.thread}>
             <Thread conversation={conversation} />
           </div>
-          {both && (
-            <div className={s.thread} data-thread="alt">
-              <Thread conversation={other} />
-            </div>
-          )}
           <div className={s.composer}>Ask about your stock…</div>
         </div>
       </div>
