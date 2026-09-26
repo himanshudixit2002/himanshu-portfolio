@@ -1,3 +1,4 @@
+import type { CSSProperties } from "react";
 import s from "./chapters.module.css";
 
 /* Drawings with sample data. No client photos, logos or real records. */
@@ -62,13 +63,14 @@ export function ElepeiaArt({ label, onDark }: { label: string; onDark?: boolean 
   );
 }
 
+/** Sample floor. Running tables show h:mm, with seconds ticking from `from`. */
 const FLOOR = [
-  { name: "Snooker 1", state: "running", meta: "00:42 · ₹210" },
+  { name: "Snooker 1", state: "running", meta: "00:42", fee: "₹210", from: -17 },
   { name: "Snooker 2", state: "billing", meta: "Bill ₹640" },
-  { name: "Pool 1", state: "running", meta: "01:05 · ₹217" },
+  { name: "Pool 1", state: "running", meta: "01:05", fee: "₹217", from: -44 },
   { name: "Carrom", state: "free", meta: "Free" },
   { name: "Darts", state: "free", meta: "Free" },
-  { name: "PS5", state: "running", meta: "00:18 · ₹45" },
+  { name: "PS5", state: "running", meta: "00:18", fee: "₹45", from: -3 },
 ] as const;
 
 export function CafeFloorArt({ label }: { label: string }) {
@@ -84,7 +86,14 @@ export function CafeFloorArt({ label }: { label: string }) {
             {FLOOR.map((t) => (
               <div key={t.name} className={`${s.tableCard} ${t.state === "running" ? s.running : t.state === "billing" ? s.billing : ""}`}>
                 <span className={s.tableName}>{t.name}</span>
-                <span className={t.state === "free" ? s.tableFree : s.tableMeta}>{t.meta}</span>
+                <span className={t.state === "free" ? s.tableFree : s.tableMeta}>
+                  {t.meta}
+                  {t.state === "running" && (
+                    <>
+                      <span className={s.tick} style={{ "--tick-from": `${t.from}s` } as CSSProperties} /> · {t.fee}
+                    </>
+                  )}
+                </span>
               </div>
             ))}
           </div>

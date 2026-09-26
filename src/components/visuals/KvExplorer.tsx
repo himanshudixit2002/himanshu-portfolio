@@ -1,6 +1,7 @@
 "use client";
 
-import { useId, useReducer, useState, type FormEvent } from "react";
+import { useEffect, useId, useReducer, useRef, useState, type FormEvent } from "react";
+import { useMotionPreference } from "@/components/motion/MotionPreferences";
 import * as kv from "@/lib/sim/kvstore";
 import { Control, Stage } from "./Stage";
 import { useInterval, useOnScreen } from "./useNearViewport";
@@ -37,6 +38,8 @@ const crowd = (() => {
 
 const EXAMPLES = ["SET name Alice", "GET name", "SET session_token abc PX 5000", "GET session_token", "DEL name"];
 const TICK = 250;
+/** Typed and run once, the first time the explorer is well in view, so it shows how it's used. */
+const INTRO = ["SET city Pune", "GET city"];
 
 export default function KvExplorer({ compact = false }: { compact?: boolean }) {
   const [state, dispatch] = useReducer(reducer, undefined, kv.initialKv);
@@ -56,6 +59,64 @@ export default function KvExplorer({ compact = false }: { compact?: boolean }) {
     TICK,
     !paused && onScreen,
   );
+
+  // The intro: type each command a key at a time, run it, then hand over.
+  // Full motion only, before anything has been run, and it stops the moment
+  // the reader presses or focuses anything in the explorer.
+  const { reduced } = useMotionPreference();
+  const [introDone, setIntroDone] = useState(false);
+  // Read when the intro would start (not a dependency: running its own commands mustn't cancel it).
+  const ran = useRef(0);
+  useEffect(() => {
+    ran.current = state.history.length;
+  });
+  useEffect(() => {
+    const el = frame.current;
+    if (!el || introDone || reduced) return;
+    const timers: number[] = [];
+    const stop = () => {
+      timers.forEach(window.clearTimeout);
+      if (timers.length) setInput("");
+      setIntroDone(true);
+    };
+    const start = () => {
+      if (ran.current > 0) return setIntroDone(true);
+      let t = 400;
+      for (const cmd of INTRO) {
+        for (let i = 1; i <= cmd.length; i++) {
+          const text = cmd.slice(0, i);
+          timers.push(window.setTimeout(() => setInput(text), t));
+          t += 60;
+        }
+        t += 380;
+        timers.push(
+          window.setTimeout(() => {
+            dispatch({ type: "run", input: cmd });
+            setInput("");
+          }, t),
+        );
+        t += 1100;
+      }
+      timers.push(window.setTimeout(() => setIntroDone(true), t));
+    };
+    const seen = new IntersectionObserver(
+      ([entry]) => {
+        if (!entry.isIntersecting) return;
+        seen.disconnect();
+        start();
+      },
+      { threshold: 0.4 },
+    );
+    seen.observe(el);
+    el.addEventListener("pointerdown", stop);
+    el.addEventListener("focusin", stop);
+    return () => {
+      seen.disconnect();
+      timers.forEach(window.clearTimeout);
+      el.removeEventListener("pointerdown", stop);
+      el.removeEventListener("focusin", stop);
+    };
+  }, [frame, introDone, reduced]);
 
   const submit = (event: FormEvent) => {
     event.preventDefault();

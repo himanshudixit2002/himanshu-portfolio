@@ -35,8 +35,11 @@ export function CopyEmailButton({ email }: { email: string }) {
         onClick={copy}
         className="group inline-flex min-h-11 items-center justify-center gap-2 rounded-full px-5 text-[0.9375rem] font-medium text-fg ring-1 ring-black/15 transition-[background-color,transform] duration-200 ring-inset hover:bg-black/5 active:scale-[0.97]"
       >
-        {status === "copied" ? <Check className="size-4 text-accent" /> : <Copy className="size-4" />}
-        {status === "copied" ? "Copied" : "Copy email"}
+        {/* On copy, the tick draws itself and the label slides in. */}
+        {status === "copied" ? <Check className="draw-check size-4 text-accent" /> : <Copy className="size-4" />}
+        <span key={status === "copied" ? "copied" : "idle"} className={status === "copied" ? "swap-in" : undefined}>
+          {status === "copied" ? "Copied" : "Copy email"}
+        </span>
       </button>
       <span role="status" className={status === "failed" ? "basis-full text-sm text-muted" : "sr-only"}>
         {messages[status]}

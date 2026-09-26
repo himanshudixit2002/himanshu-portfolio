@@ -63,7 +63,7 @@ export function ScrollScene({ label, length = { base: "150lvh", md: "240lvh" }, 
  * motion switch. `null` until measured, so nothing is drawn on the server or
  * before the first check.
  */
-function usePinShown(ref: RefObject<HTMLElement | null>) {
+export function usePinShown(ref: RefObject<HTMLElement | null>) {
   const [shown, setShown] = useState<boolean | null>(null);
   const { reduced } = useMotionPreference();
 

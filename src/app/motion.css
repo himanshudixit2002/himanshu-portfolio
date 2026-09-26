@@ -163,6 +163,106 @@
   }
 }
 
+/*
+ * The homepage hero, as it scrolls away: its layers lift at different speeds
+ * (--sd-shift: bigger = nearer) and the composition dims as the next scene
+ * covers it. Both run on the hero's own exit, so nothing moves at rest.
+ */
+@keyframes sd-lift {
+  to {
+    transform: translate3d(0, calc(var(--sd-shift, 3rem) * -1), 0);
+  }
+}
+
+@keyframes hero-recede {
+  to {
+    opacity: 0.4;
+    transform: scale(0.97);
+  }
+}
+
+@supports (animation-timeline: view()) {
+  html[data-motion="full"] .hero-scroll {
+    view-timeline: --hero block;
+  }
+
+  html[data-motion="full"] .hero-depth {
+    animation: sd-lift linear both;
+    animation-timeline: --hero;
+    animation-range: exit 0% exit 100%;
+  }
+
+  html[data-motion="full"] .hero-recede {
+    animation: hero-recede linear both;
+    animation-timeline: --hero;
+    animation-range: exit 25% exit 100%;
+  }
+}
+
+/*
+ * A chat that plays out as it crosses the screen: each [data-bubble] (with
+ * --i for its turn) rises in on the .bubble-seq element's own timeline.
+ */
+@keyframes bubble-in {
+  from {
+    opacity: 0;
+    transform: translate3d(0, 0.9em, 0) scale(0.96);
+  }
+}
+
+@supports (animation-timeline: view()) {
+  html[data-motion="full"] .bubble-seq {
+    view-timeline: --bubbles block;
+  }
+
+  html[data-motion="full"] .bubble-seq [data-bubble] {
+    transform-origin: 100% 100%;
+    animation: bubble-in linear both;
+    animation-timeline: --bubbles;
+    animation-range: cover calc(14% + var(--i, 0) * 8%) cover calc(24% + var(--i, 0) * 8%);
+  }
+}
+
+/* A tick that draws itself (Check's path is about 20 units long), and a label that slides in. */
+@keyframes draw-stroke {
+  from {
+    stroke-dashoffset: 20;
+  }
+}
+
+.draw-check path {
+  stroke-dasharray: 20;
+  animation: draw-stroke 420ms var(--ease-out) both;
+}
+
+@keyframes swap-in {
+  from {
+    opacity: 0;
+    transform: translate3d(0, 0.35em, 0);
+  }
+}
+
+.swap-in {
+  display: inline-block;
+  animation: swap-in var(--dur-base) var(--ease-out) both;
+}
+
+/* A glow that drifts slowly, by transform only. */
+.drift {
+  animation: ambient-drift 24s var(--ease-in-out) infinite;
+}
+
+/* A cue to scroll: the arrow nudges down a few times after the hero lands. */
+@keyframes cue-nudge {
+  50% {
+    transform: translate3d(0, 3px, 0);
+  }
+}
+
+.cue-nudge {
+  animation: cue-nudge 1.4s var(--ease-in-out) 1.8s 3;
+}
+
 /* WordReveal "entrance": words blur up in turn on first paint. Plain CSS, so
    it runs without JavaScript and always ends visible. */
 @keyframes wr-in {
@@ -387,6 +487,7 @@ html[data-js] .snap-gallery:not([data-static]) .snap-item:not([data-active]) {
   animation: ambient-drift 24s var(--ease-in-out) infinite;
 }
 
-html[data-motion="reduce"] .ambient {
+html[data-motion="reduce"] .ambient,
+html[data-motion="reduce"] .drift {
   animation: none;
 }

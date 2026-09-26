@@ -48,12 +48,13 @@
   overflow: visible;
 }
 
+/* Solid and in drawing units: the pinned scene draws them out with pathLength,
+   which doesn't combine with dashes or non-scaling strokes. */
 .links path {
   fill: none;
   stroke: #5ca4ff;
-  stroke-width: 1.5;
-  stroke-dasharray: 4 5;
-  vector-effect: non-scaling-stroke;
+  stroke-width: 0.28;
+  stroke-linecap: round;
   opacity: 0.8;
 }
 

@@ -1,4 +1,4 @@
-import type { ReactNode } from "react";
+import type { CSSProperties, ReactNode } from "react";
 import s from "./art.module.css";
 
 /*
@@ -194,6 +194,7 @@ export function SskInventoryArt(props: ArtProps) {
 }
 
 type NovaProps = ArtProps & { conversation: "low-stock" | "confirm-write" };
+const bubble = (i: number) => ({ "--i": i }) as CSSProperties;
 
 export function NovaPhoneArt({ label, onLight, className = "", conversation }: NovaProps) {
   return (
@@ -226,10 +227,15 @@ export function NovaPhoneArt({ label, onLight, className = "", conversation }: N
               </>
             ) : (
               <>
-                <div className={s.bubbleUser}>Add 50 units of the blue widgets</div>
+                {/* data-bubble: a chapter can bring these in one by one (.bubble-seq in motion.css). */}
+                <div data-bubble className={s.bubbleUser} style={bubble(0)}>
+                  Add 50 units of the blue widgets
+                </div>
                 <div className={s.answer}>
-                  <div className={s.answerText}>Here&rsquo;s the change. Nothing is saved until you confirm.</div>
-                  <div className={s.preview}>
+                  <div data-bubble className={s.answerText} style={bubble(1)}>
+                    Here&rsquo;s the change. Nothing is saved until you confirm.
+                  </div>
+                  <div data-bubble className={s.preview} style={bubble(2)}>
                     <div className={s.previewTag}>Stock in · preview</div>
                     <div className={s.previewItem}>Blue widget</div>
                     <div className={s.previewDelta}>

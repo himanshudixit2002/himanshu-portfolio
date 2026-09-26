@@ -51,7 +51,8 @@ export function ProjectChapter({ project, index, art, tone, reverse = false }: P
             </div>
           </header>
           <figure data-reveal className={reverse ? "lg:order-1" : ""}>
-            {art}
+            {/* The device settles flat as it arrives. */}
+            <div className="sd-tilt-flat">{art}</div>
             <figcaption className={`mt-4 text-xs ${light ? "text-muted" : "text-dim-inverse"}`}>Interface illustration with sample data</figcaption>
           </figure>
         </div>

@@ -1,7 +1,9 @@
 "use client";
 
 import { motion, useMotionValueEvent, useScroll, useTransform, type MotionValue } from "motion/react";
-import { useRef, useState } from "react";
+import { useRef, useState, type CSSProperties, type ReactNode, type RefObject } from "react";
+import { useMotionPreference } from "@/components/motion/MotionPreferences";
+import { usePinShown } from "@/components/motion/ScrollScene";
 import { smartShelfKart } from "@/content/projects";
 import { SskInventoryArt } from "@/components/art/SmartShelfKartArt";
 import { Check } from "@/components/ui/icons";
@@ -38,44 +40,97 @@ const guarantees = [
 
 type Opacity = MotionValue<number> | number;
 
-function Overlays({ systems, checks, decorative }: { systems: Opacity; checks: Opacity; decorative?: boolean }) {
+/** An overlay piece that arrives on the scroll: fades and settles from 88% to full size between `from` and `to`. */
+function Arrive({ progress, from, to, className, style, children }: { progress: MotionValue<number>; from: number; to: number; className: string; style: CSSProperties; children: ReactNode }) {
+  const v = useTransform(progress, [0, from, to, 1], [0, 0, 1, 1]);
+  const scale = useTransform(v, [0, 1], [0.88, 1]);
+  return (
+    <motion.div className={className} style={{ ...style, opacity: v, scale }}>
+      {children}
+    </motion.div>
+  );
+}
+
+function DrawnLink({ progress, from, x, y }: { progress: MotionValue<number>; from: number; x: number; y: number }) {
+  const drawn = useTransform(progress, [0, from, from + 0.08, 1], [0, 0, 1, 1]);
+  return <motion.path d={`M50 50 L${x} ${y}`} style={{ pathLength: drawn }} />;
+}
+
+/** A piece that arrives with `progress` (the pinned scene) or simply sits there (the static frames — no motion components to hydrate). */
+function Piece({ progress, from, to, className, style, children }: { progress?: MotionValue<number>; from: number; to: number; className: string; style: CSSProperties; children: ReactNode }) {
+  if (progress)
+    return (
+      <Arrive progress={progress} from={from} to={to} className={className} style={style}>
+        {children}
+      </Arrive>
+    );
+  return (
+    <div className={className} style={style}>
+      {children}
+    </div>
+  );
+}
+
+function Link({ progress, from, x, y }: { progress?: MotionValue<number>; from: number; x: number; y: number }) {
+  return progress ? <DrawnLink progress={progress} from={from} x={x} y={y} /> : <path d={`M50 50 L${x} ${y}`} />;
+}
+
+/**
+ * The systems and guarantees over the drawing. Given `progress` (the pinned
+ * scene), links draw out from the client and each node and badge arrives in
+ * turn; the groups also fade as a whole with `systems` and `checks`.
+ */
+function Overlays({ systems, checks, progress, decorative }: { systems: Opacity; checks: Opacity; progress?: MotionValue<number>; decorative?: boolean }) {
   return (
     <>
       <motion.div className={s.overlay} style={{ opacity: systems }} aria-hidden={decorative || undefined}>
         <div className={s.scrim} />
         <svg className={s.links} viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true">
-          {services.map((svc) => (
-            <path key={svc.title} d={`M50 50 L${svc.x} ${svc.y}`} />
+          {services.map((svc, i) => (
+            <Link key={svc.title} progress={progress} from={0.38 + i * 0.025} x={svc.x} y={svc.y} />
           ))}
         </svg>
-        <div className={`${s.node} ${s.hub}`} style={{ left: "50%", top: "50%" }}>
+        <Piece progress={progress} from={0.36} to={0.41} className={`${s.node} ${s.hub}`} style={{ left: "50%", top: "50%" }}>
           <div className={s.nodeTitle}>Flutter client</div>
           <div className={s.nodeSub}>Web · Android · iOS</div>
-        </div>
-        {services.map((svc) => (
-          <div key={svc.title} className={s.node} style={{ left: `${svc.x}%`, top: `${svc.y}%` }}>
+        </Piece>
+        {services.map((svc, i) => (
+          <Piece key={svc.title} progress={progress} from={0.42 + i * 0.03} to={0.47 + i * 0.03} className={s.node} style={{ left: `${svc.x}%`, top: `${svc.y}%` }}>
             <div className={s.nodeTitle}>{svc.title}</div>
             <div className={s.nodeSub}>{svc.sub}</div>
-          </div>
+          </Piece>
         ))}
       </motion.div>
       <motion.div className={s.overlay} style={{ opacity: checks }} aria-hidden={decorative || undefined}>
-        {guarantees.map((g) => (
-          <div key={g.label} className={s.badge} style={{ left: `${g.x}%`, top: `${g.y}%` }}>
+        {guarantees.map((g, i) => (
+          <Piece key={g.label} progress={progress} from={0.68 + i * 0.035} to={0.73 + i * 0.035} className={s.badge} style={{ left: `${g.x}%`, top: `${g.y}%` }}>
             <span className={s.badgeIcon}>
               <Check />
             </span>
             {g.label}
-          </div>
+          </Piece>
         ))}
       </motion.div>
     </>
   );
 }
 
-/** Desktop, full motion: one pinned stage over ~210vh of native scrolling. */
+/**
+ * Desktop, full motion: one pinned stage over ~210vh of native scrolling.
+ * The track always holds its height; the stage inside is only rendered where
+ * the pin actually shows, so phones don't hydrate a scene they never see.
+ */
 function PinnedScene() {
   const track = useRef<HTMLDivElement>(null);
+  const shown = usePinShown(track);
+  return (
+    <div ref={track} className="scene-pinned relative h-[210vh]">
+      {shown && <PinnedStage track={track} />}
+    </div>
+  );
+}
+
+function PinnedStage({ track }: { track: RefObject<HTMLDivElement | null> }) {
   const { scrollYProgress } = useScroll({ target: track, offset: ["start start", "end end"] });
   const [phase, setPhase] = useState(0);
 
@@ -99,6 +154,16 @@ function PinnedScene() {
     useTransform(scrollYProgress, [0, 0.68, 0.74, 1], [16, 16, 0, 0]),
   ];
 
+  const { reduced } = useMotionPreference();
+  // The middle of each phase, as scroll progress through the track.
+  const go = (i: number) => {
+    const el = track.current;
+    if (!el) return;
+    const top = el.getBoundingClientRect().top + window.scrollY;
+    const at = [0.16, 0.52, 0.86][i];
+    window.scrollTo({ top: top + at * (el.offsetHeight - window.innerHeight), behavior: reduced ? "auto" : "smooth" });
+  };
+
   // State only changes three times across the whole scene, never per frame.
   useMotionValueEvent(scrollYProgress, "change", (v) => {
     const next = v < 0.36 ? 0 : v < 0.68 ? 1 : 2;
@@ -106,18 +171,23 @@ function PinnedScene() {
   });
 
   return (
-    <div ref={track} className="scene-pinned relative h-[210vh]">
       <div className="sticky top-0 flex h-svh flex-col pt-[calc(var(--nav-h)+1.5rem)] pb-8">
         <div className="container-page flex items-end justify-between gap-6">
           <h2 className="text-title text-[clamp(1.75rem,2.6vw,2.5rem)]">From interface to impact.</h2>
-          <ol aria-hidden="true" className="flex gap-2 pb-2">
+          <div role="group" aria-label="Jump to a phase" className="flex">
             {phases.map((p, i) => (
-              <li
+              <button
                 key={p.title}
-                className={`h-1 w-10 rounded-full transition-colors duration-300 ${i <= phase ? "bg-accent-bright" : "bg-white/15"}`}
-              />
+                type="button"
+                onClick={() => go(i)}
+                aria-label={`${i + 1}. ${p.title}`}
+                aria-current={i === phase ? "step" : undefined}
+                className="group grid h-11 w-12 place-items-center"
+              >
+                <span className={`h-1 w-10 rounded-full transition-colors duration-300 ${i <= phase ? "bg-accent-bright" : "bg-white/15 group-hover:bg-white/30"}`} />
+              </button>
             ))}
-          </ol>
+          </div>
         </div>
 
         <div className={`container-page mt-6 flex-1 ${s.stage}`}>
@@ -125,7 +195,7 @@ function PinnedScene() {
             <motion.div style={{ scale, y: lift }} className="origin-center">
               <SskInventoryArt label={inventoryAlt} />
             </motion.div>
-            <Overlays systems={systems} checks={checks} />
+            <Overlays systems={systems} checks={checks} progress={scrollYProgress} />
           </div>
         </div>
 
@@ -142,7 +212,6 @@ function PinnedScene() {
           ))}
         </div>
       </div>
-    </div>
   );
 }
 

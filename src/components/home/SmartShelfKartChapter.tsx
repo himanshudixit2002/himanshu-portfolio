@@ -1,6 +1,7 @@
 import type { CSSProperties } from "react";
 import { smartShelfKart as project } from "@/content/projects";
 import { NovaPhoneArt, SskOverviewArt } from "@/components/art/SmartShelfKartArt";
+import { WordReveal } from "@/components/motion/Text";
 import { ButtonLink } from "@/components/ui/ButtonLink";
 
 const media = (id: string) => project.media.find((m) => m.id === id)!;
@@ -20,13 +21,8 @@ export function SmartShelfKartChapter() {
             <span aria-hidden="true" className="h-px w-8 bg-black/20" />
             <span className="text-ssk-deep">{project.title}</span>
           </p>
-          <h3
-            id="ssk-title"
-            data-reveal
-            style={stagger(1)}
-            className="mt-5 text-display text-[clamp(2.5rem,6.4vw,5.5rem)] text-balance"
-          >
-            {project.tagline}
+          <h3 id="ssk-title" data-reveal style={stagger(1)} className="mt-5 text-display text-[clamp(2.5rem,6.4vw,5.5rem)] text-balance">
+            <WordReveal text={project.tagline} mode="scrub" />
           </h3>
           <p data-reveal style={stagger(2)} className="text-lede mt-6 max-w-2xl text-muted">
             {project.summary}
@@ -34,11 +30,14 @@ export function SmartShelfKartChapter() {
         </header>
 
         <figure data-reveal className="relative mt-14 md:mt-20">
-          <div className="md:w-[84%]">
+          {/* The dashboard grows into place; the phone rises over it and its chat plays out. */}
+          <div className="sd-scale-in md:w-[84%]">
             <SskOverviewArt label={overview.alt} onLight />
           </div>
           <div className="relative mr-[4%] -mt-[30%] ml-auto w-[42%] md:absolute md:right-0 md:-bottom-[7%] md:m-0 md:w-[22%]">
-            <NovaPhoneArt label={assistant.alt} conversation="confirm-write" onLight />
+            <div className="sd-rise bubble-seq">
+              <NovaPhoneArt label={assistant.alt} conversation="confirm-write" onLight />
+            </div>
           </div>
           <figcaption className="mt-5 text-xs text-muted md:mt-10">Interface illustrations with sample data</figcaption>
         </figure>

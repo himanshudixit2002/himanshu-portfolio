@@ -1,4 +1,6 @@
 import { profile } from "@/content/profile";
+import { Magnetic } from "@/components/motion/Magnetic";
+import { WordReveal } from "@/components/motion/Text";
 import { ButtonLink } from "@/components/ui/ButtonLink";
 import { CopyEmailButton } from "./CopyEmailButton";
 
@@ -6,12 +8,8 @@ export function ContactClose() {
   return (
     <section id="contact" aria-labelledby="contact-title" className="surface-light section-y bg-paper text-fg">
       <div className="container-page">
-        <h2
-          id="contact-title"
-          data-reveal
-          className="max-w-4xl text-display text-[clamp(2.5rem,7vw,6rem)] text-balance"
-        >
-          Have something worth building?
+        <h2 id="contact-title" data-reveal className="max-w-4xl text-display text-[clamp(2.5rem,7vw,6rem)] text-balance">
+          <WordReveal text="Have something worth building?" mode="scrub" />
         </h2>
         <p data-reveal className="text-lede mt-6 max-w-xl text-muted">
           I&rsquo;m glad to talk about products, systems and the details that make them hold up. Email is the fastest
@@ -19,9 +17,11 @@ export function ContactClose() {
         </p>
 
         <div data-reveal className="mt-10 flex flex-wrap items-center gap-3">
-          <ButtonLink href={`mailto:${profile.email}`} tone="light">
-            {profile.email}
-          </ButtonLink>
+          <Magnetic>
+            <ButtonLink href={`mailto:${profile.email}`} tone="light">
+              {profile.email}
+            </ButtonLink>
+          </Magnetic>
           <CopyEmailButton email={profile.email} />
         </div>
 

@@ -175,6 +175,8 @@
 }
 
 .bag {
+  position: relative;
+  overflow: hidden;
   margin-top: 0.4em;
   padding: 1em;
   text-align: center;
@@ -319,4 +321,84 @@
 .ready {
   background: rgb(52 211 153 / 0.2);
   color: #a7f3d0;
+}
+
+/*
+ * Once, as the shop crosses the screen: the "M" chip is picked and "Add to
+ * bag" is pressed (a ripple). Tied to the page's own scroll timeline, so it
+ * needs no script; without scroll timelines both simply sit in their end state.
+ */
+.shop {
+  view-timeline: --shop block;
+}
+
+@keyframes size-pick {
+  from {
+    background: transparent;
+    color: inherit;
+    box-shadow: inset 0 0 0 0.08em #d6d3d1;
+  }
+}
+
+@keyframes bag-press {
+  from {
+    transform: scale(0);
+    opacity: 0.4;
+  }
+  to {
+    transform: scale(1);
+    opacity: 0;
+  }
+}
+
+.bag::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 140%;
+  aspect-ratio: 1;
+  margin: -70% 0 0 -70%;
+  border-radius: 50%;
+  background: rgb(255 255 255 / 0.55);
+  opacity: 0;
+  pointer-events: none;
+}
+
+@supports (animation-timeline: view()) {
+  :global(html[data-motion="full"]) .sizeOn {
+    animation: size-pick linear both;
+    animation-timeline: --shop;
+    animation-range: cover 26% cover 34%;
+  }
+
+  :global(html[data-motion="full"]) .bag::after {
+    animation: bag-press linear both;
+    animation-timeline: --shop;
+    animation-range: cover 36% cover 50%;
+  }
+}
+
+/*
+ * The running tables' seconds tick — in CSS: a registered integer, animated
+ * in 60 steps a minute and shown through a counter. Each table starts at a
+ * different second (--tick-from, a negative delay).
+ */
+@property --tick {
+  syntax: "<integer>";
+  initial-value: 0;
+  inherits: false;
+}
+
+@keyframes tick {
+  to {
+    --tick: 60;
+  }
+}
+
+.tick::before {
+  counter-reset: tick var(--tick);
+  content: ":" counter(tick, decimal-leading-zero);
+  animation: tick 60s steps(60, end) infinite;
+  animation-delay: var(--tick-from, 0s);
 }
