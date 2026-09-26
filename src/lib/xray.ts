@@ -5,6 +5,8 @@
  * across reloads.
  */
 
+import { discover } from "./explored";
+
 const EVENT = "hd-xray-change";
 
 export const isXray = () => document.documentElement.hasAttribute("data-xray");
@@ -12,6 +14,7 @@ export const isXray = () => document.documentElement.hasAttribute("data-xray");
 export function setXray(on: boolean) {
   document.documentElement.toggleAttribute("data-xray", on);
   window.dispatchEvent(new Event(EVENT));
+  if (on) discover("xray");
 }
 
 export const toggleXray = () => setXray(!isXray());

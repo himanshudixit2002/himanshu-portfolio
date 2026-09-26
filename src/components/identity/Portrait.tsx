@@ -3,6 +3,7 @@
 import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
 import { profile } from "@/content/profile";
+import { discover } from "@/lib/explored";
 import { usePointerLight } from "@/components/motion/usePointerLight";
 import s from "./portrait.module.css";
 
@@ -46,6 +47,8 @@ export function Portrait({ className = "" }: { className?: string }) {
     const say = lines();
     const ctrl = /Mac|iPhone|iPad/.test(navigator.platform) ? "⌘K" : "Ctrl+K";
     setLine(say[taps % say.length].replace("⌘K", ctrl));
+    // Heard every line: a discovery.
+    if (taps + 1 === say.length) discover("hello");
     setTaps((n) => n + 1);
     setTalking(true);
     window.clearTimeout(quiet.current);

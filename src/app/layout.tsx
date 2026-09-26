@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from "next";
 import { Caveat, Inter, JetBrains_Mono } from "next/font/google";
 import { navigation, profile, resume } from "@/content/profile";
 import { projects } from "@/content/projects";
+import { Fx } from "@/components/fx/Fx";
 import { SiteFooter } from "@/components/layout/SiteFooter";
 import { SiteHeader } from "@/components/layout/SiteHeader";
 import { InlineScript } from "@/components/motion/InlineScript";
@@ -97,6 +98,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
           <RevealObserver />
           <PaletteHost entries={paletteEntries} email={profile.email} />
           <XRayHost />
+          <Fx projects={projects.map((p) => ({ slug: p.slug, accent: p.accent }))} />
         </MotionPreferences>
       </body>
     </html>

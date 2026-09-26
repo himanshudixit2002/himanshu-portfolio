@@ -587,6 +587,108 @@ html[data-xray] [data-xray]::before {
   }
 }
 
+@layer components {
+  /* Press ripple: Fx sets --rx / --ry where the press landed and flips
+     data-rippling between two identical animations, so each press starts
+     fresh. Under the label (z-index -1 in its own stacking context). */
+  [data-ripple] {
+    position: relative;
+    isolation: isolate;
+    overflow: clip;
+  }
+
+  [data-ripple]::after {
+    content: "";
+    position: absolute;
+    top: var(--ry, 50%);
+    left: var(--rx, 50%);
+    z-index: -1;
+    width: 3rem;
+    height: 3rem;
+    margin: -1.5rem 0 0 -1.5rem;
+    border-radius: 50%;
+    background: currentColor;
+    opacity: 0;
+    pointer-events: none;
+  }
+
+  [data-ripple][data-rippling="a"]::after {
+    animation: ripple-a 700ms var(--ease-out);
+  }
+
+  [data-ripple][data-rippling="b"]::after {
+    animation: ripple-b 700ms var(--ease-out);
+  }
+
+  @keyframes ripple-a {
+    0% {
+      opacity: 0.3;
+      transform: scale(0.2);
+    }
+    45% {
+      opacity: 0.2;
+    }
+    100% {
+      opacity: 0;
+      transform: scale(6);
+    }
+  }
+
+  @keyframes ripple-b {
+    0% {
+      opacity: 0.3;
+      transform: scale(0.2);
+    }
+    45% {
+      opacity: 0.2;
+    }
+    100% {
+      opacity: 0;
+      transform: scale(6);
+    }
+  }
+
+  /* The footer's HD turns over under the pointer. */
+  .mono-flip {
+    transition: rotate 700ms var(--ease-spring);
+  }
+
+  html[data-motion="full"] .group:hover .mono-flip {
+    rotate: y 360deg;
+  }
+
+  /* A link whose arrow launches before the page moves ("Back to top"). */
+  html[data-motion="full"] [data-launch][data-launched="a"] svg {
+    animation: launch-a 760ms var(--ease-out);
+  }
+
+  html[data-motion="full"] [data-launch][data-launched="b"] svg {
+    animation: launch-b 760ms var(--ease-out);
+  }
+
+  @keyframes launch-a {
+    35% {
+      opacity: 0;
+      transform: translateY(-1.5rem);
+    }
+    36% {
+      opacity: 0;
+      transform: translateY(0.9rem);
+    }
+  }
+
+  @keyframes launch-b {
+    35% {
+      opacity: 0;
+      transform: translateY(-1.5rem);
+    }
+    36% {
+      opacity: 0;
+      transform: translateY(0.9rem);
+    }
+  }
+}
+
 /* Controls that need script: hidden without it (unlayered, so it beats their display utilities). */
 html:not([data-js]) .palette-button,
 html:not([data-js]) .xray-toggle {

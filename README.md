@@ -96,6 +96,20 @@ Only ScopeForge has real screenshots (its repository's synthetic demo workspace)
   - **The portrait says hi.** Tap it and he hops, the ring whirls and a speech bubble gives the next line, also announced to screen readers. The lines are invitations, never claims, and point at the shortcuts the device has (⌘K and x with a keyboard, the search button and footer switch on touch).
   - **Hints.** `<Hint>` is a hand-written note (Caveat, not preloaded) with an arrow that draws itself in once the note is fully in view. Its parent is what it points at, and the first touch, keypress or input there retires it for good. `touch` hints ("swipe", on `SnapGallery`'s `swipeHint`) show only where there's no hover and retire on the first scroll.
   - **Spotlight** (homepage hero, fine pointers). A lens follows the pointer and the dot grid inside it moves the other way, so the dots stay fixed while the light passes over them: the practice dots' counter-moving technique. Its layers are promoted only while it's lit.
+  - **Site-wide touches** (`src/components/fx/Fx.tsx`, one client component in the layout, one listener per job):
+    - **Accent wipe:** a link to a case study sends a circle in that project's accent from the click to cover the screen, then it lifts away. It's a 160px circle scaled up, compositor only. The palette and Surprise me start it with `wipeTo`. While `html[data-wiping]` is set, `PageTransition` holds the incoming page until the circle has covered the screen, so the new page rises as it lifts. Off under reduced motion.
+    - **Press ripple:** elements marked `[data-ripple]` (pill `ButtonLink`s, Surprise me, Copy email) ripple from where they're pressed. The listener sets `--rx` / `--ry` and alternates two identical keyframes; the ripple is the element's `::after`, under its label.
+    - **Small ones:**
+      - "Back to top" (`[data-launch]`) launches its arrow first.
+      - The footer's HD turns over under the pointer.
+      - A hidden tab's title asks you to come back.
+      - Developers get a hello in the console.
+  - **Discoveries** (`src/lib/discoveries.ts`). Small secrets, recorded per visitor by `discover(id)` in `lib/explored`. The first find shows a note under the header, and the palette lists them all, with a hint for those still to find. Add one by listing it there and calling `discover` where it happens. Current ones:
+    - hearing all the portrait's lines
+    - opening the palette
+    - x-ray mode
+    - exploring every project
+    - the Konami code, which bursts sparks in every project's accent
   - **Command palette** (`src/components/palette`). ⌘K / Ctrl+K, "/" or the header's search button.
     - **Contents:** every project (with a "Seen" mark once opened), the places to go, and actions: Surprise me, copy the email address, x-ray mode, reduce motion.
     - **Search and keys:** it filters as you type (substring first, then letters in order, so "ssk" finds SmartShelfKart). ↑ ↓ choose and Enter runs.

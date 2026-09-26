@@ -34,12 +34,14 @@ type Props = {
 
 export function ButtonLink({ href, children, variant = "primary", tone = "dark", external, className = "" }: Props) {
   const classes = `${base} ${styles[tone][variant]} ${className}`;
+  // Pill buttons ripple from the press (Fx); a text link has no pill to ripple in.
+  const ripple = variant === "text" ? undefined : "";
   // A text link's underline draws under its words, not the whole target.
   const label = variant === "text" ? <span className="link-draw">{children}</span> : children;
 
   if (external) {
     return (
-      <a href={href} target="_blank" rel="noopener noreferrer" className={classes}>
+      <a href={href} target="_blank" rel="noopener noreferrer" className={classes} data-ripple={ripple}>
         {label}
         <ArrowUpRight className="size-4 transition-transform duration-200 group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
         <span className="sr-only"> (opens in a new tab)</span>
@@ -49,14 +51,14 @@ export function ButtonLink({ href, children, variant = "primary", tone = "dark",
 
   if (href.startsWith("/")) {
     return (
-      <Link href={href} className={classes}>
+      <Link href={href} className={classes} data-ripple={ripple}>
         {label}
       </Link>
     );
   }
 
   return (
-    <a href={href} className={classes}>
+    <a href={href} className={classes} data-ripple={ripple}>
       {label}
     </a>
   );

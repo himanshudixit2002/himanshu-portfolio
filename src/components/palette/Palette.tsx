@@ -1,11 +1,14 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { useEffect, useId, useMemo, useRef, useState, type CSSProperties, type KeyboardEvent, type ReactNode } from "react";
+import { useEffect, useId, useMemo, useRef, useState, useSyncExternalStore, type CSSProperties, type KeyboardEvent, type ReactNode } from "react";
 import { useExplored } from "@/components/explore/Explored";
+import { wipeTo } from "@/components/fx/Fx";
 import { useMotionPreference } from "@/components/motion/MotionPreferences";
 import { ArrowRight, Check, Copy, Dice, Search, Sparkle } from "@/components/ui/icons";
 import { useXray } from "@/components/xray/XRay";
+import { DISCOVERIES } from "@/lib/discoveries";
+import { discover, foundSnapshot, parseList, subscribeExplored } from "@/lib/explored";
 import { toggleXray } from "@/lib/xray";
 import type { PaletteProps } from "./PaletteHost";
 import s from "./palette.module.css";
@@ -69,10 +72,12 @@ export default function Palette({ entries, email, onClose }: PaletteProps) {
   const [active, setActive] = useState(0);
   const [copied, setCopied] = useState(false);
   const base = useId();
+  const foundRaw = useSyncExternalStore(subscribeExplored, foundSnapshot, () => "");
 
   useEffect(() => {
     const d = dialog.current;
     d?.showModal();
+    discover("palette");
     return () => d?.close();
   }, []);
 
@@ -84,6 +89,8 @@ export default function Palette({ entries, email, onClose }: PaletteProps) {
 
   const go = (href: string) => {
     done(false);
+    const project = href.match(/^\/work\/([^/#?]+)/);
+    if (project) wipeTo(project[1]);
     router.push(href);
   };
 
@@ -134,13 +141,31 @@ export default function Palette({ entries, email, onClose }: PaletteProps) {
         keywords: "animation accessibility",
         icon: <span className={s.toggle} data-on={reduced || undefined} />,
       },
+      ...(() => {
+        const found = parseList(foundRaw);
+        const group = `Discoveries · ${DISCOVERIES.filter((d) => found.includes(d.id)).length} of ${DISCOVERIES.length}`;
+        return DISCOVERIES.map((d) => {
+          const got = found.includes(d.id);
+          return {
+            id: `d-${d.id}`,
+            group,
+            label: got ? d.name : "Not found yet",
+            hint: d.hint,
+            keywords: `discovery secret ${got ? "" : "hint"}`,
+            href: d.href,
+            seen: got,
+            icon: <Sparkle className={got ? s.iconFound : s.icon} />,
+          };
+        });
+      })(),
     ],
-    [entries, seen, unseen.length, copied, email, xray, reduced],
+    [entries, seen, unseen.length, copied, email, xray, reduced, foundRaw],
   );
 
   /** What choosing an item does; only ever called from a key press or click. */
   const run = (item: Item) => {
     if (item.href) return go(item.href);
+    if (item.id.startsWith("d-")) return done();
     switch (item.id) {
       case "surprise": {
         const pool = unseen.length ? unseen : projects;
@@ -264,7 +289,7 @@ export default function Palette({ entries, email, onClose }: PaletteProps) {
                       {item.seen && (
                         <span className={s.seen}>
                           <Check className="size-3" />
-                          Seen
+                          {item.id.startsWith("d-") ? "Found" : "Seen"}
                         </span>
                       )}
                     </span>

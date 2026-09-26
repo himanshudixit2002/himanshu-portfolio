@@ -1,7 +1,8 @@
 /*
  * What this visitor has looked at, kept in their own browser: the case
  * studies they've opened, whether they've seen the all-explored thank-you,
- * and which "try me" hints they've acted on. Nothing leaves the device and
+ * which "try me" hints they've acted on, and which of the site's small
+ * secrets (lib/discoveries) they've found. Nothing leaves the device and
  * nothing is rendered from it on the server; every reader subscribes after
  * mount. Storage can be unavailable (private mode, blocked site data), so
  * reads and writes fall back to memory for the rest of the page's life.
@@ -10,7 +11,10 @@
 const EXPLORED = "hd-explored";
 const CELEBRATED = "hd-explored-done";
 const HINTS = "hd-hints";
+const FOUND = "hd-found";
 const EVENT = "hd-explored-change";
+/** Fired with the discovery's id as `detail` the first time it's found. */
+export const DISCOVERY_EVENT = "hd-discovery";
 
 const memory = new Map<string, string>();
 
@@ -47,6 +51,7 @@ export function subscribeExplored(onChange: () => void) {
 /** The raw stored list, a string so it compares equal while unchanged. */
 export const exploredSnapshot = () => read(EXPLORED);
 export const hintsSnapshot = () => read(HINTS);
+export const foundSnapshot = () => read(FOUND);
 export const parseList = list;
 
 /** Records a case study as seen. Returns the updated list. */
@@ -62,4 +67,13 @@ export const markCelebrated = () => write(CELEBRATED, "1");
 export function dismissHint(id: string) {
   const done = list(read(HINTS));
   if (!done.includes(id)) write(HINTS, [...done, id].join(","));
+}
+
+/** Records a discovery; the first time, announces it (see DISCOVERY_EVENT). */
+export function discover(id: string) {
+  const found = list(read(FOUND));
+  if (found.includes(id)) return false;
+  write(FOUND, [...found, id].join(","));
+  window.dispatchEvent(new CustomEvent(DISCOVERY_EVENT, { detail: id }));
+  return true;
 }

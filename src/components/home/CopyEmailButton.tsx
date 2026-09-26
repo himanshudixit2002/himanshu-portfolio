@@ -33,6 +33,7 @@ export function CopyEmailButton({ email }: { email: string }) {
       <button
         type="button"
         onClick={copy}
+        data-ripple=""
         className="group inline-flex min-h-11 items-center justify-center gap-2 rounded-full px-5 text-[0.9375rem] font-medium text-fg ring-1 ring-black/15 transition-[background-color,scale] duration-200 ring-inset hover:bg-black/5 active:scale-[0.97]"
       >
         {/* On copy, the tick draws itself and the label slides in. */}

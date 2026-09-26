@@ -4,7 +4,8 @@ import dynamic from "next/dynamic";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { useEffect, useMemo, useRef, useState, useSyncExternalStore, type MouseEvent } from "react";
-import { exploredSnapshot, hasCelebrated, markCelebrated, markExplored, parseList, subscribeExplored } from "@/lib/explored";
+import { discover, exploredSnapshot, hasCelebrated, markCelebrated, markExplored, parseList, subscribeExplored } from "@/lib/explored";
+import { wipeTo } from "@/components/fx/Fx";
 import { useMotionPreference } from "@/components/motion/MotionPreferences";
 import { Check, Dice } from "@/components/ui/icons";
 import s from "./explore.module.css";
@@ -30,7 +31,9 @@ export function MarkExplored({ slug, projects }: { slug: string; projects: Slim[
   const [party, setParty] = useState(false);
   useEffect(() => {
     const seen = markExplored(slug);
-    if (hasCelebrated() || !projects.every((p) => seen.includes(p.slug))) return;
+    if (!projects.every((p) => seen.includes(p.slug))) return;
+    discover("explorer");
+    if (hasCelebrated()) return;
     markCelebrated();
     // A beat after arrival, once the page has settled.
     const timer = window.setTimeout(() => setParty(true), 900);
@@ -122,9 +125,11 @@ export function SurpriseMe({ slugs, className = "" }: { slugs: string[]; classNa
   const go = (event: MouseEvent) => {
     if (event.metaKey || event.ctrlKey || event.shiftKey || event.altKey || event.button !== 0) return;
     event.preventDefault();
-    const href = `/work/${pick()}`;
+    const slug = pick();
+    const href = `/work/${slug}`;
     target.current = null;
     if (reduced) return router.push(href);
+    wipeTo(slug, event.clientX, event.clientY);
     setRolls((n) => n + 1);
     window.clearTimeout(timer.current);
     timer.current = window.setTimeout(() => router.push(href), 520);
@@ -137,6 +142,7 @@ export function SurpriseMe({ slugs, className = "" }: { slugs: string[]; classNa
       onPointerEnter={pick}
       onFocus={pick}
       onClick={go}
+      data-ripple=""
       className={`${s.surprise} ${className}`}
     >
       <Dice className={s.dice} data-roll={rolls ? (rolls % 2 ? "a" : "b") : undefined} />

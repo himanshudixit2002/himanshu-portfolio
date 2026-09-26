@@ -26,12 +26,15 @@ export function PageTransition({ children }: { children: ReactNode }) {
     // Layout effects run child-first, so an inner template has already
     // started; the outer one takes over.
     el.querySelectorAll<HTMLElement>("[data-page]").forEach((inner) => inner.getAnimations().forEach((a) => a.cancel()));
+    // Under a project's accent wipe (Fx), the page waits until the circle
+    // has covered the screen, then rises as it lifts away.
+    const wiping = document.documentElement.hasAttribute("data-wiping");
     const animation = el.animate(
       [
         { opacity: 0, transform: "translate3d(0, 14px, 0)" },
         { opacity: 1, transform: "none" },
       ],
-      { duration: 320, easing: "cubic-bezier(0.22, 1, 0.36, 1)" },
+      { duration: wiping ? 420 : 320, delay: wiping ? 300 : 0, easing: "cubic-bezier(0.22, 1, 0.36, 1)", fill: "backwards" },
     );
     return () => animation.cancel();
   }, []);
