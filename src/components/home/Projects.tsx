@@ -2,16 +2,14 @@ import Link from "next/link";
 import { projects, projectSlugs } from "@/content/projects";
 import { ExploredPill, SurpriseMe } from "@/components/explore/Explored";
 import { Hint } from "@/components/explore/Hint";
-import { SnapGallery } from "@/components/motion/SnapGallery";
 import { ArrowRight } from "@/components/ui/icons";
-import { CardGrid } from "@/components/work/CardFocus";
-import { ProjectCard } from "@/components/work/ProjectCard";
 import { Featured } from "./Featured";
+import { ProjectBento } from "./ProjectBento";
 
-/** The flagships, shown as big stacking cards; every other project follows in the gallery. */
+/** The flagships, shown as big stacking cards; every other project follows in the bento wall. */
 const FEATURED = ["smartshelfkart", "elepeia", "cue-and-coffee"];
 
-/** Every project on one screen's worth of scrolling: the three flagships, then the rest with their stacks. */
+/** Every project: the three flagships as stacking cards, then the rest as a bento wall, each with its stack. */
 export function Projects() {
   const more = projects.filter((p) => !FEATURED.includes(p.slug));
 
@@ -53,10 +51,10 @@ export function Projects() {
               <ArrowRight className="size-4 transition-transform duration-(--dur-base) ease-(--ease-out) group-hover:translate-x-0.5" />
             </Link>
           </div>
-          {/* On phones the card in view plays its signature; on wider screens, the one under the pointer. */}
-          <CardGrid className="mt-8">
-            <SnapGallery label="More projects" items={more.map((p) => <ProjectCard key={p.slug} project={p} className="h-full" />)} itemWidth="min(86%, 24rem)" dim="phone" swipeHint />
-          </CardGrid>
+          {/* On phones the tile mid-screen plays its signature; on wider screens, the one under the pointer. */}
+          <div className="relative mt-8" data-xray="Server-rendered bento · a dense CSS grid, each tile sized per project · signatures loop under the pointer or mid-screen on touch · tilt and light from one listener">
+            <ProjectBento projects={more} start={FEATURED.length + 1} />
+          </div>
         </div>
       </div>
     </section>

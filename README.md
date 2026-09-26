@@ -6,7 +6,7 @@ The plan behind it lives in `~/Desktop/PORTFOLIO_MASTER_PLAN.md`. The site prese
 
 | Route | What it is |
 | --- | --- |
-| `/` | Direct, one idea per screen: At a glance (who Himanshu is, first) · Experience (Cleartrip) · Work (three flagships as stacking cards, then every other project with its stack) · Skills (tied to the projects that use them) · Contact |
+| `/` | Direct, one idea per screen: At a glance (who Himanshu is, first) · Experience (Cleartrip) · Work (three flagships as stacking cards, then the other ten as a bento wall, each with its stack) · Skills (tied to the projects that use them) · Contact |
 | `/work` | All 13 projects, filterable (Product / Systems / AI & Data / Tools) |
 | `/work/[slug]` | Case study per project, each opening with its signature visual |
 | `/lab` | Every interactive simulation in one place, with a strip that jumps to each |
@@ -90,7 +90,9 @@ Only ScopeForge has real screenshots (its repository's synthetic demo workspace)
   - **Experience:** the achievements are a swipeable row on phones (`SnapGallery`, `stackFrom="md"`). The hex map and the other walkthroughs are on `/about`.
   - **Work** (`Projects`):
     - **Flagships** (`Featured`): the three are sticky cards that pile up as you scroll. Each settles back and dims on the next card's named view timeline, scoped to the list with `timeline-scope`. Every card shows the idea, its own figures, its stack and the way in.
-    - **The rest:** every other project follows in the gallery, and every project card lists its stack.
+    - **The rest** (`ProjectBento`, `bento.module.css`): the other ten as a bento wall, numbered on from the featured three.
+      - **Layout:** from 1024px it's four columns of fixed rows packed densely, so one large tile (2×2), three wide (2×1) and six small ones fill a clean 4×4. The sizes are a slug list in `ProjectBento`, and a new project joins as a small tile. Below 1024px it's two columns, with the large and wide tiles spanning both.
+      - **Each tile:** its signature (`MiniVisual`, looping under the pointer or mid-screen on touch), a glow in its accent, category, title and stack (one fading line on small tiles), with the whole tile a link. Tilt, light and the touch "active" tile come from `CardGrid`, and tiles rise in on their own scroll timelines.
   - **Skills** (`Skills`, `content/skills.ts`): the résumé's skill groups, each matched to the projects whose own stack names it, or the Cleartrip role's. Pointing at or tapping a skill lights those projects; on phones they ride in a bar pinned to the bottom of the screen. Skills with nothing to show them are listed plainly. The résumé reads the same list.
   - **Spacing:** sections are `section-y` (`--section-y`, about 100px at 1440 and 56px on phones). Two sections of the same tone in a row carry `data-tone` and collapse: the second gets 45% of the top padding and a hairline, so the page never shows two full bands of empty space between related sections.
   - **Grid gotcha:** a grid track grows to its widest content. A swipe row or a pill row inside one needs `min-width: 0` (or `minmax(0, 1fr)`), or it pushes the page wider than a phone.
