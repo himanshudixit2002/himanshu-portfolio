@@ -3,6 +3,7 @@ import { URL_CHECKS, URL_CODE, URL_DESTINATION, URL_ID, URL_ROWS, URL_SEQUENCE, 
 import { Later } from "../IdleDraw";
 import { Layouts, type Layout } from "../SceneStage";
 import s from "../scenes.module.css";
+import { FAIL, Mark, PASS } from "./marks";
 
 type Props = { frame: UrlFrame; accent: string; still?: boolean; layout?: Layout };
 /*
@@ -11,8 +12,6 @@ type Props = { frame: UrlFrame; accent: string; still?: boolean; layout?: Layout
  * only re-renders when its own `on` changes.
  */
 const fade = (on: boolean, delay = 0) => ({ opacity: on ? 1 : 0, transitionDelay: on ? `${delay}ms` : "0ms" }) as CSSProperties;
-const PASS = "#6ee7b7";
-const FAIL = "#fda4af";
 
 /**
  * "39134 → abc": long division by 62 spells the code; the code redirects; an
@@ -142,16 +141,7 @@ const Checks = memo(function Checks({ check: c, on, x, y, w, size }: { check: Ur
         return (
           <g key={check.label}>
             <g className={s.pop} style={tick(i)}>
-              <circle cx={x + 10} cy={rowTop + 6} r="8" fill={check.pass ? "rgb(52 211 153 / 0.2)" : "rgb(251 113 133 / 0.22)"} />
-              {/* Drawn, not typed: ✓ and ✕ aren't in the site's fonts, and a fallback-font lookup mid-scroll costs a frame. */}
-              <path
-                d={check.pass ? `M${x + 6.5} ${rowTop + 6.2} l2.4 2.4 l4.6 -4.8` : `M${x + 7} ${rowTop + 3} l6 6 m0 -6 l-6 6`}
-                fill="none"
-                stroke={check.pass ? PASS : FAIL}
-                strokeWidth="1.8"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              />
+              <Mark x={x + 10} y={rowTop + 6} ok={check.pass} />
             </g>
             <text x={x + 28} y={rowTop + 10} fontSize={size} fontWeight="600" fill="#e4e4e7">
               {check.label}

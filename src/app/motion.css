@@ -253,7 +253,7 @@ html[data-js]:not([data-motion="reduce"]) .scene[data-mobile="pin"] > .scene-fra
  * scene doesn't jump. The scene sets --frames-n (how many) and
  * --frames-details (1 if the "every step" disclosure follows). Phones: frame
  * box (aspect 360/460) plus caption. Wider: box (640/520) beside a 20rem
- * caption column. Step cards: one card (aspect 360/480 inside 1rem padding)
+ * caption column. Step cards: one card (aspect 360/480 inside 0.5rem padding)
  * plus its caption and the pager. Measured to within ~100px at 360–1440.
  */
 html[data-js] .scene > .scene-frames:empty {
@@ -269,7 +269,7 @@ html[data-js] .scene > .scene-frames:empty {
 
 @media (max-width: 767.98px) {
   html[data-js] .scene[data-mobile="frames"] > .scene-frames:empty {
-    min-height: calc((min(0.86 * var(--w), 28rem) - 2rem) * 480 / 360 + 21.3rem);
+    min-height: calc((min(0.86 * var(--w), 28rem) - 1rem) * 480 / 360 + 20.5rem);
   }
 }
 

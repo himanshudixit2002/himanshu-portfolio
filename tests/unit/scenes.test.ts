@@ -14,6 +14,12 @@ import { divisions, URL_ALIAS, URL_ID, urlFrame, urlScene } from "@/lib/scenes/u
 import { decode, encode } from "@/lib/sim/base62";
 import * as cafe from "@/lib/sim/cafe";
 import * as q from "@/lib/sim/sync-queue";
+import { FRAUD_FOCUS, FRAUD_PARTNERS, fraudFrame, fraudScene, ORDINARY_EDGES } from "@/lib/scenes/fraud";
+import { GW_NORMAL, GW_OUTLIER, GW_POINTS, GW_SEED, gatewayFrame, gatewayScene, NORMAL_CUTS, OUTLIER_CUTS } from "@/lib/scenes/gateway";
+import { CODE, LANGS, padhnaFrame, padhnaScene, TS_STEPS } from "@/lib/scenes/padhna";
+import { checkScope, SCOPE_BATCH, SCOPE_GUARDS, scopeFrame, scopeScene } from "@/lib/scenes/scopeforge";
+import * as fg from "@/lib/sim/fraud-graph";
+import { isolationPath } from "@/lib/sim/isolation-forest";
 
 const scenes: [string, SceneMeta, (i: number) => unknown][] = [
   ["smartshelfkart", sskScene, sskFrame],
@@ -25,6 +31,10 @@ const scenes: [string, SceneMeta, (i: number) => unknown][] = [
   ["url", urlScene, urlFrame],
   ["skintellect", skinScene, skinFrame],
   ["cafe", cafeScene, cafeFrame],
+  ["scopeforge", scopeScene, scopeFrame],
+  ["fraud", fraudScene, fraudFrame],
+  ["gateway", gatewayScene, gatewayFrame],
+  ["padhna", padhnaScene, padhnaFrame],
 ];
 
 describe("signature scenes", () => {
@@ -136,5 +146,48 @@ describe("signature scenes", () => {
     expect(billed.total).toBe(billed.tableCharge - billed.discount + 120);
     expect(cafeFrame(4).closed).toBe(true);
     expect(cafe.takings(cafeFrame(4).state)).toBe(billed.total);
+  });
+
+  it("ScopeForge: one request passes every guard, three stop at different ones", () => {
+    expect(SCOPE_GUARDS).toHaveLength(5);
+    expect(SCOPE_BATCH).toBe(20);
+    expect(scopeFrame(0).verdict).toEqual({ passed: 5, stop: null, reason: null });
+    expect([1, 2, 3].map((i) => scopeFrame(i).verdict?.stop)).toEqual([0, 1, 2]);
+    expect(checkScope({ url: "https://app.example.com/administrator", on: "2026-09-12", onLabel: "" }).stop).toBeNull();
+    expect(scopeFrame(4)).toMatchObject({ batch: true, request: null });
+  });
+
+  it("Fraud Ring: the stream fills ordinary edges, then the ring; two hops reach the ring", () => {
+    expect(fg.edges.slice(0, ORDINARY_EDGES).every((e) => !["u4", "u5", "u6"].includes(e.from))).toBe(true);
+    expect(fraudFrame(0).shown).toBe(ORDINARY_EDGES);
+    expect(fraudFrame(1).shown).toBe(fg.edges.length);
+    expect(fraudFrame(2).hood.sort()).toEqual([...fg.neighbourhood(FRAUD_FOCUS, 1)].sort());
+    expect(fraudFrame(3).hood.sort()).toEqual([...fg.neighbourhood(FRAUD_FOCUS, 2)].sort());
+    expect(FRAUD_PARTNERS.sort()).toEqual(["u4", "u6"]);
+    expect(fraudScene.steps[3].body).toContain("one shared device and two shared cards");
+  });
+
+  it("Anomaly Gateway: the tree drawn is typical, and the outlier takes fewer cuts", () => {
+    expect(GW_POINTS[GW_OUTLIER].kind).toBe("probe");
+    expect(GW_POINTS[GW_NORMAL].kind).toBe("normal");
+    expect(OUTLIER_CUTS.length).toBeLessThan(NORMAL_CUTS.length);
+    const mean = (t: number) => Array.from({ length: 300 }, (_, s) => isolationPath(GW_POINTS, t, s + 1).length).reduce((a, b) => a + b, 0) / 300;
+    expect(OUTLIER_CUTS.length).toBe(Math.round(mean(GW_OUTLIER)));
+    expect(NORMAL_CUTS.length).toBe(Math.round(mean(GW_NORMAL)));
+    // After the last cut, the target is the only point on its side of every cut.
+    for (const [target, cuts] of [[GW_OUTLIER, OUTLIER_CUTS], [GW_NORMAL, NORMAL_CUTS]] as const) {
+      const p = GW_POINTS[target];
+      const left = GW_POINTS.filter((o) => cuts.every((c) => o[c.dim] < c.at === p[c.dim] < c.at));
+      expect(left).toEqual([p]);
+    }
+    expect(isolationPath(GW_POINTS, GW_OUTLIER, GW_SEED)).toEqual(OUTLIER_CUTS);
+  });
+
+  it("PadhnaThoPadega: one step per element, each language lights the same kinds of line", () => {
+    expect(TS_STEPS.map((s) => s.index)).toEqual([0, 1, 2, 3, 4]);
+    expect(TS_STEPS.at(-1)!.found).toEqual([3, 4]);
+    for (const lang of LANGS) for (const tag of ["need", "check", "found", "remember"]) expect(CODE[lang].filter((l) => l.tag === tag)).toHaveLength(1);
+    expect(new Set(padhnaScene.steps.map((_, i) => padhnaFrame(i).lang))).toEqual(new Set(LANGS));
+    expect(padhnaFrame(4).lit).toContain("found");
   });
 });

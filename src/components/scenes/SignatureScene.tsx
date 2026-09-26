@@ -2,8 +2,12 @@ import type { Project } from "@/content/types";
 import { cacheScene } from "@/lib/scenes/cache";
 import { cafeScene } from "@/lib/scenes/cafe";
 import { elepeiaScene } from "@/lib/scenes/elepeia";
+import { fraudScene } from "@/lib/scenes/fraud";
+import { gatewayScene } from "@/lib/scenes/gateway";
 import { kvScene } from "@/lib/scenes/kvstore";
+import { padhnaScene } from "@/lib/scenes/padhna";
 import { rxScene } from "@/lib/scenes/rxforce";
+import { scopeScene } from "@/lib/scenes/scopeforge";
 import { skinScene } from "@/lib/scenes/skintellect";
 import { sskScene } from "@/lib/scenes/smartshelfkart";
 import type { SceneMeta } from "@/lib/scenes/types";
@@ -22,6 +26,10 @@ const SCENES: Record<string, SceneMeta> = {
   "url-shortener": urlScene,
   skintellect: skinScene,
   "cue-and-coffee": cafeScene,
+  scopeforge: scopeScene,
+  "fraud-ring-engine": fraudScene,
+  "ai-api-gateway": gatewayScene,
+  "padhna-tho-padega": padhnaScene,
 };
 
 export const hasScene = (slug: string) => slug in SCENES;

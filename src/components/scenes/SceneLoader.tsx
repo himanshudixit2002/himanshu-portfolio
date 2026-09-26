@@ -21,6 +21,10 @@ const SCENES: Record<string, ComponentType<SceneProps>> = {
   "url-shortener": lazy(() => import("./live/UrlScene")),
   skintellect: lazy(() => import("./live/SkinScene")),
   "cue-and-coffee": lazy(() => import("./live/CafeScene")),
+  scopeforge: lazy(() => import("./live/ScopeScene")),
+  "fraud-ring-engine": lazy(() => import("./live/FraudScene")),
+  "ai-api-gateway": lazy(() => import("./live/GatewayScene")),
+  "padhna-tho-padega": lazy(() => import("./live/PadhnaScene")),
 };
 
 type Shape = { steps: number; frames: number; mobile?: "pin" | "cards" };

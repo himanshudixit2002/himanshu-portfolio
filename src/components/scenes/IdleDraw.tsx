@@ -13,9 +13,9 @@ export function IdleDraw({ children }: { children: ReactNode }) {
 }
 
 /**
- * A step card's drawing: as IdleDraw, but only once the card is within a
- * card's width of the row's visible part — cards further along are drawn as
- * the row is swiped towards them, not all on load.
+ * A step card's drawing: as IdleDraw, but only once the card is within half
+ * the row's width of its visible part — on load, the card in view and the
+ * one peeking in; the rest are drawn as the row is swiped towards them.
  */
 export function CardDraw({ children }: { children: ReactNode }) {
   const [box, setBox] = useState<HTMLDivElement | null>(null);
@@ -23,7 +23,7 @@ export function CardDraw({ children }: { children: ReactNode }) {
   useEffect(() => {
     if (!box || near) return;
     const row = box.closest(".snap-track");
-    const io = new IntersectionObserver((entries) => entries.some((e) => e.isIntersecting) && setNear(true), { root: row, rootMargin: "0px 100% 0px 100%" });
+    const io = new IntersectionObserver((entries) => entries.some((e) => e.isIntersecting) && setNear(true), { root: row, rootMargin: "0px 50% 0px 50%" });
     io.observe(box);
     return () => io.disconnect();
   }, [box, near]);

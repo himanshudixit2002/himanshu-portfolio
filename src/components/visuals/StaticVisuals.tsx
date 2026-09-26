@@ -1,6 +1,7 @@
 import Image from "next/image";
 import { scopeForge } from "@/content/projects/selected";
 import { SKIN_STEPS } from "@/content/skintellect-pipeline";
+import { SCOPE_GUARDS } from "@/content/scopeforge-guards";
 import { Stage } from "./Stage";
 
 /* ── Vitals ──────────────────────────────────────────────────────────────── */
@@ -143,13 +144,7 @@ export function SkintellectPipeline() {
 
 /* ── ScopeForge ──────────────────────────────────────────────────────────── */
 
-const GUARDS = [
-  "Is the origin exactly one the program authorized?",
-  "Is the path outside every excluded prefix?",
-  "Is the authorization still valid — not expired or revoked?",
-  "Does the host resolve to a public address? Pin that connection.",
-  "Verified TLS, one GET, no redirects.",
-];
+const GUARDS = SCOPE_GUARDS.map((g) => g.question);
 
 const FAMILIES = [
   { label: "Response headers", n: 24, color: "#c4f16b" },

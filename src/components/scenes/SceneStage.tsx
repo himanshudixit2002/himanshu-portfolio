@@ -73,7 +73,8 @@ export function StepCards({ meta, label, frames }: { meta: SceneMeta; label: str
   const count = String(meta.steps.length).padStart(2, "0");
   const cards = meta.steps.map((step, i) => (
     <article key={step.title} className="flex h-full flex-col rounded-[1.75rem] bg-ink-2 p-4 ring-1 ring-white/8">
-      <div aria-hidden="true" className="aspect-[360/480]">
+      {/* The drawing runs nearly edge to edge, so its type reads at phone size. */}
+      <div aria-hidden="true" className="-mx-2 aspect-[360/480]">
         <CardDraw>{frames[i]}</CardDraw>
       </div>
       <p className="mt-5 text-eyebrow text-dim-inverse">

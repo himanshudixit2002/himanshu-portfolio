@@ -52,6 +52,36 @@ function pathLength(point: Pick<Point, "x" | "y">, tree: Tree, depth = 0): numbe
   return pathLength(point, next, depth + 1);
 }
 
+export type Box = { x0: number; x1: number; y0: number; y1: number };
+export type Cut = { dim: "x" | "y"; at: number; box: Box };
+
+/**
+ * One random tree's path to a single point: each cut, as `build` makes it
+ * (a random dimension, a random value between the partition's min and max),
+ * keeping only the side the point is on, until it's alone. `box` is the
+ * region being cut. This is why outliers score high: few cuts isolate them.
+ */
+export function isolationPath(points: Point[], target: number, seed = 1, limit = 24): Cut[] {
+  const rand = seeded(seed);
+  const p = points[target];
+  let part = points;
+  let box: Box = { x0: 0, x1: Math.max(...points.map((q) => q.x)), y0: 0, y1: Math.max(...points.map((q) => q.y)) };
+  const cuts: Cut[] = [];
+  while (part.length > 1 && cuts.length < limit) {
+    const dim = rand() < 0.5 ? "x" : "y";
+    const values = part.map((q) => q[dim]);
+    const min = Math.min(...values);
+    const max = Math.max(...values);
+    if (min === max) break;
+    const at = min + rand() * (max - min);
+    cuts.push({ dim, at, box });
+    const below = p[dim] < at;
+    part = part.filter((q) => q[dim] < at === below);
+    box = dim === "x" ? (below ? { ...box, x1: at } : { ...box, x0: at }) : below ? { ...box, y1: at } : { ...box, y0: at };
+  }
+  return cuts;
+}
+
 export function isolationScores(points: Point[], { trees = 60, sample = 64, seed = 3 } = {}): number[] {
   const rand = seeded(seed);
   const size = Math.min(sample, points.length);
