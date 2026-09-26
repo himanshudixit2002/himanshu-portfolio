@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { achievements, certifications, education } from "@/content/experience";
 import { profile } from "@/content/profile";
 import { Experience } from "@/components/home/Experience";
+import { InterfaceToImpact } from "@/components/home/InterfaceToImpact";
 import { ButtonLink } from "@/components/ui/ButtonLink";
 import { CapabilityMap, Timeline } from "@/components/visuals/IdentityVisuals";
 
@@ -31,6 +32,9 @@ export default function AboutPage() {
           </ButtonLink>
         </div>
       </section>
+
+      {/* The headline, told by scrolling: the interface, the systems behind it, then what keeps it dependable. */}
+      <InterfaceToImpact />
 
       <Experience full />
 

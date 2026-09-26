@@ -79,7 +79,7 @@ export function SnapGallery({ label, items, stackFrom, columns = 1, itemWidth, t
 
   return (
     <div
-      className={`snap-gallery relative ${className}`}
+      className={`snap-gallery relative min-w-0 ${className}`}
       data-xray="CSS scroll-snap row · swipes without JavaScript; script drives the dots and arrows"
       data-stack={stackFrom} data-dim={dim} data-static={overflowing ? undefined : ""} style={style}>
       {swipeHint && overflowing && (
@@ -114,7 +114,8 @@ export function SnapGallery({ label, items, stackFrom, columns = 1, itemWidth, t
               </button>
             ))}
           </div>
-          <div className="flex gap-2">
+          {/* Phones swipe; the arrows are for wider screens (and keep the row inside a phone's width). */}
+          <div className="hidden gap-2 sm:flex">
             <button type="button" onClick={() => go(active - 1)} disabled={active === 0} className={control} aria-label="Previous">
               <ArrowRight className="size-4 rotate-180" />
             </button>

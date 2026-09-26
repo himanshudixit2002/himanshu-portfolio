@@ -1,0 +1,169 @@
+/*
+ * The flagship showcase. From 768px each card is sticky under the header,
+ * a little lower than the one before, so they pile up as you scroll: the
+ * next card slides over, and the one underneath settles back and dims as it
+ * arrives. That settle runs on the *next* card's view timeline (named, and
+ * scoped to the list), so it moves only while something is covering it.
+ * Transforms and opacity. Without scroll timelines, under reduced motion
+ * and on phones the cards are a plain column.
+ */
+
+.stack {
+  position: relative;
+  display: grid;
+  gap: 1.25rem;
+  timeline-scope: --featured-1, --featured-2;
+}
+
+.card {
+  position: relative;
+  isolation: isolate;
+  display: grid;
+  overflow: clip;
+  border-radius: 1.75rem;
+  background: var(--color-ink-2);
+  box-shadow:
+    inset 0 0 0 1px rgb(255 255 255 / 0.08),
+    0 2rem 4rem -2rem rgb(0 0 0 / 0.8);
+  transform-origin: 50% 0;
+}
+
+/* The dim that falls over a card as the next one covers it. */
+.card::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+  border-radius: inherit;
+  background: #000;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.glow {
+  position: absolute;
+  top: -30%;
+  right: -20%;
+  z-index: -1;
+  width: 70%;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  background: radial-gradient(closest-side, color-mix(in oklab, var(--accent) 22%, transparent), transparent);
+  pointer-events: none;
+}
+
+.text {
+  padding: 1.5rem 1.5rem 1.75rem;
+}
+
+.art {
+  order: -1;
+  padding: 1.25rem 1.25rem 0;
+}
+
+.figures {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 1rem;
+  margin-top: 1.5rem;
+  padding-top: 1.25rem;
+  border-top: 1px solid rgb(255 255 255 / 0.1);
+}
+
+/* Phones keep the first few of the stack; the case study has the rest. */
+@media (max-width: 47.99rem) {
+  .tech:nth-child(n + 5) {
+    display: none;
+  }
+}
+
+.tech {
+  padding: 0.3rem 0.65rem;
+  border-radius: 999px;
+  background: rgb(255 255 255 / 0.06);
+  box-shadow: inset 0 0 0 1px rgb(255 255 255 / 0.08);
+  color: var(--color-muted-inverse);
+  font-size: 0.75rem;
+}
+
+@media (min-width: 768px) {
+  .stack {
+    gap: 0;
+  }
+
+  .item {
+    position: sticky;
+    top: calc(var(--nav-h) + 1.25rem + var(--n) * 1rem);
+  }
+
+  .item + .item {
+    margin-top: 14vh;
+  }
+
+  .card {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1.1fr);
+    align-items: center;
+    min-height: min(36rem, calc(100svh - var(--nav-h) - 6rem));
+  }
+
+  .text {
+    padding: 2.5rem 1rem 2.5rem 2.75rem;
+  }
+
+  .art {
+    order: 0;
+    padding: 2rem 2rem 2rem 0.5rem;
+  }
+}
+
+@keyframes settle {
+  to {
+    transform: scale(0.93);
+  }
+}
+
+@keyframes dim {
+  to {
+    opacity: 0.5;
+  }
+}
+
+@supports (animation-timeline: view()) {
+  @media (min-width: 768px) {
+    .item1 {
+      view-timeline: --featured-1 block;
+    }
+
+    .item2 {
+      view-timeline: --featured-2 block;
+    }
+
+    :global(html[data-motion="full"]) .item0 .card,
+    :global(html[data-motion="full"]) .item1 .card {
+      animation: settle linear both;
+      animation-range: entry 0% entry 100%;
+    }
+
+    :global(html[data-motion="full"]) .item0 .card::after,
+    :global(html[data-motion="full"]) .item1 .card::after {
+      animation: dim linear both;
+      animation-range: entry 20% entry 100%;
+    }
+
+    :global(html[data-motion="full"]) .item0 .card,
+    :global(html[data-motion="full"]) .item0 .card::after {
+      animation-timeline: --featured-1;
+    }
+
+    :global(html[data-motion="full"]) .item1 .card,
+    :global(html[data-motion="full"]) .item1 .card::after {
+      animation-timeline: --featured-2;
+    }
+  }
+}
+
+@media print {
+  .item {
+    position: static;
+  }
+}

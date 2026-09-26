@@ -5,6 +5,7 @@ import { Hint } from "@/components/explore/Hint";
 import { ArrowRight } from "@/components/ui/icons";
 import { PriceFreshness } from "@/components/visuals/IdentityVisuals";
 import { LazyVisual } from "@/components/visuals/LazyVisual";
+import { SnapGallery } from "@/components/motion/SnapGallery";
 
 /**
  * The Cleartrip role. Employer systems are described generically and every
@@ -30,7 +31,7 @@ export function Experience({ full = false, headingLevel = 2 }: { full?: boolean;
           Fast search, fresh prices, quiet releases.
         </Heading>
 
-        <div className="mt-10 grid gap-10 lg:grid-cols-[0.9fr_1.1fr]">
+        <div className="mt-10 grid grid-cols-[minmax(0,1fr)] gap-10 lg:grid-cols-[minmax(0,0.9fr)_minmax(0,1.1fr)]">
           <div data-reveal>
             <p className="text-xl font-semibold tracking-[-0.015em]">
               {role.title}, {role.company} <span className="font-normal text-muted">({role.via})</span>
@@ -48,9 +49,18 @@ export function Experience({ full = false, headingLevel = 2 }: { full?: boolean;
             </ul>
           </div>
 
-          <ol className="grid gap-4 sm:grid-cols-2">
-            {role.achievements.map((a) => (
-              <li key={a.title} data-reveal className="flex flex-col rounded-[1.5rem] bg-snow p-5 ring-1 ring-black/5">
+          {/* On phones the achievements are a swipeable row; from 768px, a grid. */}
+          <SnapGallery
+            label="What the role delivered"
+            tone="light"
+            stackFrom="md"
+            columns={2}
+            itemWidth="min(84%, 20rem)"
+            items={role.achievements.map((a) => (
+              <article
+                key={a.title}
+                className="flex h-full flex-col rounded-[1.5rem] bg-snow p-5 ring-1 ring-black/5 transition-[translate,box-shadow] duration-(--dur-base) ease-(--ease-out) hover:-translate-y-1 hover:shadow-[0_1.25rem_2.5rem_-1.25rem_rgb(0_0_0/0.25),0_0_0_1px_rgb(10_102_216/0.35)]"
+              >
                 {a.metric && (
                   <p className="mb-3">
                     <span className="block text-title text-3xl text-accent">{a.metric.value}</span>
@@ -59,29 +69,28 @@ export function Experience({ full = false, headingLevel = 2 }: { full?: boolean;
                 )}
                 <h3 className="font-semibold tracking-[-0.01em]">{a.title}</h3>
                 <p className="mt-2 text-sm leading-relaxed text-muted">{a.body}</p>
-              </li>
+              </article>
             ))}
-          </ol>
+          />
         </div>
 
-        <div className="mt-14 grid gap-6">
-          <div className="relative">
-            <Hint id="hex-map" arrow="down-left" tone="light" className="right-8 bottom-[calc(100%+0.25rem)] md:right-24">
-              slide to zoom
-            </Hint>
-            <LazyVisual id="hex-map" />
-          </div>
-          {full && (
+        {/* The walkthroughs of how these work live on /about; the homepage links to them. */}
+        {full ? (
+          <div className="mt-14 grid gap-6">
+            <div className="relative">
+              <Hint id="hex-map" arrow="down-left" tone="light" className="right-8 bottom-[calc(100%+0.25rem)] md:right-24">
+                slide to zoom
+              </Hint>
+              <LazyVisual id="hex-map" />
+            </div>
             <div className="grid gap-6 lg:grid-cols-2">
               <LazyVisual id="fan-out" />
               <PriceFreshness />
             </div>
-          )}
-        </div>
-
-        {!full && (
+          </div>
+        ) : (
           <Link href="/about#experience" className="group mt-8 inline-flex min-h-11 items-center gap-2 text-accent">
-            <span className="link-draw">More on how these work</span>
+            <span className="link-draw">See how these work, with interactive walkthroughs</span>
             <ArrowRight className="size-4 transition-transform duration-(--dur-base) ease-(--ease-out) group-hover:translate-x-0.5" />
           </Link>
         )}

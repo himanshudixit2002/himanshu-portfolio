@@ -25,6 +25,16 @@
   aspect-ratio: 16 / 10;
 }
 
+/* On phones the three still frames are laid out only as they near the
+   screen: each drawing is a costly layout, and none is in the first view.
+   The estimate is the box's height at that width, so nothing moves. */
+@media (max-width: 47.99rem) {
+  .staticBox {
+    content-visibility: auto;
+    contain-intrinsic-size: auto calc((100vw - 2rem) * 0.625);
+  }
+}
+
 .overlay {
   position: absolute;
   inset: 0;

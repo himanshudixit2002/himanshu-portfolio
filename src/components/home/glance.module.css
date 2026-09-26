@@ -4,9 +4,9 @@
  * missing, under reduced motion and without JavaScript:
  *
  * - the HD monogram writes itself stroke by stroke as the section arrives
- *   (and again under a pointer),
- * - a band of light crosses the 600 practice dots as the tile passes,
- * - the project matrix fills in column by column.
+ *   (and again under a pointer, or a tap),
+ * - a band of light crosses the 600 practice dots as the tile passes (wider
+ *   screens; a tap sends a ripple through them, DotRipple).
  */
 
 /* ── Monogram ─────────────────────────────────────────────────────────── */
@@ -41,6 +41,23 @@
     animation: write 700ms var(--ease-out) both;
     animation-delay: calc(var(--k) * 110ms);
   }
+}
+
+/* On touch screens a tap writes it again (Fx flips data-redrawing). */
+@keyframes write-again {
+  from {
+    stroke-dashoffset: 1;
+  }
+}
+
+:global(html[data-motion="full"]) [data-redrawing="a"] .stroke {
+  animation: write 700ms var(--ease-out) both;
+  animation-delay: calc(var(--k) * 110ms);
+}
+
+:global(html[data-motion="full"]) [data-redrawing="b"] .stroke {
+  animation: write-again 700ms var(--ease-out) both;
+  animation-delay: calc(var(--k) * 110ms);
 }
 
 /* ── Practice dots ────────────────────────────────────────────────────── */
@@ -99,31 +116,5 @@
     animation: bandDots linear both;
     animation-timeline: --dots;
     animation-range: cover 0% cover 100%;
-  }
-}
-
-/* ── Project matrix ───────────────────────────────────────────────────── */
-
-.matrixBox {
-  view-timeline: --matrix block;
-}
-
-.column {
-  transform-box: fill-box;
-  transform-origin: 50% 100%;
-}
-
-@keyframes column {
-  from {
-    opacity: 0;
-    transform: translate3d(0, 6px, 0);
-  }
-}
-
-@supports (animation-timeline: view()) {
-  :global(html[data-motion="full"]) .column {
-    animation: column linear both;
-    animation-timeline: --matrix;
-    animation-range: cover calc(var(--k) * 1.1vh) cover calc(8vh + var(--k) * 1.1vh);
   }
 }

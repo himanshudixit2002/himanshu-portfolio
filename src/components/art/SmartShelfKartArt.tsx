@@ -193,10 +193,62 @@ export function SskInventoryArt(props: ArtProps) {
   );
 }
 
-type NovaProps = ArtProps & { conversation: "low-stock" | "confirm-write" };
+type Conversation = "low-stock" | "confirm-write";
+type NovaProps = ArtProps & {
+  conversation: Conversation;
+  /** Also draw the other sample conversation, hidden until a [data-swap-root] around it is marked data-swapped (Fx). */
+  both?: boolean;
+};
 const bubble = (i: number) => ({ "--i": i }) as CSSProperties;
 
-export function NovaPhoneArt({ label, onLight, className = "", conversation }: NovaProps) {
+function Thread({ conversation }: { conversation: Conversation }) {
+  return conversation === "low-stock" ? (
+    <>
+      <div data-bubble className={s.bubbleUser} style={bubble(0)}>
+        What&rsquo;s running low?
+      </div>
+      <div className={s.answer}>
+        <div data-bubble className={s.answerText} style={bubble(1)}>
+          4 products are below their reorder point.
+        </div>
+        <div data-bubble className={s.answerRows} style={bubble(2)}>
+          {lowStock.map((item) => (
+            <div key={item.name} className={s.answerRow}>
+              <span>{item.name}</span>
+              <b>{item.qty} left</b>
+            </div>
+          ))}
+        </div>
+      </div>
+    </>
+  ) : (
+    <>
+      {/* data-bubble: a chapter can bring these in one by one (.bubble-seq in motion.css). */}
+      <div data-bubble className={s.bubbleUser} style={bubble(0)}>
+        Add 50 units of the blue widgets
+      </div>
+      <div className={s.answer}>
+        <div data-bubble className={s.answerText} style={bubble(1)}>
+          Here&rsquo;s the change. Nothing is saved until you confirm.
+        </div>
+        <div data-bubble className={s.preview} style={bubble(2)}>
+          <div className={s.previewTag}>Stock in · preview</div>
+          <div className={s.previewItem}>Blue widget</div>
+          <div className={s.previewDelta}>
+            12 → <strong>62</strong> units
+          </div>
+          <div className={s.previewButtons}>
+            <span>Cancel</span>
+            <span>Confirm</span>
+          </div>
+        </div>
+      </div>
+    </>
+  );
+}
+
+export function NovaPhoneArt({ label, onLight, className = "", conversation, both = false }: NovaProps) {
+  const other: Conversation = conversation === "low-stock" ? "confirm-write" : "low-stock";
   return (
     <div role="img" aria-label={label} className={`${s.frame} ${onLight ? s.onLight : ""} ${className}`}>
       <div className={s.phone}>
@@ -209,47 +261,14 @@ export function NovaPhoneArt({ label, onLight, className = "", conversation }: N
               <div className={s.novaSub}>Inventory assistant</div>
             </div>
           </div>
-          <div className={s.thread}>
-            {conversation === "low-stock" ? (
-              <>
-                <div className={s.bubbleUser}>What&rsquo;s running low?</div>
-                <div className={s.answer}>
-                  <div className={s.answerText}>4 products are below their reorder point.</div>
-                  <div className={s.answerRows}>
-                    {lowStock.map((item) => (
-                      <div key={item.name} className={s.answerRow}>
-                        <span>{item.name}</span>
-                        <b>{item.qty} left</b>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              </>
-            ) : (
-              <>
-                {/* data-bubble: a chapter can bring these in one by one (.bubble-seq in motion.css). */}
-                <div data-bubble className={s.bubbleUser} style={bubble(0)}>
-                  Add 50 units of the blue widgets
-                </div>
-                <div className={s.answer}>
-                  <div data-bubble className={s.answerText} style={bubble(1)}>
-                    Here&rsquo;s the change. Nothing is saved until you confirm.
-                  </div>
-                  <div data-bubble className={s.preview} style={bubble(2)}>
-                    <div className={s.previewTag}>Stock in · preview</div>
-                    <div className={s.previewItem}>Blue widget</div>
-                    <div className={s.previewDelta}>
-                      12 → <strong>62</strong> units
-                    </div>
-                    <div className={s.previewButtons}>
-                      <span>Cancel</span>
-                      <span>Confirm</span>
-                    </div>
-                  </div>
-                </div>
-              </>
-            )}
+          <div className={s.thread} data-thread={both ? "main" : undefined}>
+            <Thread conversation={conversation} />
           </div>
+          {both && (
+            <div className={s.thread} data-thread="alt">
+              <Thread conversation={other} />
+            </div>
+          )}
           <div className={s.composer}>Ask about your stock…</div>
         </div>
       </div>

@@ -2,11 +2,10 @@ import type { CSSProperties, ReactNode } from "react";
 import Link from "next/link";
 import { achievements, certifications, cleartrip, education } from "@/content/experience";
 import { profile } from "@/content/profile";
-import { projects } from "@/content/projects";
-import type { ProjectCategory } from "@/content/types";
 import { formatPeriod } from "@/lib/format";
 import { Hint } from "@/components/explore/Hint";
 import { Portrait } from "@/components/identity/Portrait";
+import { DotRipple } from "./DotRipple";
 import { ButtonLink } from "@/components/ui/ButtonLink";
 import { ArrowRight } from "@/components/ui/icons";
 import s from "./glance.module.css";
@@ -14,15 +13,12 @@ import s from "./glance.module.css";
 const k = (n: number) => ({ "--k": n }) as CSSProperties;
 const rise = (i: number) => ({ "--sd-i": i }) as CSSProperties;
 
-const CATEGORIES: ProjectCategory[] = ["Product", "Systems", "AI & Data", "Tools"];
-/** Every project, in the order it began: the matrix's columns. */
-const BY_START = [...projects].sort((a, b) => a.period.start.localeCompare(b.period.start));
 
 /**
  * Right after the hero: who Himanshu is, on one screen. Every fact is the
  * site's own content — the profile, the Cleartrip role, education,
- * certifications, the practice figure and the projects — laid out as an
- * Apple-style bento that rises as a sheet over the hero.
+ * certifications and the practice figure — laid out as an Apple-style
+ * bento that rises as a sheet over the hero.
  */
 export function AtAGlance() {
   const practice = achievements[0];
@@ -124,24 +120,15 @@ export function AtAGlance() {
             </ul>
           </Tile>
 
-          {/* Practice: the figure as text, and that many dots. */}
-          <Tile label="Practice" className="md:col-span-2" i={0}>
-            <div className="grid items-center gap-6 sm:grid-cols-[auto_1fr]">
+          {/* Practice: the figure as text, and — from 768px — that many dots. */}
+          <Tile label="Practice" className="md:col-span-2 lg:col-span-4" i={0}>
+            <div className="grid items-center gap-6 md:grid-cols-[auto_1fr] md:gap-10">
               <div>
-                <p className="text-display text-[clamp(3rem,6vw,4.5rem)] tabular-nums">{figure}</p>
-                <p className="mt-2 max-w-[17rem] text-sm leading-relaxed text-muted">{practice}</p>
+                <p className="text-display text-[clamp(2.5rem,5vw,4rem)] tabular-nums">{figure}</p>
+                <p className="mt-2 max-w-[20rem] text-sm leading-relaxed text-muted">{practice}</p>
               </div>
               <PracticeDots count={Number.parseInt(figure, 10) || 0} />
             </div>
-          </Tile>
-
-          {/* Range: every project, and what kind of work it is. */}
-          <Tile label="Range" className="md:col-span-2" i={1}>
-            <ProjectMatrix />
-            <Link href="/work" className="group mt-4 inline-flex min-h-11 items-center gap-2 font-medium text-accent">
-              <span className="link-draw">All {projects.length} projects</span>
-              <ArrowRight className="size-4 transition-transform duration-(--dur-base) ease-(--ease-out) group-hover:translate-x-0.5" />
-            </Link>
           </Tile>
         </div>
       </div>
@@ -168,7 +155,7 @@ function Monogram() {
     "M104 16 H126 C160 16 178 36 178 60 C178 84 160 104 126 104 H104",
   ];
   return (
-    <svg viewBox="0 0 200 120" className="relative w-28 md:w-40" aria-hidden="true" focusable="false">
+    <svg viewBox="0 0 200 120" data-redraw="" className="relative w-28 md:w-40" aria-hidden="true" focusable="false">
       <defs>
         {/* In the drawing's own units: a bounding-box gradient doesn't paint a straight stroke, whose box has no width or height. */}
         <linearGradient id="mono-ink" gradientUnits="userSpaceOnUse" x1="20" y1="10" x2="180" y2="110">
@@ -193,9 +180,9 @@ function Cloud() {
   );
 }
 
-/** One dot per problem, in rows of 30; a band of light crosses them as the tile passes. */
+/** One dot per problem, in rows of 60; a band of light crosses them as the tile passes. Wider screens only: on a phone the figure says it. */
 function PracticeDots({ count }: { count: number }) {
-  const cols = 30;
+  const cols = 60;
   const rows = Math.ceil(count / cols);
   const dots = (fill: string) => (
     <svg viewBox={`0 0 ${cols * 10} ${rows * 10}`} className="block h-full w-full" preserveAspectRatio="xMidYMid meet">
@@ -208,52 +195,12 @@ function PracticeDots({ count }: { count: number }) {
     </svg>
   );
   return (
-    <div aria-hidden="true" className={`${s.dots} relative aspect-[3/2] w-full`}>
+    <div aria-hidden="true" className={`${s.dots} relative hidden w-full cursor-pointer md:block`} style={{ aspectRatio: `${cols} / ${rows}` }}>
       {dots("rgb(0 0 0 / 0.13)")}
       <div className={s.band}>
         <div className={s.bandDots}>{dots("#0a66d8")}</div>
       </div>
-    </div>
-  );
-}
-
-/** Rows are kinds of work, columns are projects in the order they began; a filled dot is a project of that kind. */
-function ProjectMatrix() {
-  // Drawn at its own pixel size, so its rows line up with the labels beside it.
-  const step = 16;
-  const gap = 5;
-  const width = BY_START.length * step;
-  const height = CATEGORIES.length * (step + gap) - gap;
-  return (
-    <div>
-      <div className={`${s.matrixBox} flex items-center gap-3`}>
-        <ul className="grid w-[5.5rem] flex-none text-sm sm:w-[7rem]" style={{ gridTemplateRows: `repeat(${CATEGORIES.length}, ${step}px)`, rowGap: gap }}>
-          {CATEGORIES.map((c) => (
-            <li key={c} className="flex items-center justify-between gap-2 leading-none">
-              <span className="truncate">{c}</span>
-              <span className="font-mono text-xs text-muted tabular-nums">{projects.filter((p) => p.categories.includes(c)).length}</span>
-            </li>
-          ))}
-        </ul>
-        <svg viewBox={`0 0 ${width} ${height}`} width={width} height={height} className="block flex-none" aria-hidden="true" focusable="false">
-          {BY_START.map((p, x) => (
-            <g key={p.slug} className={s.column} style={k(x)}>
-              {CATEGORIES.map((c, y) => {
-                const on = p.categories.includes(c);
-                return <circle key={c} cx={x * step + step / 2} cy={y * (step + gap) + step / 2} r={on ? 5.5 : 1.8} fill={on ? p.accent : "rgb(0 0 0 / 0.16)"} />;
-              })}
-            </g>
-          ))}
-        </svg>
-      </div>
-      <p className="mt-3 text-xs text-muted">Each column is a project, in the order it began.</p>
-      <ul className="sr-only">
-        {CATEGORIES.map((c) => (
-          <li key={c}>
-            {c}: {projects.filter((p) => p.categories.includes(c)).map((p) => p.title).join(", ")}
-          </li>
-        ))}
-      </ul>
+      <DotRipple cols={cols} rows={rows} />
     </div>
   );
 }

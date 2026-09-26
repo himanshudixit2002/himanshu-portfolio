@@ -4,6 +4,7 @@ import Link from "next/link";
 import { achievements, certifications, cleartrip, education } from "@/content/experience";
 import { profile } from "@/content/profile";
 import { getProject } from "@/content/projects";
+import { SKILL_GROUPS } from "@/content/skills";
 import { formatPeriod } from "@/lib/format";
 import { PrintButton } from "@/components/ui/PrintButton";
 
@@ -47,14 +48,6 @@ const RESUME_PROJECTS: { slug: string; points: string[] }[] = [
     slug: "scopeforge",
     points: ["Local security-research workbench: FastAPI, durable SQLite queue, 52 check rules, scope enforcement on every request, Playwright tests in CI."],
   },
-];
-
-const SKILLS = [
-  { group: "Languages", items: "Java, Python, TypeScript, JavaScript, SQL, Dart, C++, Go, Swift" },
-  { group: "Product", items: "React, Next.js, Tailwind CSS, Flutter, SwiftUI, accessible and responsive UI, web performance" },
-  { group: "Backend & data", items: "Spring Boot, FastAPI, Express, Kafka, Flink, Redis, Elasticsearch, PostgreSQL, Firestore, SQLite" },
-  { group: "AI", items: "LangGraph, tool-calling agents, LLM evaluation and guardrails, Model Context Protocol, scikit-learn, Keras" },
-  { group: "Delivery", items: "Docker, GitHub Actions, OpenTelemetry, Prometheus, Vitest, Playwright, Vercel, GCP Cloud Run, AWS" },
 ];
 
 export default function ResumePage() {
@@ -132,10 +125,10 @@ export default function ResumePage() {
 
         <Section title="Skills">
           <dl className="grid gap-1.5 text-[0.9375rem]">
-            {SKILLS.map((s) => (
+            {SKILL_GROUPS.map((s) => (
               <div key={s.group} className="grid gap-x-4 sm:grid-cols-[9rem_1fr]">
                 <dt className="font-semibold">{s.group}</dt>
-                <dd className="text-muted">{s.items}</dd>
+                <dd className="text-muted">{s.skills.map((k) => k.name).join(", ")}</dd>
               </div>
             ))}
           </dl>

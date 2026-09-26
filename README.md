@@ -6,10 +6,11 @@ The plan behind it lives in `~/Desktop/PORTFOLIO_MASTER_PLAN.md`. The site prese
 
 | Route | What it is |
 | --- | --- |
-| `/` | Hero · From interface to impact · SmartShelfKart + Surface/System · Elepeia · Cue & Coffee · Experience (Cleartrip) · Explore the engineering (KVStore) · About · Contact |
+| `/` | Direct, one idea per screen: Hero · At a glance · Experience (Cleartrip) · Work (three flagships as stacking cards, then every other project with its stack) · Skills (tied to the projects that use them) · Contact |
 | `/work` | All 13 projects, filterable (Product / Systems / AI & Data / Tools) |
 | `/work/[slug]` | Case study per project, each opening with its signature visual |
 | `/lab` | Every interactive simulation in one place |
+| `/about` | The background, told by the pinned "From interface to impact" scene, then the Cleartrip walkthroughs, work over time and capabilities |
 | `/about` | Bio, Cleartrip experience visuals, timeline, capability evidence map, education |
 | `/resume` | One neutral résumé, printable to PDF |
 
@@ -77,17 +78,26 @@ Only ScopeForge has real screenshots (its repository's synthetic demo workspace)
 - **`<SnapGallery>`.** Apple-style card row: snaps, peeks, dot pager and paddles, still swipeable without JavaScript; `stackFrom="md"` makes it a plain stack on wider screens.
 - **Device frames** (`src/components/frames`). `MacBookFrame`, `PhoneFrame`, `BrowserFrame`, `DesktopFrame`, sized like the art so they scale as one piece. Their glare follows `--mx`, set by `usePointerLight` on fine pointers.
 - **Homepage touches.** The hero's layers lift at different speeds and the composition recedes as it scrolls away (`hero-scroll` / `hero-depth` / `hero-recede`, on the hero's own exit, so nothing moves at rest); its glow drifts (`drift`). A chat can play out as it crosses the screen (`bubble-seq` with `data-bubble`). `<Magnetic>` gives a call to action a few pixels of pull on fine pointers. Small drawn details — the café's ticking seconds (a registered integer shown through a CSS counter), Elepeia's size chip and bag press — are CSS on the art's own scroll timeline. The KV explorer types two commands the first time it's well in view, and stops the moment you touch it.
+- **A direct homepage.** One idea per screen, so a visitor gets it at a glance; the depth lives on the case studies, `/about` and `/lab`.
+  - **Hero play:** the headline's full stop is a ball that bounces when poked (`data-bounce`). Tapping the Nova phone swaps its two sample chats: both are server-rendered, and `data-swap` flips which shows, so no art hydrates.
+  - **At a glance:** Practice is just its figure on phones; its 600 dots appear from 768px, and a tap sends a ripple through them (`DotRipple`: a canvas drawn for a second, only after a tap).
+  - **Experience:** the achievements are a swipeable row on phones (`SnapGallery`, `stackFrom="md"`). The hex map and the other walkthroughs are on `/about`.
+  - **Work** (`Projects`):
+    - **Flagships** (`Featured`): the three are sticky cards that pile up as you scroll. Each settles back and dims on the next card's named view timeline, scoped to the list with `timeline-scope`. Every card shows the idea, its own figures, its stack and the way in.
+    - **The rest:** every other project follows in the gallery, and every project card lists its stack.
+  - **Skills** (`Skills`, `content/skills.ts`): the résumé's skill groups, each matched to the projects whose own stack names it, or the Cleartrip role's. Pointing at or tapping a skill lights those projects; on phones they ride in a bar pinned to the bottom of the screen. Skills with nothing to show them are listed plainly. The résumé reads the same list.
+  - **Grid gotcha:** a grid track grows to its widest content. A swipe row or a pill row inside one needs `min-width: 0` (or `minmax(0, 1fr)`), or it pushes the page wider than a phone.
 - **Project cards.** Each card's signature (`MiniVisual`) is still until its card is active — hovered, focused, or on touch screens crossing the middle fifth of the screen — and then plays its idea as a short CSS loop (`mini.module.css`: layers part, a bar shrinks, a key hops between shards, a node drops out, rings close in). Every loop starts and ends on the still, so leaving a card never freezes it mid-move. Any element holding a signature can opt in with `data-loops` (the next-project door does). `useCardFocus` / `CardGrid` sets `data-active` from one observer on touch screens, and on fine pointers moves the card's accent light (`data-card-light`) with a transform — one listener for the grid, no React state. The card lifts 2px, its hairline takes the accent, and a press settles it (`card.module.css`). The `/work` filter's chosen fill is one pill, clipped to the chosen chip, that slides as a `clip-path` transition; until it has measured, and without JavaScript, the chip fills itself.
 - **Site details.** The header marks the current section with a pill that slides between pages (the same clip-path technique as the filter), its menu button's two bars cross into an X, and the open phone menu dims the page, locks its scroll and closes on a tap outside. Text links draw their underline in from the left (`link-draw`); the focus ring opens out; body copy uses `text-wrap: pretty` and short headings `balance`. Press states replace the tap flash. Content keeps to the safe area on notched phones (`viewport-fit=cover`, with `container-page` and the footer padding for it). Note for Tailwind v4: `scale-*` and `translate-*` set the `scale` / `translate` properties, so a transition list must name those, not `transform`.
 - **Link previews.** `opengraph-image.tsx` at the root and per project draw the page's own title, line and figures in its accent (`src/lib/og.tsx`), with Inter subset from Google Fonts at build time and next/og's font if that fails.
 - **Print.** Animations stop, chrome and pinned scenes are dropped, dark sections print as ink on paper, and outbound links show their address; the résumé keeps its own print layout.
-- **Introducing Himanshu** (homepage). The hero's availability badge (`profile.availability`, sourced in `sources.ts`) links to contact, with a `live-dot`. `AtAGlance` follows the hero as a light sheet: a bento of facts already in the content — the HD monogram writing itself stroke by stroke (`pathLength="1"` strokes on a view timeline), the Cleartrip role, VIT, the certifications, the practice figure beside that many dots with a band of light crossing them (two counter-moving transforms under a mask), and every project as a column in a category matrix. `Journey` lays every dated fact in order under sticky years, with a rail that draws as you scroll and dots that light as its tip reaches them. The other nine projects are a `SnapGallery` in the engineering section (`dim="phone"` keeps several cards bright on wider screens). Two SVG gotchas met on the way: Chrome makes no view timeline for an `<svg>` element (hang it on an HTML wrapper), and a gradient in bounding-box units doesn't paint a perfectly straight stroke (use `userSpaceOnUse`).
+- **Introducing Himanshu** (homepage). The hero's availability badge (`profile.availability`, sourced in `sources.ts`) links to contact, with a `live-dot`. `AtAGlance` follows the hero as a light sheet: a bento of facts already in the content — the HD monogram writing itself stroke by stroke (`pathLength="1"` strokes on a view timeline), the Cleartrip role, VIT, the certifications, and the practice figure beside that many dots with a band of light crossing them (two counter-moving transforms under a mask). Two SVG gotchas met on the way: Chrome makes no view timeline for an `<svg>` element (hang it on an HTML wrapper), and a gradient in bounding-box units doesn't paint a perfectly straight stroke (use `userSpaceOnUse`).
 - **Portrait** (`src/components/identity`). Himanshu's photo is `profile.photo`: his GitHub picture, cut out from its plain background (`src/content/media/himanshu.png`). Replacing that one file updates everything below.
   - **The intro:** `<Portrait>` stands him in a glowing disc, shoulders inside the circle and head rising out of it, with a ring and glow set back at their own depths in one 3D stage.
     - As it arrives, the disc opens, he rises into it and a black-and-white copy fades to colour.
     - It tilts toward a fine pointer (`usePointerLight`) or gently with scroll on touch screens, and floats at rest.
   - **Elsewhere:** the header's `<Avatar>` is the same photo in a small disc with the availability dot, and the link previews use it too.
-- **Scroll timelines and `overflow`.** `overflow: hidden` makes an element a scroll container, and a `view()` timeline inside it measures against that box instead of the page, so its animation never moves. The homepage chapters' entrances and the case-study device's tilt sat frozen like this until they moved to `overflow-clip`, which clips the same way without being a scroll container. Use `overflow-clip` around anything scroll-linked.
+- **Scroll timelines and `overflow`.** `overflow: hidden` makes an element a scroll container, and a `view()` timeline inside it measures against that box instead of the page, so its animation never moves. The old homepage chapters' entrances and the case-study device's tilt sat frozen like this until they moved to `overflow-clip`, which clips the same way without being a scroll container. Use `overflow-clip` around anything scroll-linked.
 - **Tap targets.** Small controls keep their look and get a 44px hit area from `.hit` (`globals.css`): an invisible `::after` centred on the element, `--hit` tall (lower it where rows sit closer, as the About timeline does at 26px). Range inputs get the same height from padding that a negative margin cancels. Anything painted outside its box, like the practice dots' light band, needs `overflow: clip` on its box, or the page scrolls sideways at tablet widths.
 - **CSS layer order.** A CSS module that uses `@layer components` can load before `globals.css`, and whichever file names a layer first fixes the order, so components would land under base and the reset would win. Each layered module starts with `@layer theme, base, components, utilities;` so the order is the same whichever file arrives first.
 - **Things to find** (`src/components/explore`, `src/lib/explored.ts`). Everything here is per visitor, kept in their own browser (falling back to memory when storage is blocked) and read only after mount, so the server's HTML never depends on it.
@@ -108,6 +118,8 @@ Only ScopeForge has real screenshots (its repository's synthetic demo workspace)
     - hearing all the portrait's lines
     - opening the palette
     - x-ray mode
+    - bouncing the hero's full stop
+    - rippling the practice dots
     - exploring every project
     - the Konami code, which bursts sparks in every project's accent
   - **Command palette** (`src/components/palette`). ⌘K / Ctrl+K, "/" or the header's search button.
@@ -121,7 +133,7 @@ Only ScopeForge has real screenshots (its repository's synthetic demo workspace)
     - **Lifetime:** it lasts for the visit (`<html data-xray>`), with a corner note to leave it.
   - **Section rail** (homepage, 1280px and up). One dot per section: an observer on a line across the middle of the screen grows the current dot, and it steps aside over the hero. Without JavaScript it's a plain list of links.
 - **Hydrate only what shows.** `usePinShown` (from `ScrollScene`) says whether a pinned track is displayed; render the stage's contents only then, so phones don't hydrate a scene they never see. Static fallbacks use plain elements, not animated ones.
-- **A pinned scene in CSS alone** (`InterfaceToImpact`). The homepage's "From interface to impact" is a server component. Its track has a view timeline, and every piece's keyframes run on it, with `animation-range` set inline for the pieces that arrive in turn. Only the three phase buttons are script (`PhaseJump`).
+- **A pinned scene in CSS alone** (`InterfaceToImpact`, on `/about`). "From interface to impact" is a server component. Its track has a view timeline, and every piece's keyframes run on it, with `animation-range` set inline for the pieces that arrive in turn. Only the three phase buttons are script (`PhaseJump`).
   - **Why:** it used Motion's `useScroll`, mounted after hydration. The mount was about 270ms at 4× CPU and landed when a reader starts scrolling. It was the worst frame on the desktop homepage (about 300ms), and is now gone; the worst is about 150ms.
   - **Cost:** the drawing is now laid out with the page, so desktop blocking time at 4× is about 12% higher (+25ms) and first paint about +50ms. Phones don't lay it out.
   - **Fallback:** browsers without scroll timelines get the three still frames.
@@ -147,7 +159,7 @@ Drawing is scheduled so it doesn't land mid-scroll (`src/lib/idle.ts`): interact
 
 ### Checking performance
 
-**Where the homepage's start-up time goes.** On a 4× throttled phone the first long task (about 0.6–1s) is almost all layout, and most of that is the scalable drawings: each sets `font-size: 1cqw` in a size container, so its text is laid out against the container's width. Measured per section at 4×:
+**Where the homepage's start-up time went** (before the direct homepage, which dropped the chapters and Surface / System). On a 4× throttled phone the first long task (about 0.6–1s) is almost all layout, and most of that is the scalable drawings: each sets `font-size: 1cqw` in a size container, so its text is laid out against the container's width. Measured per section at 4×:
 
 | Section | Layout cost |
 |---|---|

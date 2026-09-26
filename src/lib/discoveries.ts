@@ -18,6 +18,8 @@ export const DISCOVERIES: Discovery[] = [
   { id: "hello", name: "Hello there", hint: "Tap someone until they run out of things to say.", href: "/#hello" },
   { id: "palette", name: "Command line", hint: "⌘K, Ctrl+K or / opens a shortcut to everything." },
   { id: "xray", name: "X-ray vision", hint: "Press x, or find the switch in the footer." },
+  { id: "bounce", name: "Bouncy", hint: "The headline's full stop looks restless.", href: "/#top" },
+  { id: "ripple", name: "Ripple", hint: "Six hundred dots, waiting for a tap.", href: "/#hello" },
   { id: "explorer", name: "Completionist", hint: "Open every project.", href: "/work" },
   { id: "konami", name: "Old school", hint: "A classic cheat code works here." },
 ];

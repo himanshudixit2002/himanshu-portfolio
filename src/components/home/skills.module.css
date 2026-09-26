@@ -1,0 +1,184 @@
+/*
+ * The skills explorer. Chips light when chosen; the projects beside them
+ * step back or come forward in a quick wave (opacity and transform, each a
+ * beat after the one above). On phones the matches ride in a bar pinned to
+ * the bottom of the screen while the section is in view.
+ */
+
+.explorer {
+  position: relative;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 2.5rem;
+}
+
+/* Grid items may shrink below their content (the pill row scrolls instead). */
+.explorer > * {
+  min-width: 0;
+}
+
+@media (min-width: 1024px) {
+  .explorer {
+    grid-template-columns: minmax(0, 1.35fr) minmax(0, 1fr);
+    align-items: start;
+    gap: 4rem;
+  }
+}
+
+.chip {
+  display: inline-flex;
+  align-items: center;
+  min-height: 2.5rem;
+  padding: 0 0.95rem;
+  border-radius: 999px;
+  background: rgb(255 255 255 / 0.05);
+  box-shadow: inset 0 0 0 1px rgb(255 255 255 / 0.12);
+  color: var(--color-fg-inverse);
+  font-size: 0.875rem;
+  font-weight: 500;
+  transition:
+    background-color var(--dur-micro) var(--ease-out),
+    box-shadow var(--dur-micro) var(--ease-out),
+    color var(--dur-micro) var(--ease-out),
+    scale var(--dur-micro) var(--ease-out);
+}
+
+button.chip {
+  cursor: pointer;
+}
+
+button.chip:hover:not([data-current], [aria-pressed="true"]) {
+  background: rgb(255 255 255 / 0.1);
+}
+
+button.chip:active {
+  scale: 0.96;
+}
+
+.chip[data-current],
+.chip[aria-pressed="true"] {
+  background: var(--color-fg-inverse);
+  box-shadow: none;
+  color: var(--color-ink);
+}
+
+.plain {
+  background: transparent;
+  box-shadow: inset 0 0 0 1px rgb(255 255 255 / 0.07);
+  color: var(--color-muted-inverse);
+  font-weight: 400;
+}
+
+/* ── Wide screens: every project, lit where the skill shows ─────────── */
+
+.panel {
+  display: none;
+}
+
+@media (min-width: 1024px) {
+  .panel {
+    position: sticky;
+    top: calc(var(--chrome-h) + 2rem);
+    display: block;
+    padding: 1.5rem;
+    border-radius: 1.5rem;
+    background: var(--color-ink-2);
+    box-shadow: inset 0 0 0 1px rgb(255 255 255 / 0.08);
+  }
+}
+
+.row {
+  opacity: 0.32;
+  transform: translateX(-0.25rem);
+  transition:
+    opacity 260ms var(--ease-out),
+    transform 420ms var(--ease-spring);
+  transition-delay: calc(var(--i) * 22ms);
+}
+
+.row[data-lit] {
+  opacity: 1;
+  transform: none;
+}
+
+.rowLink {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  min-height: 2.25rem;
+  padding: 0 0.6rem;
+  border-radius: 0.75rem;
+  font-size: 0.9375rem;
+  transition: background-color var(--dur-micro) var(--ease-out);
+}
+
+.rowLink:hover {
+  background: rgb(255 255 255 / 0.06);
+}
+
+.dot {
+  width: 0.55rem;
+  height: 0.55rem;
+  flex: none;
+  border-radius: 999px;
+  background: var(--accent);
+  transition: scale 420ms var(--ease-spring);
+}
+
+.explorer[data-choosing] .row[data-lit] .dot {
+  scale: 1.45;
+  box-shadow: 0 0 0.75rem color-mix(in oklab, var(--accent) 70%, transparent);
+}
+
+/* ── Phones: the matches in a bar at the foot of the screen ─────────── */
+
+.bar {
+  position: sticky;
+  bottom: max(0.75rem, env(safe-area-inset-bottom));
+  z-index: 5;
+  padding: 0.75rem 0.85rem;
+  border-radius: 1.1rem;
+  background: rgb(21 22 26 / 0.96);
+  box-shadow:
+    inset 0 0 0 1px rgb(255 255 255 / 0.12),
+    0 1rem 2rem -1rem rgb(0 0 0 / 0.7);
+  opacity: 0;
+  pointer-events: none;
+  transform: translateY(0.75rem);
+  transition:
+    opacity 220ms var(--ease-out),
+    transform 380ms var(--ease-spring);
+}
+
+.bar[data-open] {
+  opacity: 1;
+  pointer-events: auto;
+  transform: none;
+}
+
+@media (min-width: 1024px) {
+  .bar {
+    display: none;
+  }
+}
+
+.pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  min-height: 2.25rem;
+  padding: 0 0.8rem;
+  border-radius: 999px;
+  background: color-mix(in oklab, var(--accent) 18%, transparent);
+  box-shadow: inset 0 0 0 1px color-mix(in oklab, var(--accent) 45%, transparent);
+  color: var(--color-fg-inverse);
+  font-size: 0.8125rem;
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+:global(html[data-motion="reduce"]) .row,
+:global(html[data-motion="reduce"]) .dot,
+:global(html[data-motion="reduce"]) .bar {
+  transition: none;
+}

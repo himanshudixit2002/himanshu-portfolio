@@ -61,7 +61,13 @@ export function Hero() {
             </span>
             <br className="sm:hidden" />{" "}
             <span className="wr-w" style={word(3)}>
-              {secondB}
+              {secondB.replace(/\.$/, "")}
+              {/* The full stop is a ball: it bounces when poked (Fx). */}
+              {secondB.endsWith(".") && (
+                <span data-bounce="" className="hero-dot">
+                  .
+                </span>
+              )}
             </span>
           </span>
         </h1>
@@ -101,13 +107,17 @@ export function Hero() {
                 <SskOverviewArt label="Illustration of the SmartShelfKart dashboard with sample data." />
               </div>
               <div
+                data-swap-root=""
                 className="hero-depth absolute top-[27%] left-[1%] w-[36%] md:top-[31%] md:left-[3%] md:w-[17%]"
                 style={depth("9rem")}
               >
                 <NovaPhoneArt
                   conversation="low-stock"
-                  label="Illustration of the Nova assistant answering “What's running low?” with four sample products."
+                  both
+                  label="Illustration of the Nova assistant with two sample conversations: “What's running low?” answered with four sample products, and a stock change previewed before it's saved."
                 />
+                {/* Tap the phone for its other sample conversation (Fx flips data-swapped). */}
+                <button type="button" data-swap="" aria-label="Show the phone's other sample conversation" className="needs-js absolute inset-0 cursor-pointer rounded-[12%]" />
               </div>
               <div
                 className="hero-depth absolute top-[48%] right-[2%] hidden w-[27%] md:block"

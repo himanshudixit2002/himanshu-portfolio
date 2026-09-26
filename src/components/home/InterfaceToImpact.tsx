@@ -142,7 +142,7 @@ function PinnedScene() {
   );
 }
 
-/** Phones, reduced motion and no-JS: three captioned frames, no pinning. */
+/** Phones, reduced motion and no-JS: three captioned frames, no pinning (phones draw only the last). */
 function StaticScene() {
   return (
     <div className={`${s.still} container-page section-y`}>
@@ -150,7 +150,8 @@ function StaticScene() {
       <ol className="mt-10 grid gap-14 md:gap-20">
         {phases.map((p, i) => (
           <li key={p.title} className="grid gap-6 md:grid-cols-[1fr_1.6fr] md:items-center md:gap-12">
-            <div className="md:order-2">
+            {/* Phones draw only the last frame, which holds everything; the first two are said in words. */}
+            <div className={`order-2 ${i < phases.length - 1 ? "max-md:hidden" : ""}`}>
               <div className={s.staticBox}>
                 <SskInventoryArt label={inventoryAlt} />
                 {i > 0 && <Overlays checks={i > 1} decorative />}

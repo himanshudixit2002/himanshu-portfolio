@@ -35,6 +35,13 @@ export function ProjectCard({ project, large = false, headingLevel = 3, classNam
         </Heading>
         <p className="mt-2 text-muted-inverse">{project.tagline}</p>
         {large && <p className="mt-3 text-sm leading-relaxed text-muted-inverse">{project.summary}</p>}
+        <ul aria-label="Built with" className="mt-4 flex flex-wrap gap-1.5">
+          {project.stack.slice(0, large ? 6 : 4).map((t) => (
+            <li key={t} className="rounded-full bg-white/6 px-2.5 py-1 text-[0.6875rem] text-muted-inverse ring-1 ring-white/8 ring-inset">
+              {t}
+            </li>
+          ))}
+        </ul>
         <p className="mt-auto flex items-center justify-between gap-3 pt-5 text-xs text-dim-inverse">
           <span>
             {formatPeriod(project.period)} · {project.status}

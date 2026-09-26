@@ -648,6 +648,119 @@ html[data-xray] [data-xray]::before {
     }
   }
 
+  /* The hero's full stop is a ball: poked, it squashes, bounces three
+     times, lower each time, and blushes blue at the top (Fx flips
+     data-bouncing between two identical animations). A wider invisible
+     target makes it easy to hit. */
+  .hero-dot {
+    position: relative;
+    display: inline-block;
+    cursor: pointer;
+    transform-origin: 50% 90%;
+  }
+
+  .hero-dot::after {
+    content: "";
+    position: absolute;
+    inset: -0.15em -0.2em 0;
+  }
+
+  html[data-motion="full"] .hero-dot[data-bouncing="a"] {
+    animation: dot-bounce-a 1100ms var(--ease-out);
+  }
+
+  html[data-motion="full"] .hero-dot[data-bouncing="b"] {
+    animation: dot-bounce-b 1100ms var(--ease-out);
+  }
+
+  @keyframes dot-bounce-a {
+    0%,
+    100% {
+      transform: none;
+    }
+    10% {
+      transform: scale(1.25, 0.75);
+    }
+    28% {
+      transform: translateY(-0.6em) scale(0.9, 1.12);
+      color: var(--color-accent-bright);
+    }
+    46% {
+      transform: scale(1.18, 0.82);
+    }
+    60% {
+      transform: translateY(-0.24em);
+    }
+    72% {
+      transform: scale(1.08, 0.92);
+    }
+    84% {
+      transform: translateY(-0.07em);
+    }
+  }
+
+  @keyframes dot-bounce-b {
+    0%,
+    100% {
+      transform: none;
+    }
+    10% {
+      transform: scale(1.25, 0.75);
+    }
+    28% {
+      transform: translateY(-0.6em) scale(0.9, 1.12);
+      color: var(--color-accent-bright);
+    }
+    46% {
+      transform: scale(1.18, 0.82);
+    }
+    60% {
+      transform: translateY(-0.24em);
+    }
+    72% {
+      transform: scale(1.08, 0.92);
+    }
+    84% {
+      transform: translateY(-0.07em);
+    }
+  }
+
+  /* Copying the email sends a paper plane off the button, up and away. */
+  .paper-plane {
+    position: absolute;
+    top: 50%;
+    left: 1.25rem;
+    width: 1.35rem;
+    height: 1.35rem;
+    margin-top: -0.675rem;
+    color: var(--color-accent);
+    pointer-events: none;
+    opacity: 0;
+  }
+
+  html[data-motion="full"] .paper-plane {
+    animation: paper-plane 1300ms cubic-bezier(0.3, 0.1, 0.3, 1) forwards;
+  }
+
+  @keyframes paper-plane {
+    0% {
+      opacity: 0;
+      transform: translate3d(0, 0, 0) rotate(0deg) scale(0.5);
+    }
+    15% {
+      opacity: 1;
+      transform: translate3d(0.5rem, -1rem, 0) rotate(-12deg) scale(1);
+    }
+    55% {
+      opacity: 1;
+      transform: translate3d(5rem, -3.75rem, 0) rotate(6deg) scale(1);
+    }
+    100% {
+      opacity: 0;
+      transform: translate3d(11rem, -6rem, 0) rotate(-4deg) scale(0.7);
+    }
+  }
+
   /* The footer's HD turns over under the pointer. */
   .mono-flip {
     transition: rotate 700ms var(--ease-spring);
@@ -689,9 +802,28 @@ html[data-xray] [data-xray]::before {
   }
 }
 
+/* A phone with two sample chats: the second shows once the phone is
+   tapped, and whichever arrives plays in bubble by bubble. Unlayered, so
+   it beats the art's own display for its threads. */
+[data-swap-root] [data-thread="alt"],
+[data-swap-root][data-swapped="alt"] [data-thread="main"] {
+  display: none;
+}
+
+[data-swap-root][data-swapped="alt"] [data-thread="alt"] {
+  display: flex;
+}
+
+html[data-motion="full"] [data-swap-root][data-swapped] [data-bubble] {
+  transform-origin: 100% 100%;
+  animation: bubble-in 480ms var(--ease-spring) both;
+  animation-delay: calc(var(--i, 0) * 260ms);
+}
+
 /* Controls that need script: hidden without it (unlayered, so it beats their display utilities). */
 html:not([data-js]) .palette-button,
-html:not([data-js]) .xray-toggle {
+html:not([data-js]) .xray-toggle,
+html:not([data-js]) .needs-js {
   display: none;
 }
 

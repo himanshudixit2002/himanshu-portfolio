@@ -1,69 +1,37 @@
 import type { Metadata } from "next";
-import { cueAndCoffee, elepeia } from "@/content/projects";
-import { CafeFloorArt, ElepeiaArt } from "@/components/art/ChapterArt";
-import { AboutTeaser } from "@/components/home/AboutTeaser";
 import { AtAGlance } from "@/components/home/AtAGlance";
 import { ContactClose } from "@/components/home/ContactClose";
-import { EngineeringScene } from "@/components/home/EngineeringScene";
 import { Experience } from "@/components/home/Experience";
 import { Hero } from "@/components/home/Hero";
-import { InterfaceToImpact } from "@/components/home/InterfaceToImpact";
-import { Journey } from "@/components/home/Journey";
+import { Projects } from "@/components/home/Projects";
 import { SectionRail } from "@/components/home/SectionRail";
-import { ProjectChapter } from "@/components/home/ProjectChapter";
-import { SmartShelfKartChapter } from "@/components/home/SmartShelfKartChapter";
-import { SurfaceSystem } from "@/components/home/SurfaceSystem";
+import { Skills } from "@/components/home/Skills";
 
 export const metadata: Metadata = { alternates: { canonical: "/" } };
 
 const SECTIONS = [
   { id: "hello", label: "At a glance" },
-  { id: "impact", label: "Interface to impact" },
-  { id: "work", label: "Selected work" },
   { id: "experience", label: "Experience" },
-  { id: "engineering", label: "Engineering" },
-  { id: "journey", label: "Journey" },
-  { id: "about", label: "About" },
+  { id: "work", label: "Work" },
+  { id: "skills", label: "Skills" },
   { id: "contact", label: "Contact" },
 ];
 
 /*
- * The homepage storyboard: opening statement, who Himanshu is at a glance,
- * interface to impact, selected work (SmartShelfKart and its Surface /
- * System explorer, Elepeia, Cue & Coffee), experience, the engineering lab
- * and every other project, the path so far, about, and contact. Light and
- * dark sections alternate.
+ * The homepage, direct: the opening statement, who Himanshu is at a glance,
+ * the Cleartrip role, every project (three flagships as stacking cards,
+ * then the rest with their stacks), the skills tied to that work, and
+ * contact. The deeper walkthroughs live on the case studies, /about and
+ * /lab. Light and dark sections alternate.
  */
 export default function Home() {
   return (
     <>
       <Hero />
       <AtAGlance />
-      <InterfaceToImpact />
-      <section id="work" aria-labelledby="work-title">
-        <h2 id="work-title" className="sr-only">
-          Selected work
-        </h2>
-        <SmartShelfKartChapter />
-        <SurfaceSystem />
-        <ProjectChapter
-          project={elepeia}
-          index={2}
-          tone="dark"
-          art={<ElepeiaArt label={elepeia.media[0].alt} onDark />}
-        />
-        <ProjectChapter
-          project={cueAndCoffee}
-          index={3}
-          tone="light"
-          reverse
-          art={<CafeFloorArt label={cueAndCoffee.media[0].alt} />}
-        />
-      </section>
       <Experience />
-      <EngineeringScene />
-      <Journey />
-      <AboutTeaser />
+      <Projects />
+      <Skills />
       <ContactClose />
       <SectionRail sections={SECTIONS} />
     </>
