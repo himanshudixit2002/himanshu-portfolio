@@ -10,6 +10,7 @@ export function ContactClose() {
       id="contact"
       aria-labelledby="contact-title"
       data-xray="Server-rendered · the heading lights word by word as it scrolls · the email button leans toward a fine pointer"
+      data-tone="light"
       className="surface-light relative section-y bg-paper text-fg"
     >
       <div className="container-page">

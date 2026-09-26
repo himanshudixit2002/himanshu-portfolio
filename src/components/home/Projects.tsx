@@ -16,7 +16,7 @@ export function Projects() {
   const more = projects.filter((p) => !FEATURED.includes(p.slug));
 
   return (
-    <section id="work" aria-labelledby="work-title" className="relative section-y bg-ink">
+    <section id="work" aria-labelledby="work-title" data-tone="dark" className="relative section-y bg-ink">
       <div className="container-page">
         <div className="grid gap-6 lg:grid-cols-[1fr_auto] lg:items-end">
           <div className="max-w-3xl">
@@ -45,7 +45,7 @@ export function Projects() {
           <Featured />
         </div>
 
-        <div className="mt-(--section-y)">
+        <div className="mt-16 md:mt-24">
           <div className="flex flex-wrap items-end justify-between gap-4">
             <h3 className="text-title text-[clamp(1.5rem,3vw,2.25rem)]">More projects</h3>
             <Link href="/work" className="group inline-flex min-h-11 items-center gap-2 text-accent-bright">

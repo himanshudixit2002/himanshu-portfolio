@@ -9,6 +9,7 @@ export function Skills() {
       id="skills"
       aria-labelledby="skills-title"
       data-xray="Server-rendered list · each skill matched to the projects whose own stack names it · a client island only for choosing"
+      data-tone="dark"
       className="relative section-y bg-ink"
     >
       <div className="container-page">

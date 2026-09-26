@@ -21,6 +21,7 @@ export function Experience({ full = false, headingLevel = 2 }: { full?: boolean;
       id="experience"
       aria-labelledby="experience-title"
       data-xray="Server-rendered · figures are plain text from the résumé, never counted up"
+      data-tone="light"
       className="surface-light relative section-y bg-paper text-fg"
     >
       <div className="container-page">
