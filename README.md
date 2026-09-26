@@ -62,7 +62,7 @@ Only ScopeForge has real screenshots (its repository's synthetic demo workspace)
 - Content never depends on JavaScript. The hero entrance is a CSS animation toward the visible state; section reveals only hide content once `RevealObserver` is running (in browsers without scroll timelines; elsewhere they are CSS tied to scroll); Scene 02 falls back to the stacked layout without JS.
 - Scroll-linked values never set React state per frame. Scene 02 changes state three times across the whole scene.
 - In-page links (`#work`, back to top) scroll smoothly; route changes still land instantly because `<html data-scroll-behavior="smooth">` tells Next.js to suspend it while navigating. Reduced motion turns it off.
-- Client-side navigations fade the new page up (`app/template.tsx`, `app/work/template.tsx` → `PageTransition`). It is a Web Animations fade, not a view transition: snapshotting the 15,000px homepage froze a frame for about 250ms. A shared-element morph from a project card into its case study (React `<ViewTransition>` naming only the card's drawing and the hero device) was measured and dropped as well. The snapshot added 60–110ms to the navigation's longest frame on a 4× throttled phone (226–283ms vs 164–176ms). The new page's hydration, 100–150ms tasks, then lands mid-morph, and the group's size change runs on the main thread, so the morph stutters. Even unthrottled on desktop, frames of 50ms landed mid-morph.
+- Client-side navigations fade the new page up in 320ms (`app/template.tsx`, `app/work/template.tsx` → `PageTransition`). It is a Web Animations fade, not a view transition: snapshotting the 15,000px homepage froze a frame for about 250ms. A shared-element morph from a project card into its case study (React `<ViewTransition>` naming only the card's drawing and the hero device) was measured and dropped as well. The snapshot added 60–110ms to the navigation's longest frame on a 4× throttled phone (226–283ms vs 164–176ms). The new page's hydration, 100–150ms tasks, then lands mid-morph, and the group's size change runs on the main thread, so the morph stutters. Even unthrottled on desktop, frames of 50ms landed mid-morph.
 - The mobile menu and the Surface / System layers open with `.disclosure` (a 0fr→1fr grid row). Closed panels are `inert` and hidden once they finish closing.
 - The `/work` filter morphs cards with a view transition where `view-transition-name: match-element` is supported; cards are named only while it runs. Elsewhere it filters instantly.
 - Interactive visuals fetch their code and mount while the page is idle, one per idle period, as interruptible transitions — so the burst of rendering and layout lands while you're reading, not mid-scroll. Scrolled to first, one mounts 1000px before it arrives. Their reserved heights in `LazyVisual.tsx` are measured per breakpoint so nothing shifts when they arrive — re-measure after changing a visual's layout.
@@ -103,6 +103,23 @@ Scenes too dense for a 390px stage set `mobile: "cards"` in their meta (Cue & Co
 Drawing is scheduled so it doesn't land mid-scroll (`src/lib/idle.ts`): interactives mount in idle time first; static frames (`IdleDraw`) and step cards (`CardDraw`: on load only the card in view and the one peeking in; the rest as the row is swiped) come after, and only once scrolling has settled — except the first frame and the first two cards (`eager`), which draw at "high" priority: an idle callback of their own with a 400ms deadline, since a slow phone that keeps scrolling has no idle time and a blank card looks broken. A live drawing's panels for later steps can go in `Later`, which draws them in idle time or when their step arrives, so the stage's first render is only what step 0 shows.
 
 ### Checking performance
+
+**Where the homepage's start-up time goes.** On a 4× throttled phone the first long task (about 0.6–1s) is almost all layout, and most of that is the scalable drawings: each sets `font-size: 1cqw` in a size container, so its text is laid out against the container's width. Measured per section at 4×:
+
+| Section | Layout cost |
+|---|---|
+| SmartShelfKart chapter | 160–205ms |
+| Surface / System | 45–216ms |
+| Elepeia chapter | 68–116ms |
+| Cue & Coffee chapter | 78–112ms |
+| Every other section | 5–63ms |
+
+Deferring off-screen sections with `content-visibility: auto` was measured and dropped. It only moves that work, and every variant put more long frames into a quick early scroll on the 4× phone:
+
+- **Every section, laid out in idle time after load:** first paint about a quarter faster and blocking time about 30% lower, but 9–11 frames over 50ms vs 2–4.
+- **Only the cheap sections:** blocking time 16–26% lower, but 6–8 frames vs 2–4.
+
+The lever that doesn't trade one for the other is cheaper drawing layout: sizing the art without container queries.
 
 `npm run perf -- <scroll|load|heights|shots|feel>` runs Playwright against a running build (`--base`, default `http://localhost:3000`). `scroll` reports frame gaps, layout shift and long tasks per route; `load` median FCP and blocking time, with `--compare <url>` for an A/B against another build; `heights` checks each lazy visual's reserved height; `shots` saves screenshots, with `--scenes` at three points through every pinned scene and `--reduced` / `--nojs` variants; `feel` scrolls at a brisk 1400px/s (phones emulated with touch, `--net 4g` for a mobile connection) and totals, per section, how long content in the reading band was still faded, undrawn, a placeholder or an image loading — aim for under 150ms each. Budgets: CLS 0 on every route, no frame over 50ms while scrolling, and blocking time within 10% of the previous build — or, where a page gains new content above the fold, the growth measured and stated. At `--throttle 4` a long frame should be one the previous build also had.
 

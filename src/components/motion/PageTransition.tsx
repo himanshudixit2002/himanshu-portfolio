@@ -31,7 +31,7 @@ export function PageTransition({ children }: { children: ReactNode }) {
         { opacity: 0, transform: "translate3d(0, 14px, 0)" },
         { opacity: 1, transform: "none" },
       ],
-      { duration: 420, easing: "cubic-bezier(0.22, 1, 0.36, 1)" },
+      { duration: 320, easing: "cubic-bezier(0.22, 1, 0.36, 1)" },
     );
     return () => animation.cancel();
   }, []);
