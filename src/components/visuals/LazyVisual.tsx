@@ -2,6 +2,7 @@
 
 import dynamic from "next/dynamic";
 import { startTransition, useEffect, useState, type ComponentType } from "react";
+import { whenIdle } from "@/lib/idle";
 import { useNearViewport } from "./useNearViewport";
 
 export type InteractiveId =
@@ -72,28 +73,6 @@ const COMPONENTS = Object.fromEntries(
     dynamic(LOADERS[id], { ssr: false, loading: placeholder(HEIGHT[id]) }),
   ]),
 ) as Record<InteractiveId, ComponentType<Record<string, unknown>>>;
-
-/*
- * Idle-time work, one piece per idle period, in the order it was asked for.
- * Mounting an interactive is a burst of rendering and layout; done while the
- * page is idle — usually while the reader is still on the hero — it never
- * lands in the middle of a scroll.
- */
-const queue: (() => void)[] = [];
-let draining = false;
-const later = (fn: () => void) => (typeof window.requestIdleCallback === "function" ? window.requestIdleCallback(fn) : window.setTimeout(fn, 200));
-
-function whenIdle(task: () => void) {
-  queue.push(task);
-  if (draining) return;
-  draining = true;
-  const next = () => {
-    queue.shift()?.();
-    if (queue.length) later(next);
-    else draining = false;
-  };
-  later(next);
-}
 
 /**
  * Fetches the visual's code in one idle period and mounts it in a later one,

@@ -17,15 +17,22 @@ const SCENES: Record<string, ComponentType<SceneProps>> = {
   kvstore: lazy(() => import("./live/KvScene")),
   "self-healing-cache": lazy(() => import("./live/CacheScene")),
   vitals: lazy(() => import("./live/VitalsScene")),
+  "rxforce-sfa": lazy(() => import("./live/RxScene")),
+  "url-shortener": lazy(() => import("./live/UrlScene")),
+  skintellect: lazy(() => import("./live/SkinScene")),
+  "cue-and-coffee": lazy(() => import("./live/CafeScene")),
 };
 
-export function SceneLoader({ slug, accent, steps }: { slug: string; accent: string; steps: number }) {
+type Shape = { steps: number; frames: number; mobile?: "pin" | "cards" };
+
+export function SceneLoader({ slug, accent, shape }: { slug: string; accent: string; shape: Shape }) {
   const Scene = SCENES[slug];
   if (!Scene) return null;
-  const { base, md } = sceneLength(steps);
+  const { base, md } = sceneLength(shape.steps);
   const reserve = (
-    <div className="scene" data-mobile="pin">
+    <div className="scene" data-mobile={shape.mobile === "cards" ? "frames" : "pin"} style={{ "--frames-n": shape.frames, "--frames-details": shape.frames < shape.steps ? 1 : 0 } as CSSProperties}>
       <div className="scene-pin scene-track" style={{ "--len": base, "--len-md": md } as CSSProperties} />
+      <div className="scene-frames" />
     </div>
   );
   return (

@@ -105,7 +105,18 @@
   animation: sweep 2.4s var(--ease-in-out) infinite;
 }
 
+@keyframes scan {
+  to {
+    transform: translateY(var(--scan-h, 0));
+  }
+}
+
+.scan {
+  animation: scan 1.8s var(--ease-in-out) infinite alternate;
+}
+
 /* Static frames sit still: loops stop, transitions don't run on first paint. */
+.still .scan,
 .still .spin,
 .still .blink,
 .still .typing,

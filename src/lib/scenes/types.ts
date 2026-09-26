@@ -15,8 +15,13 @@ export type SceneMeta = {
   /** What is real and what is sample data, shown under the scene. */
   note: string;
   steps: SceneStep[];
-  /** Steps shown as static frames (no JS, reduced motion). */
+  /** Steps shown as static frames (reduced motion, from 768px). */
   keyFrames: number[];
+  /**
+   * What phones get: a short pin (default), or — for scenes too dense for a
+   * 390px stage — every step as a swipeable card.
+   */
+  mobile?: "pin" | "cards";
 };
 
 /** Scroll length of a scene's pinned track: shorter per step on phones, where each step is a quicker read. */

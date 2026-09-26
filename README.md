@@ -83,13 +83,17 @@ Only ScopeForge has real screenshots (its repository's synthetic demo workspace)
 
 ### Signature scenes
 
-Before its interactive ("Now try it"), a case study tells one short story by scrolling — SmartShelfKart's question travelling the layers, Elepeia's page losing its weight, a key landing in KVStore, a cache losing a node and healing, what Vitals costs the Mac. Each scene is:
+Before its interactive ("Now try it"), a case study tells one short story by scrolling — SmartShelfKart's question travelling the layers, Elepeia's page losing its weight, a key landing in KVStore, a cache losing a node and healing, what Vitals costs the Mac, RxForce's queue riding out a dead zone, 39134 becoming `abc` and a destination failing the SSRF checks, Skintellect's pipeline in order, and one night at the snooker club. Each scene is:
 
 - `src/lib/scenes/<name>.ts` — its steps (captions restating the project's own content; a scene adds pictures, not claims), a note on what is real, and a pure `frameAt(step)` built on the same simulation engines as the interactives. Tested in `tests/unit/scenes.test.ts`.
-- `src/components/scenes/visuals/*Visual.tsx` — the drawing for a frame, in SVG so it scales to whatever the pinned stage leaves it, in two compositions: `wide` from 768px and `tall` for phones (portrait, type sized to read, not a shrunk copy). Moves are transforms and fades on transitions keyed to the step; nothing animates per scroll frame.
+- `src/components/scenes/visuals/*Visual.tsx` — the drawing for a frame, in SVG so it scales to whatever the pinned stage leaves it, in two compositions: `wide` from 768px and `tall` for phones (portrait, type sized to read, not a shrunk copy). Moves are transitions keyed to the step; nothing animates per scroll frame. Groups that hold text fade rather than slide: moving an SVG group re-lays out every line of text in it on each frame. Keep text in the site's fonts (✓ and ✕ are drawn as paths) — a fallback-font lookup mid-scroll costs a frame.
 - `src/components/scenes/live/*Scene.tsx` — the client scene (`LiveScene`), each in its own chunk loaded by `SceneLoader`, so a case page fetches only its own.
 
-The stage draws only the composition for the screen it's on. Reduced motion gets static frames drawn on demand; without JavaScript, the `<noscript>` in `SignatureScene` lists the steps as text. Neither is in anyone else's HTML.
+The stage draws only the composition for the screen it's on. Reduced motion gets static frames drawn on demand; without JavaScript, the `<noscript>` in `SignatureScene` lists the steps as text. Neither is in anyone else's HTML. The step indicator is a row of fixed segments that only change colour, and the stage is `contain: strict`, so a step change is laid out inside the stage and not across the page.
+
+Scenes too dense for a 390px stage set `mobile: "cards"` in their meta (Cue & Coffee): phones get every step as a card in a swipeable row (`StepCards`, on `SnapGallery`) instead of a pin. Until frames are drawn, `motion.css` holds about their height from `--frames-n` and `--frames-details`, which the scene sets.
+
+Drawing is scheduled so it doesn't land mid-scroll (`src/lib/idle.ts`): interactives mount in idle time first; static frames (`IdleDraw`) and step cards (`CardDraw`, only once within a card's width of the row's view) come after, and only once scrolling has settled. A live drawing's panels for later steps can go in `Later`, which draws them in idle time or when their step arrives, so the stage's first render is only what step 0 shows.
 
 ### Checking performance
 

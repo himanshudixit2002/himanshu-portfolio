@@ -221,6 +221,8 @@
   top: 0;
   height: 100svh;
   overflow: hidden;
+  /* A fixed box: what changes inside it (each step) is laid out inside it, not across the page. */
+  contain: strict;
 }
 
 .scene-pin {
@@ -243,6 +245,43 @@ html[data-js]:not([data-motion="reduce"]) .scene[data-mobile="pin"] > .scene-fra
   html[data-js]:not([data-motion="reduce"]) .scene > .scene-frames {
     display: none;
   }
+}
+
+/*
+ * Frames are drawn on the client, once it knows they're what shows. Until
+ * then, hold about their height so a reload that restores scroll below the
+ * scene doesn't jump. The scene sets --frames-n (how many) and
+ * --frames-details (1 if the "every step" disclosure follows). Phones: frame
+ * box (aspect 360/460) plus caption. Wider: box (640/520) beside a 20rem
+ * caption column. Step cards: one card (aspect 360/480 inside 1rem padding)
+ * plus its caption and the pager. Measured to within ~100px at 360–1440.
+ */
+html[data-js] .scene > .scene-frames:empty {
+  --w: min(100vw - 2 * var(--gutter), 80rem);
+  min-height: calc(var(--frames-n, 3) * (var(--w) * 460 / 360 + 12.5rem) - 2.5rem + var(--frames-details, 0) * 4.75rem);
+}
+
+@media (min-width: 768px) {
+  html[data-js] .scene > .scene-frames:empty {
+    min-height: calc(var(--frames-n, 3) * ((var(--w) - 23.5rem) * 520 / 640 + 3.5rem) - 3.5rem + var(--frames-details, 0) * 4.75rem);
+  }
+}
+
+@media (max-width: 767.98px) {
+  html[data-js] .scene[data-mobile="frames"] > .scene-frames:empty {
+    min-height: calc((min(0.86 * var(--w), 28rem) - 2rem) * 480 / 360 + 21.3rem);
+  }
+}
+
+/* A static frame's drawing, arriving in its idle slot (components/scenes/IdleDraw). */
+@keyframes drawn-in {
+  from {
+    opacity: 0;
+  }
+}
+
+html[data-motion="full"] .drawn-in {
+  animation: drawn-in var(--dur-base) var(--ease-out);
 }
 
 /* Step captions stacked in one cell; the current one is shown. */

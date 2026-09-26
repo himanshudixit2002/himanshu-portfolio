@@ -1,6 +1,8 @@
 import type { ReactNode } from "react";
 import type { SceneMeta } from "@/lib/scenes/types";
 import { SceneCaptions, SceneDots } from "@/components/motion/ScrollScene";
+import { SnapGallery } from "@/components/motion/SnapGallery";
+import { CardDraw, IdleDraw } from "./IdleDraw";
 
 /**
  * The pinned stage's layout, shared by every scene: kind and step dots on
@@ -35,7 +37,7 @@ export function SceneFrames({ meta, frames }: { meta: SceneMeta; frames: ReactNo
         {meta.keyFrames.map((k, i) => (
           <li key={k} className="grid gap-5 md:grid-cols-[minmax(0,20rem)_minmax(0,1fr)] md:items-center md:gap-14">
             <div aria-hidden="true" className="aspect-[360/460] rounded-[1.75rem] bg-ink-2 p-4 ring-1 ring-white/8 md:order-2 md:aspect-[640/520] md:p-6">
-              {frames[i]}
+              <IdleDraw>{frames[i]}</IdleDraw>
             </div>
             <div>
               <p className="text-eyebrow text-dim-inverse">
@@ -59,6 +61,31 @@ export function SceneFrames({ meta, frames }: { meta: SceneMeta; frames: ReactNo
           </ol>
         </details>
       )}
+    </div>
+  );
+}
+
+/**
+ * Phones, for the densest scenes: every step as a card in a swipeable row —
+ * the drawing, then its caption — instead of a pinned stage.
+ */
+export function StepCards({ meta, label, frames }: { meta: SceneMeta; label: string; frames: ReactNode[] }) {
+  const count = String(meta.steps.length).padStart(2, "0");
+  const cards = meta.steps.map((step, i) => (
+    <article key={step.title} className="flex h-full flex-col rounded-[1.75rem] bg-ink-2 p-4 ring-1 ring-white/8">
+      <div aria-hidden="true" className="aspect-[360/480]">
+        <CardDraw>{frames[i]}</CardDraw>
+      </div>
+      <p className="mt-5 text-eyebrow text-dim-inverse">
+        {String(i + 1).padStart(2, "0")} / {count}
+      </p>
+      <h3 className="mt-1.5 text-lg leading-snug font-semibold tracking-[-0.015em] text-balance">{step.title}</h3>
+      <p className="mt-1.5 text-[0.9375rem] leading-relaxed text-pretty text-muted-inverse">{step.body}</p>
+    </article>
+  ));
+  return (
+    <div className="container-page">
+      <SnapGallery label={`${label}, step by step`} items={cards} />
     </div>
   );
 }

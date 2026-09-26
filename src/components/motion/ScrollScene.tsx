@@ -24,6 +24,12 @@ type Props = {
    * they'll never see; give such a scene a <noscript> copy for no-JS.
    */
   frames: ReactNode | (() => ReactNode);
+  /**
+   * What a function's drawing holds — how many frames, and whether a
+   * disclosure follows them — so CSS can reserve about its height until
+   * it's drawn.
+   */
+  reserve?: { frames: number; details?: boolean };
   className?: string;
 };
 
@@ -33,16 +39,17 @@ type Props = {
  * stage's content is only rendered once it is actually shown; its track
  * reserves the height either way.
  */
-export function ScrollScene({ label, length = { base: "150lvh", md: "240lvh" }, mobile = "frames", children, frames, className = "" }: Props) {
+export function ScrollScene({ label, length = { base: "150lvh", md: "240lvh" }, mobile = "frames", children, frames, reserve, className = "" }: Props) {
   const track = useRef<HTMLDivElement>(null);
   const { scrollYProgress } = useScroll({ target: track, offset: ["start start", "end end"] });
   const shown = usePinShown(track);
 
   const style = { "--len": length.base, "--len-md": length.md } as CSSProperties;
+  const reserveStyle = reserve ? ({ "--frames-n": reserve.frames, "--frames-details": reserve.details ? 1 : 0 } as CSSProperties) : undefined;
   const staticFrames = typeof frames === "function" ? (shown === false ? frames() : null) : frames;
 
   return (
-    <div role="group" aria-label={label} className={`scene ${className}`} data-mobile={mobile}>
+    <div role="group" aria-label={label} className={`scene ${className}`} data-mobile={mobile} style={reserveStyle}>
       <div ref={track} className="scene-pin scene-track" style={style}>
         <div className="scene-stage">{shown ? children(scrollYProgress) : null}</div>
       </div>
@@ -87,15 +94,20 @@ export function useSceneStep(progress: MotionValue<number>, count: number) {
   return step;
 }
 
-/** Dots showing where the scene is. Decorative: the captions carry the steps. */
+/**
+ * Where the scene is, as a segmented bar: steps behind are dimmed accent, the
+ * current one full accent. Fixed-size segments that only change colour — a
+ * dot that grew in width re-laid out the page on every frame of its
+ * transition. Decorative: the captions carry the steps.
+ */
 export function SceneDots({ step, count, accent }: { step: number; count: number; accent?: string }) {
   return (
-    <ol aria-hidden="true" className="flex gap-1.5">
+    <ol aria-hidden="true" className="flex gap-1">
       {Array.from({ length: count }, (_, i) => (
         <li
           key={i}
-          className="h-1 rounded-full transition-[width,background-color] duration-(--dur-base) ease-(--ease-out)"
-          style={{ width: i === step ? "1.75rem" : "0.375rem", background: i <= step ? (accent ?? "var(--color-accent-bright)") : "rgb(255 255 255 / 0.2)" }}
+          className="h-1 w-4 rounded-full transition-[background-color,opacity] duration-(--dur-base) ease-(--ease-out)"
+          style={{ background: i <= step ? (accent ?? "var(--color-accent-bright)") : "rgb(255 255 255 / 0.2)", opacity: i < step ? 0.45 : 1 }}
         />
       ))}
     </ol>
