@@ -1,11 +1,15 @@
 "use client";
 
 import Image from "next/image";
+import { useEffect, useRef, useState } from "react";
 import { profile } from "@/content/profile";
 import { usePointerLight } from "@/components/motion/usePointerLight";
 import s from "./portrait.module.css";
 
 const SIZES = "(min-width: 768px) 19rem, 13rem";
+
+/** What the portrait says, one line per tap, round and round. Invitations only. */
+const LINES = ["Hi, I’m Himanshu.", "Everything here is live — poke the cards.", "Can’t pick one? Hit Surprise me."];
 
 /**
  * Himanshu's photo with depth: shoulders in a glowing disc, head rising out
@@ -15,29 +19,74 @@ const SIZES = "(min-width: 768px) 19rem, 13rem";
  * blur placeholder: on a cut-out its haze shows through the transparent
  * parts until script removes it (and for good without script); the disc
  * holds the place instead.
+ *
+ * Tap it and he hops, the ring whirls and a speech bubble says the next
+ * line; the line is also announced politely to screen readers.
  */
 export function Portrait({ className = "" }: { className?: string }) {
   const ref = usePointerLight<HTMLDivElement>();
   const { src, alt } = profile.photo;
+  const [taps, setTaps] = useState(0);
+  const [talking, setTalking] = useState(false);
+  const quiet = useRef(0);
+  useEffect(() => () => window.clearTimeout(quiet.current), []);
+
+  const hello = () => {
+    setTaps((n) => n + 1);
+    setTalking(true);
+    window.clearTimeout(quiet.current);
+    quiet.current = window.setTimeout(() => setTalking(false), 4200);
+  };
+
+  const line = taps ? LINES[(taps - 1) % LINES.length] : "";
+  // Alternate between two identical animations so each tap starts a fresh one.
+  const beat = taps ? (taps % 2 ? "a" : "b") : undefined;
+
   return (
     <div ref={ref} className={`${s.portrait} ${className}`}>
       <div className={s.float}>
-        <div className={s.stage}>
-          <span aria-hidden="true" className={s.glow} />
-          <span aria-hidden="true" className={s.ringBox}>
-            <span className={s.ring} />
-          </span>
-          <span aria-hidden="true" className={s.disc} />
-          <div className={s.person}>
-            <div className={s.rise}>
-              <Image src={src} alt={alt} sizes={SIZES} className={s.photo} />
-              <Image src={src} alt="" aria-hidden="true" sizes={SIZES} className={`${s.photo} ${s.gray}`} />
+        <div className={s.hop} data-beat={beat}>
+          <div className={s.stage}>
+            <span aria-hidden="true" className={s.glow} />
+            <span aria-hidden="true" className={s.ringBox}>
+              <span className={s.whirl}>
+                <span className={s.ring} />
+              </span>
+            </span>
+            <span aria-hidden="true" className={s.disc} />
+            <div className={s.person}>
+              <div className={s.rise}>
+                <Image src={src} alt={alt} sizes={SIZES} className={s.photo} />
+                <Image src={src} alt="" aria-hidden="true" sizes={SIZES} className={`${s.photo} ${s.gray}`} />
+              </div>
             </div>
+            <span aria-hidden="true" className={`${s.status} live-dot`} />
           </div>
-          <span aria-hidden="true" className={`${s.status} live-dot`} />
         </div>
       </div>
+      <button type="button" onClick={hello} className={s.hi} aria-label="Say hi" />
+      <p aria-hidden="true" className={s.bubble} data-show={talking || undefined} data-beat={beat}>
+        {taps % LINES.length === 1 && <Wave />}
+        {line}
+      </p>
+      <p role="status" className="sr-only">
+        {line}
+      </p>
     </div>
+  );
+}
+
+/** A small drawn hand, waving. */
+function Wave() {
+  return (
+    <svg viewBox="0 0 24 24" className={s.wave} focusable="false">
+      <g fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round">
+        <path d="M7.5 12.5V6.8a1.3 1.3 0 0 1 2.6 0v4.7" />
+        <path d="M10.1 11.2V5.3a1.3 1.3 0 0 1 2.6 0v6" />
+        <path d="M12.7 11.3V6.2a1.3 1.3 0 0 1 2.6 0v6.6" />
+        <path d="M15.3 12.4V8.6a1.3 1.3 0 0 1 2.6 0v5.2c0 4-2.6 6.7-6.2 6.7-2.3 0-3.8-1-5-2.8l-2.2-3.4a1.3 1.3 0 0 1 2-1.6l1 1.1" />
+      </g>
+    </svg>
   );
 }
 

@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState, type CSSProperties, type ReactNode } from "react";
+import { Hint } from "@/components/explore/Hint";
 import { ArrowRight } from "@/components/ui/icons";
 
 type Props = {
@@ -16,6 +17,8 @@ type Props = {
   tone?: "dark" | "light";
   /** Dim the cards beside the current one everywhere, or only on phones (for rows that show several cards at once on wider screens). */
   dim?: "always" | "phone";
+  /** On touch screens, a hand-written "swipe" note over the peeking card until the row is first scrolled. */
+  swipeHint?: boolean;
   className?: string;
 };
 
@@ -25,7 +28,7 @@ type Props = {
  * the row scrolls with a finger, trackpad, keyboard or the controls. Without
  * JavaScript it is still a swipeable, snapping row.
  */
-export function SnapGallery({ label, items, stackFrom, columns = 1, itemWidth, tone = "dark", dim = "always", className = "" }: Props) {
+export function SnapGallery({ label, items, stackFrom, columns = 1, itemWidth, tone = "dark", dim = "always", swipeHint = false, className = "" }: Props) {
   const track = useRef<HTMLOListElement>(null);
   const [active, setActive] = useState(0);
   // Whether the row is wider than its box; if every card fits there is nothing to page through.
@@ -75,7 +78,12 @@ export function SnapGallery({ label, items, stackFrom, columns = 1, itemWidth, t
   }`;
 
   return (
-    <div className={`snap-gallery ${className}`} data-stack={stackFrom} data-dim={dim} data-static={overflowing ? undefined : ""} style={style}>
+    <div className={`snap-gallery relative ${className}`} data-stack={stackFrom} data-dim={dim} data-static={overflowing ? undefined : ""} style={style}>
+      {swipeHint && overflowing && (
+        <Hint id="swipe" arrow="left" tone={tone} touch className="top-[22%] right-3">
+          swipe
+        </Hint>
+      )}
       <ol ref={track} aria-label={label} tabIndex={0} className="snap-track relative rounded-[1.75rem] outline-offset-4">
         {items.map((item, i) => (
           <li key={i} data-index={i} data-active={i === active || undefined} className="snap-item">

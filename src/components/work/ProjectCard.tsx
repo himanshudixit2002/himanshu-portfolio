@@ -2,6 +2,7 @@ import type { CSSProperties } from "react";
 import Link from "next/link";
 import type { Project } from "@/content/types";
 import { formatPeriod } from "@/lib/format";
+import { SeenTick } from "@/components/explore/Explored";
 import { MiniVisual } from "@/components/visuals/MiniVisual";
 import { ArrowRight } from "@/components/ui/icons";
 import styles from "./card.module.css";
@@ -21,6 +22,7 @@ export function ProjectCard({ project, large = false, headingLevel = 3, classNam
       <span aria-hidden="true" data-card-light className={styles.light} />
       <div className={`relative ${large ? "aspect-[16/10] lg:aspect-auto" : "aspect-[16/10]"} bg-ink`}>
         <MiniVisual id={project.visual} accent={project.accent} />
+        <SeenTick slug={project.slug} />
       </div>
       <div className="flex flex-1 flex-col p-6">
         <p className={`${styles.category} text-eyebrow`} style={{ color: project.accent }}>

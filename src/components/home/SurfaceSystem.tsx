@@ -8,6 +8,7 @@ import type { LayerId } from "@/content/types";
 import { SskOverviewArt } from "@/components/art/SmartShelfKartArt";
 import { AssistantPlaneArt, ReportingPlaneArt, RulesPlaneArt, type PipelineStage } from "@/components/art/SystemPlanesArt";
 import { useMotionPreference } from "@/components/motion/MotionPreferences";
+import { Hint } from "@/components/explore/Hint";
 import { Play } from "@/components/ui/icons";
 import { explorerReducer, initialExplorerState, type View } from "@/lib/surface-system";
 
@@ -91,7 +92,10 @@ export function SurfaceSystem() {
           </p>
         </header>
 
-        <div className="mt-10 flex flex-wrap items-center gap-3">
+        <div className="relative mt-16 flex flex-wrap items-center gap-3">
+          <Hint id="system" arrow="down-left" className="bottom-[calc(100%+0.125rem)] left-[10.75rem]">
+            take it apart
+          </Hint>
           <div role="group" aria-label="View" className="relative grid grid-cols-2 rounded-full bg-white/6 p-1 ring-1 ring-white/10 ring-inset">
             <span
               aria-hidden="true"

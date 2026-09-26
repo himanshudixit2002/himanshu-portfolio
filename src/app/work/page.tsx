@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
-import { projects } from "@/content/projects";
+import { projects, projectSlugs } from "@/content/projects";
 import type { ProjectCategory } from "@/content/types";
+import { ExploredPill, SurpriseMe } from "@/components/explore/Explored";
 import { categoryId, ProjectCard } from "@/components/work/ProjectCard";
 import { WorkFilter } from "@/components/work/WorkFilter";
 
@@ -38,6 +39,10 @@ export default function WorkPage() {
       <p className="text-lede mt-6 max-w-2xl text-muted-inverse">
         Client products, systems experiments and AI tools. Each one opens with an interactive view of the idea that makes it tick.
       </p>
+      <div className="mt-8 flex flex-wrap items-center gap-3">
+        <SurpriseMe slugs={projectSlugs} />
+        <ExploredPill slugs={projectSlugs} />
+      </div>
 
       <div className="mt-12">
         <WorkFilter filters={filters} total={projects.length}>

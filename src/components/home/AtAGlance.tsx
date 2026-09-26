@@ -5,6 +5,7 @@ import { profile } from "@/content/profile";
 import { projects } from "@/content/projects";
 import type { ProjectCategory } from "@/content/types";
 import { formatPeriod } from "@/lib/format";
+import { Hint } from "@/components/explore/Hint";
 import { Portrait } from "@/components/identity/Portrait";
 import { ButtonLink } from "@/components/ui/ButtonLink";
 import { ArrowRight } from "@/components/ui/icons";
@@ -51,6 +52,9 @@ export function AtAGlance() {
             <div className="relative flex items-center gap-5 md:gap-8">
               <Portrait />
               <Monogram />
+              <Hint id="portrait" arrow="left" className="bottom-1 left-[9.25rem] md:bottom-4 md:left-[13.5rem]">
+                say hi
+              </Hint>
             </div>
             <div className="relative">
               <p className="text-title text-[clamp(1.75rem,3vw,2.5rem)]">{profile.name}</p>

@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from "next";
-import { Inter, JetBrains_Mono } from "next/font/google";
+import { Caveat, Inter, JetBrains_Mono } from "next/font/google";
 import { navigation, profile, resume } from "@/content/profile";
 import { SiteFooter } from "@/components/layout/SiteFooter";
 import { SiteHeader } from "@/components/layout/SiteHeader";
@@ -13,6 +13,8 @@ import "./globals.css";
 // Self-hosted at build time by next/font; no request reaches Google at runtime.
 const inter = Inter({ subsets: ["latin"], variable: "--font-inter", display: "swap" });
 const jetbrains = JetBrains_Mono({ subsets: ["latin"], variable: "--font-jetbrains", display: "swap" });
+// Only the hand-written notes use it, and they appear late: not preloaded.
+const caveat = Caveat({ subsets: ["latin"], variable: "--font-caveat", display: "swap", preload: false });
 
 const description = `${profile.intro.replace(/\.$/, "")} — ${profile.role.toLowerCase()} based in ${profile.location}.`;
 
@@ -42,7 +44,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
     <html
       lang="en"
-      className={`${inter.variable} ${jetbrains.variable}`}
+      className={`${inter.variable} ${jetbrains.variable} ${caveat.variable}`}
       data-scroll-behavior="smooth"
       suppressHydrationWarning
     >

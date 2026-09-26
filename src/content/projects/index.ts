@@ -37,6 +37,9 @@ export const projects: Project[] = [
   padhnaThoPadega,
 ];
 
+/** Every project's slug, in display order: the list the explorer features count against. */
+export const projectSlugs = projects.map((p) => p.slug);
+
 export function getProject(slug: string): Project | undefined {
   return projects.find((p) => p.slug === slug);
 }

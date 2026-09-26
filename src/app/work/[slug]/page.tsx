@@ -5,9 +5,11 @@ import { getProject, nextProject, projects } from "@/content/projects";
 import { CaseHero } from "@/components/case/CaseHero";
 import { LocalNav } from "@/components/case/LocalNav";
 import { Decisions, Metrics, NextProject, Proof } from "@/components/case/Sections";
+import { MarkExplored } from "@/components/explore/Explored";
+import { Hint } from "@/components/explore/Hint";
 import { SurfaceSystem } from "@/components/home/SurfaceSystem";
 import { hasScene, SignatureScene } from "@/components/scenes/SignatureScene";
-import { SignatureVisual } from "@/components/visuals/SignatureVisual";
+import { isInteractive, SignatureVisual } from "@/components/visuals/SignatureVisual";
 
 export const dynamicParams = false;
 
@@ -50,6 +52,7 @@ export default async function CaseStudy({ params }: PageProps<"/work/[slug]">) {
 
   return (
     <>
+      <MarkExplored slug={project.slug} projects={projects.map((p) => ({ slug: p.slug, accent: p.accent }))} />
       <CaseHero project={project} />
       <LocalNav title={project.title} accent={project.accent} sections={sections} tryId="try" />
 
@@ -69,7 +72,14 @@ export default async function CaseStudy({ params }: PageProps<"/work/[slug]">) {
         {project.slug === "smartshelfkart" && <SurfaceSystem />}
         <div id="try" className="container-page mt-8">
           {hasScene(project.slug) && <p className="mb-5 text-eyebrow text-dim-inverse">Now try it</p>}
-          <SignatureVisual id={project.visual} />
+          <div className="relative">
+            {isInteractive(project.visual) && (
+              <Hint id={`try-${project.slug}`} className="right-6 bottom-[calc(100%+0.25rem)] md:right-10">
+                go on, it&rsquo;s live
+              </Hint>
+            )}
+            <SignatureVisual id={project.visual} />
+          </div>
         </div>
       </section>
 

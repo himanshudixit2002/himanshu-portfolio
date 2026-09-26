@@ -264,7 +264,7 @@ function StaticScene() {
 
 export function InterfaceToImpact() {
   return (
-    <section aria-label="From interface to impact" className="bg-ink">
+    <section id="impact" aria-label="From interface to impact" className="bg-ink">
       <PinnedScene />
       <StaticScene />
     </section>

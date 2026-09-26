@@ -15,6 +15,9 @@ const INTERACTIVE: Partial<Record<VisualId, InteractiveId>> = {
   "two-sum": "two-sum",
 };
 
+/** Whether a project's signature visual is one to play with, not a still drawing. */
+export const isInteractive = (id: VisualId) => id in INTERACTIVE;
+
 /** A project's signature visual: server-rendered where static, lazy-loaded where interactive. */
 export function SignatureVisual({ id }: { id: VisualId }) {
   switch (id) {

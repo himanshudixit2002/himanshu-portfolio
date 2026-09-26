@@ -9,11 +9,23 @@ import { Experience } from "@/components/home/Experience";
 import { Hero } from "@/components/home/Hero";
 import { InterfaceToImpact } from "@/components/home/InterfaceToImpact";
 import { Journey } from "@/components/home/Journey";
+import { SectionRail } from "@/components/home/SectionRail";
 import { ProjectChapter } from "@/components/home/ProjectChapter";
 import { SmartShelfKartChapter } from "@/components/home/SmartShelfKartChapter";
 import { SurfaceSystem } from "@/components/home/SurfaceSystem";
 
 export const metadata: Metadata = { alternates: { canonical: "/" } };
+
+const SECTIONS = [
+  { id: "hello", label: "At a glance" },
+  { id: "impact", label: "Interface to impact" },
+  { id: "work", label: "Selected work" },
+  { id: "experience", label: "Experience" },
+  { id: "engineering", label: "Engineering" },
+  { id: "journey", label: "Journey" },
+  { id: "about", label: "About" },
+  { id: "contact", label: "Contact" },
+];
 
 /*
  * The homepage storyboard: opening statement, who Himanshu is at a glance,
@@ -53,6 +65,7 @@ export default function Home() {
       <Journey />
       <AboutTeaser />
       <ContactClose />
+      <SectionRail sections={SECTIONS} />
     </>
   );
 }

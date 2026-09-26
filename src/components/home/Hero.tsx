@@ -4,6 +4,7 @@ import { KvTerminalArt } from "@/components/art/KvTerminalArt";
 import { NovaPhoneArt, SskOverviewArt } from "@/components/art/SmartShelfKartArt";
 import { ButtonLink } from "@/components/ui/ButtonLink";
 import { ArrowDown, ArrowRight } from "@/components/ui/icons";
+import { HeroSpotlight } from "./HeroSpotlight";
 import { HeroTilt } from "./HeroTilt";
 
 const rise = (i: number) => ({ "--i": i }) as CSSProperties;
@@ -25,6 +26,7 @@ export function Hero() {
         aria-hidden="true"
         className="drift pointer-events-none absolute inset-x-0 top-0 -z-10 h-[70rem] bg-[radial-gradient(60rem_36rem_at_70%_18%,rgb(92_164_255/0.14),transparent_70%),radial-gradient(40rem_30rem_at_12%_40%,rgb(45_212_191/0.08),transparent_70%)]"
       />
+      <HeroSpotlight />
 
       <div className="container-page">
         <a

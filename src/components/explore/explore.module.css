@@ -1,0 +1,256 @@
+/*
+ * Exploring: a card's "Seen" mark, the progress pill, the Surprise me die
+ * and the all-explored thank-you. Motion is transforms and opacity, and
+ * stops under reduced motion.
+ */
+
+@keyframes fade-in {
+  from {
+    opacity: 0;
+  }
+}
+
+@keyframes pop-in {
+  from {
+    opacity: 0;
+    transform: scale(0.6);
+  }
+}
+
+.fadeIn {
+  animation: fade-in var(--dur-base) var(--ease-out);
+}
+
+/* ── Seen ───────────────────────────────────────────────────────────── */
+
+.tick {
+  position: absolute;
+  top: 0.75rem;
+  right: 0.75rem;
+  z-index: 2;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  padding: 0.25rem 0.55rem 0.25rem 0.45rem;
+  border-radius: 999px;
+  background: rgb(8 9 11 / 0.78);
+  box-shadow: inset 0 0 0 1px rgb(255 255 255 / 0.12);
+  color: var(--color-fg-inverse);
+  font-size: 0.6875rem;
+  font-weight: 500;
+  line-height: 1;
+  pointer-events: none;
+  transform-origin: 100% 0;
+  animation: pop-in var(--dur-base) var(--ease-spring);
+}
+
+.tick svg {
+  color: var(--card-accent, var(--color-accent-bright));
+  stroke-width: 2.6;
+}
+
+/* ── Progress ───────────────────────────────────────────────────────── */
+
+.pill {
+  --pill-accent: var(--color-accent-bright);
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  gap: 0.5rem;
+  min-height: 2.75rem;
+  padding: 0 1rem 0 0.75rem;
+  border-radius: 999px;
+  box-shadow: inset 0 0 0 1px rgb(255 255 255 / 0.12);
+  color: var(--color-muted-inverse);
+  font-size: 0.875rem;
+  font-variant-numeric: tabular-nums;
+  visibility: hidden;
+}
+
+.pill[data-ready] {
+  visibility: visible;
+  animation: fade-in var(--dur-base) var(--ease-out);
+}
+
+.pill[data-done] {
+  --pill-accent: #34d399;
+  color: var(--color-fg-inverse);
+}
+
+/* Room for "12 of 13 explored", so the pill keeps its width as it counts. */
+.pillText {
+  min-width: 7.6rem;
+}
+
+.ring {
+  width: 1.125rem;
+  height: 1.125rem;
+  flex: none;
+  rotate: -90deg;
+}
+
+.track,
+.arc {
+  fill: none;
+  stroke-width: 2.25;
+}
+
+.track {
+  stroke: rgb(255 255 255 / 0.16);
+}
+
+.arc {
+  stroke: var(--pill-accent);
+  stroke-linecap: round;
+}
+
+/* ── Surprise me ────────────────────────────────────────────────────── */
+
+.surprise {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  gap: 0.5rem;
+  min-height: 2.75rem;
+  padding: 0 1rem 0 0.8rem;
+  border-radius: 999px;
+  background: rgb(255 255 255 / 0.06);
+  box-shadow: inset 0 0 0 1px rgb(255 255 255 / 0.12);
+  color: var(--color-fg-inverse);
+  font-size: 0.875rem;
+  font-weight: 500;
+  transition:
+    background-color var(--dur-micro) var(--ease-out),
+    scale var(--dur-micro) var(--ease-out);
+}
+
+.surprise:hover {
+  background: rgb(255 255 255 / 0.1);
+}
+
+.surprise:active {
+  scale: 0.97;
+}
+
+.dice {
+  width: 1.125rem;
+  height: 1.125rem;
+  flex: none;
+  transition: rotate var(--dur-base) var(--ease-spring);
+}
+
+@media (hover: hover) {
+  .surprise:hover .dice {
+    rotate: -18deg;
+  }
+}
+
+/* Two identical rolls, alternated, so each press starts a fresh one. */
+@keyframes roll-a {
+  0% {
+    transform: none;
+  }
+  45% {
+    transform: translateY(-0.45rem) rotate(200deg) scale(1.15);
+  }
+  75% {
+    transform: translateY(0) rotate(340deg) scale(0.95);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes roll-b {
+  0% {
+    transform: none;
+  }
+  45% {
+    transform: translateY(-0.45rem) rotate(200deg) scale(1.15);
+  }
+  75% {
+    transform: translateY(0) rotate(340deg) scale(0.95);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+.dice[data-roll="a"] {
+  animation: roll-a 520ms var(--ease-out);
+}
+
+.dice[data-roll="b"] {
+  animation: roll-b 520ms var(--ease-out);
+}
+
+/* ── All explored ───────────────────────────────────────────────────── */
+
+.party {
+  position: fixed;
+  bottom: max(1rem, env(safe-area-inset-bottom));
+  left: 50%;
+  z-index: 70;
+  width: min(24rem, calc(100vw - 2rem));
+  padding: 1.25rem 1.25rem 1.25rem 1.35rem;
+  border-radius: 1.5rem;
+  background: var(--color-ink-2);
+  box-shadow:
+    inset 0 0 0 1px rgb(255 255 255 / 0.12),
+    0 1.5rem 3rem -1rem rgb(0 0 0 / 0.7);
+  color: var(--color-fg-inverse);
+  translate: -50% 0;
+  animation: party-in var(--dur-slow) var(--ease-spring);
+}
+
+@keyframes party-in {
+  from {
+    opacity: 0;
+    transform: translateY(1.5rem) scale(0.96);
+  }
+}
+
+.burst {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  pointer-events: none;
+}
+
+.spark {
+  position: absolute;
+  top: -0.25rem;
+  left: -0.25rem;
+  width: 0.5rem;
+  height: 0.5rem;
+  border-radius: 50%;
+  opacity: 0;
+  animation: spark 1100ms var(--ease-out) var(--d, 0ms) both;
+}
+
+@keyframes spark {
+  0% {
+    opacity: 1;
+    transform: translate3d(0, 0, 0) scale(0.4);
+  }
+  60% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+    transform: translate3d(var(--dx), var(--dy), 0) scale(1);
+  }
+}
+
+:global(html[data-motion="reduce"]) .fadeIn,
+:global(html[data-motion="reduce"]) .tick,
+:global(html[data-motion="reduce"]) .pill[data-ready],
+:global(html[data-motion="reduce"]) .dice,
+:global(html[data-motion="reduce"]) .party {
+  animation: none;
+  transition: none;
+}
+
+:global(html[data-motion="reduce"]) .burst {
+  display: none;
+}

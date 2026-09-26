@@ -1,0 +1,110 @@
+/*
+ * A "try me" note: hand-written words and an arrow that draws itself in.
+ * The words rise into place and the arrow's shaft then head are drawn
+ * (pathLength="1" strokes); leaving is a fade. Under reduced motion it
+ * simply appears.
+ */
+
+.hint {
+  --hint: var(--color-accent-bright);
+  position: absolute;
+  z-index: 5;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.1rem;
+  color: var(--hint);
+  font-family: var(--font-hand);
+  font-size: 1.3rem;
+  font-weight: 600;
+  line-height: 1;
+  white-space: nowrap;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 250ms var(--ease-out);
+}
+
+.hint[data-tone="light"] {
+  --hint: var(--color-accent);
+}
+
+.hint[data-arrow="down-left"] .text {
+  margin-left: 2.4rem;
+}
+
+.hint[data-arrow="down-right"] {
+  align-items: flex-end;
+}
+
+.hint[data-arrow="down-right"] .text {
+  margin-right: 2.4rem;
+}
+
+.hint[data-arrow="left"] {
+  flex-direction: row-reverse;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+.text {
+  display: block;
+  transform: translateY(0.35rem) rotate(-4deg);
+  transition: transform 520ms var(--ease-spring);
+}
+
+.arrow {
+  width: 3rem;
+  height: auto;
+  overflow: visible;
+}
+
+.hint[data-arrow="left"] .arrow {
+  width: 3.25rem;
+}
+
+.arrow path {
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-dasharray: 1;
+  stroke-dashoffset: 1;
+  transition: stroke-dashoffset 560ms var(--ease-out) 180ms;
+}
+
+.arrow .head {
+  transition-duration: 220ms;
+  transition-delay: 700ms;
+}
+
+.hint[data-shown] {
+  opacity: 1;
+}
+
+.hint[data-shown] .text {
+  transform: rotate(-4deg);
+}
+
+.hint[data-shown] .arrow path {
+  stroke-dashoffset: 0;
+}
+
+/* Touch hints ("swipe") only where there is no hover. */
+@media (hover: hover) {
+  .hint[data-touch] {
+    display: none;
+  }
+}
+
+@media print {
+  .hint {
+    display: none;
+  }
+}
+
+:global(html[data-motion="reduce"]) .hint,
+:global(html[data-motion="reduce"]) .text,
+:global(html[data-motion="reduce"]) .arrow path {
+  transition: none;
+}

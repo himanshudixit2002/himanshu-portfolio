@@ -14,7 +14,9 @@
  *   rises into the circle, and a black-and-white copy fades to colour;
  * - under a fine pointer the stage tilts toward it (usePointerLight's --mx,
  *   --my, --hover); on touch screens it tilts gently with scroll;
- * - at rest it floats and the ring turns, slowly.
+ * - at rest it floats and the ring turns, slowly;
+ * - tapped, it hops, the ring whirls, the glow swells and a speech bubble
+ *   pops up (alternating identical keyframes, so each tap restarts them).
  */
 
 .portrait {
@@ -34,6 +36,7 @@
 }
 
 .float,
+.hop,
 .stage {
   position: absolute;
   inset: 0;
@@ -67,6 +70,12 @@
   inset: auto -0.6rem -0.6rem -0.6rem;
   height: calc(var(--size) + 1.2rem);
   transform: translateZ(-2rem);
+}
+
+.whirl {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
 }
 
 .ring {
@@ -244,6 +253,197 @@
       animation-range: cover 0% cover 100%;
     }
   }
+}
+
+/* ── Saying hi ──────────────────────────────────────────────────────── */
+
+.hi {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  border-radius: 1.75rem;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.hi:focus-visible {
+  outline-offset: 0.25rem;
+}
+
+/* Saying hi needs script; without it there is no button to press. */
+:global(html:not([data-js])) .hi {
+  display: none;
+}
+
+.bubble {
+  position: absolute;
+  top: -0.25rem;
+  left: 74%;
+  z-index: 3;
+  width: max-content;
+  max-width: 11.5rem;
+  padding: 0.55rem 0.8rem 0.6rem;
+  border-radius: 1.1rem 1.1rem 1.1rem 0.35rem;
+  background: var(--color-fg-inverse);
+  box-shadow: 0 0.75rem 1.75rem -0.75rem rgb(0 0 0 / 0.6);
+  color: var(--color-ink);
+  font-family: var(--font-hand);
+  font-size: 1.3rem;
+  font-weight: 600;
+  line-height: 1.05;
+  pointer-events: none;
+  opacity: 0;
+  transform: translate3d(-0.5rem, 0.6rem, 0) scale(0.6);
+  transform-origin: 0 100%;
+  transition:
+    opacity 200ms var(--ease-out),
+    transform 200ms var(--ease-out);
+}
+
+@media (min-width: 768px) {
+  .bubble {
+    left: 80%;
+    max-width: 15rem;
+    font-size: 1.45rem;
+  }
+}
+
+/* Each line pops in afresh (say-a / say-b below); hiding is a quick fade. */
+.bubble[data-show] {
+  opacity: 1;
+  transform: none;
+  transition: none;
+}
+
+.wave {
+  display: inline-block;
+  width: 1.1em;
+  height: 1.1em;
+  margin: -0.2em 0.3em 0 0;
+  vertical-align: middle;
+  color: #0a66d8;
+  transform-origin: 55% 85%;
+}
+
+@keyframes hop-a {
+  0%,
+  100% {
+    transform: none;
+  }
+  30% {
+    transform: translate3d(0, -7%, 0);
+  }
+  55% {
+    transform: translate3d(0, 0, 0) scale(1.03, 0.97);
+  }
+  75% {
+    transform: translate3d(0, -1.5%, 0);
+  }
+}
+
+@keyframes hop-b {
+  0%,
+  100% {
+    transform: none;
+  }
+  30% {
+    transform: translate3d(0, -7%, 0);
+  }
+  55% {
+    transform: translate3d(0, 0, 0) scale(1.03, 0.97);
+  }
+  75% {
+    transform: translate3d(0, -1.5%, 0);
+  }
+}
+
+@keyframes whirl-a {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes whirl-b {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes swell-a {
+  45% {
+    transform: translateZ(-4rem) scale(1.2);
+  }
+}
+
+@keyframes swell-b {
+  45% {
+    transform: translateZ(-4rem) scale(1.2);
+  }
+}
+
+@keyframes say-a {
+  from {
+    opacity: 0;
+    transform: translate3d(-0.5rem, 0.6rem, 0) scale(0.6);
+  }
+}
+
+@keyframes say-b {
+  from {
+    opacity: 0;
+    transform: translate3d(-0.5rem, 0.6rem, 0) scale(0.6);
+  }
+}
+
+@keyframes wave {
+  20%,
+  60% {
+    transform: rotate(18deg);
+  }
+  40%,
+  80% {
+    transform: rotate(-10deg);
+  }
+}
+
+:global(html[data-motion="full"]) .hop[data-beat="a"] {
+  animation: hop-a 620ms var(--ease-out);
+}
+
+:global(html[data-motion="full"]) .hop[data-beat="b"] {
+  animation: hop-b 620ms var(--ease-out);
+}
+
+:global(html[data-motion="full"]) .hop[data-beat="a"] .whirl {
+  animation: whirl-a 1s var(--ease-out);
+}
+
+:global(html[data-motion="full"]) .hop[data-beat="b"] .whirl {
+  animation: whirl-b 1s var(--ease-out);
+}
+
+:global(html[data-motion="full"]) .hop[data-beat="a"] .glow {
+  animation: swell-a 900ms var(--ease-out);
+}
+
+:global(html[data-motion="full"]) .hop[data-beat="b"] .glow {
+  animation: swell-b 900ms var(--ease-out);
+}
+
+:global(html[data-motion="full"]) .bubble[data-show][data-beat="a"] {
+  animation: say-a 460ms var(--ease-spring);
+}
+
+:global(html[data-motion="full"]) .bubble[data-show][data-beat="b"] {
+  animation: say-b 460ms var(--ease-spring);
+}
+
+:global(html[data-motion="full"]) .bubble[data-show] .wave {
+  animation: wave 1.2s var(--ease-in-out) 150ms;
+}
+
+:global(html[data-motion="reduce"]) .bubble {
+  transition: none;
 }
 
 /* ── Header avatar ──────────────────────────────────────────────────── */

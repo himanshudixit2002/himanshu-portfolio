@@ -76,3 +76,19 @@ export const Play = (p: IconProps) => (
     <path d="M8 5.5v13l10.5-6.5z" fill="currentColor" stroke="none" />
   </Icon>
 );
+
+/** A die showing five. */
+export const Dice = (p: IconProps) => (
+  <Icon {...p}>
+    <rect x="3.5" y="3.5" width="17" height="17" rx="4" />
+    {[
+      [8.5, 8.5],
+      [15.5, 8.5],
+      [12, 12],
+      [8.5, 15.5],
+      [15.5, 15.5],
+    ].map(([cx, cy]) => (
+      <circle key={`${cx}-${cy}`} cx={cx} cy={cy} r="1.3" fill="currentColor" stroke="none" />
+    ))}
+  </Icon>
+);

@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { cleartrip } from "@/content/experience";
 import { formatPeriod } from "@/lib/format";
+import { Hint } from "@/components/explore/Hint";
 import { ArrowRight } from "@/components/ui/icons";
 import { PriceFreshness } from "@/components/visuals/IdentityVisuals";
 import { LazyVisual } from "@/components/visuals/LazyVisual";
@@ -59,7 +60,12 @@ export function Experience({ full = false, headingLevel = 2 }: { full?: boolean;
         </div>
 
         <div className="mt-14 grid gap-6">
-          <LazyVisual id="hex-map" />
+          <div className="relative">
+            <Hint id="hex-map" arrow="down-left" tone="light" className="right-8 bottom-[calc(100%+0.25rem)] md:right-24">
+              slide to zoom
+            </Hint>
+            <LazyVisual id="hex-map" />
+          </div>
           {full && (
             <div className="grid gap-6 lg:grid-cols-2">
               <LazyVisual id="fan-out" />

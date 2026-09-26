@@ -1,5 +1,7 @@
 import Link from "next/link";
-import { kvStore, projects } from "@/content/projects";
+import { kvStore, projects, projectSlugs } from "@/content/projects";
+import { ExploredPill, SurpriseMe } from "@/components/explore/Explored";
+import { Hint } from "@/components/explore/Hint";
 import { ButtonLink } from "@/components/ui/ButtonLink";
 import { SnapGallery } from "@/components/motion/SnapGallery";
 import { ArrowRight } from "@/components/ui/icons";
@@ -37,21 +39,28 @@ export function EngineeringScene() {
           </div>
         </div>
 
-        <div className="mt-10">
+        <div className="relative mt-16">
+          <Hint id="kv" className="bottom-[calc(100%+0.125rem)] left-[5rem]">
+            your turn: send it a command
+          </Hint>
           <LazyVisual id="kv-explorer" />
         </div>
 
         <div className="mt-(--section-y)">
           <div className="flex flex-wrap items-end justify-between gap-4">
             <h2 className="text-title text-[clamp(1.75rem,3.4vw,2.75rem)]">Everything else I&rsquo;ve built</h2>
-            <Link href="/work" className="group inline-flex min-h-11 items-center gap-2 text-accent-bright">
-              <span className="link-draw">All {projects.length} projects</span>
-              <ArrowRight className="size-4 transition-transform duration-(--dur-base) ease-(--ease-out) group-hover:translate-x-0.5" />
-            </Link>
+            <div className="flex flex-wrap items-center gap-x-4 gap-y-2">
+              <Link href="/work" className="group inline-flex min-h-11 items-center gap-2 text-accent-bright">
+                <span className="link-draw">All {projects.length} projects</span>
+                <ArrowRight className="size-4 transition-transform duration-(--dur-base) ease-(--ease-out) group-hover:translate-x-0.5" />
+              </Link>
+              <SurpriseMe slugs={projectSlugs} />
+              <ExploredPill slugs={projectSlugs} />
+            </div>
           </div>
           {/* On phones the card in view plays its signature; on wider screens, the one under the pointer. */}
           <CardGrid className="mt-8">
-            <SnapGallery label="More projects" items={more.map((p) => <ProjectCard key={p.slug} project={p} className="h-full" />)} itemWidth="min(86%, 24rem)" dim="phone" />
+            <SnapGallery label="More projects" items={more.map((p) => <ProjectCard key={p.slug} project={p} className="h-full" />)} itemWidth="min(86%, 24rem)" dim="phone" swipeHint />
           </CardGrid>
         </div>
       </div>

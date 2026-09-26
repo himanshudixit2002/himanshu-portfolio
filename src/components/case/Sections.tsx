@@ -1,7 +1,9 @@
 import type { CSSProperties } from "react";
 import Link from "next/link";
+import { projectSlugs } from "@/content/projects";
 import type { Project } from "@/content/types";
 import { vizFor } from "@/lib/metric-viz";
+import { ExploredCount } from "@/components/explore/Explored";
 import { SnapGallery } from "@/components/motion/SnapGallery";
 import { ArrowRight } from "@/components/ui/icons";
 import { MiniVisual } from "@/components/visuals/MiniVisual";
@@ -107,7 +109,10 @@ export function NextProject({ next }: { next: Project }) {
         style={{ background: `radial-gradient(70% 90% at 85% 50%, ${next.accent}24, transparent 70%)` }}
       />
       <span className="p-7 md:p-10">
-        <span className="text-eyebrow text-dim-inverse">Next project</span>
+        <span className="text-eyebrow text-dim-inverse">
+          Next project
+          <ExploredCount slugs={projectSlugs} />
+        </span>
         <span className="mt-3 block text-display text-[clamp(2.25rem,5vw,4rem)]" style={{ color: next.accent }}>
           {next.title}
         </span>

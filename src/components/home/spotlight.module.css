@@ -1,0 +1,56 @@
+/*
+ * The hero's pointer light (HeroSpotlight): a lens with soft edges that
+ * carries a glow and a window onto a dot grid. Hidden until the pointer
+ * moves over the hero; it fades in and out, and moves by transform only.
+ */
+
+.spot {
+  position: absolute;
+  inset: 0;
+  z-index: -10;
+  overflow: clip;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 700ms var(--ease-out);
+}
+
+.spot[data-on] {
+  opacity: 1;
+}
+
+.lens {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 34rem;
+  height: 34rem;
+  overflow: clip;
+  border-radius: 50%;
+  background: radial-gradient(closest-side, rgb(92 164 255 / 0.1), rgb(45 212 191 / 0.03) 60%, transparent);
+  -webkit-mask-image: radial-gradient(closest-side, #000 25%, transparent);
+  mask-image: radial-gradient(closest-side, #000 25%, transparent);
+}
+
+.grid {
+  position: absolute;
+  top: 0;
+  left: 0;
+  background-image: radial-gradient(circle, rgb(245 245 247 / 0.28) 1px, transparent 1.6px);
+  background-size: 24px 24px;
+}
+
+/* Layers of their own only while the light is on. */
+.spot[data-on] .lens,
+.spot[data-on] .grid {
+  will-change: transform;
+}
+
+@media (hover: none), (pointer: coarse) {
+  .spot {
+    display: none;
+  }
+}
+
+:global(html[data-motion="reduce"]) .spot {
+  display: none;
+}
