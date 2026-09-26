@@ -16,7 +16,12 @@ export function Experience({ full = false, headingLevel = 2 }: { full?: boolean;
   const role = cleartrip;
 
   return (
-    <section id="experience" aria-labelledby="experience-title" className="surface-light section-y bg-paper text-fg">
+    <section
+      id="experience"
+      aria-labelledby="experience-title"
+      data-xray="Server-rendered · figures are plain text from the résumé, never counted up"
+      className="surface-light relative section-y bg-paper text-fg"
+    >
       <div className="container-page">
         <p data-reveal className="text-eyebrow text-muted">
           Experience

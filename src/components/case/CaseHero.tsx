@@ -23,7 +23,9 @@ export function CaseHero({ project }: { project: Project }) {
   ];
 
   return (
-    <header className="relative isolate overflow-clip pt-[calc(var(--nav-h)+clamp(2.5rem,7vw,5rem))]">
+    <header
+      data-xray="Server-rendered · the device lies back, then tilts flat on a CSS view timeline"
+      className="relative isolate overflow-clip [--xray-top:calc(var(--nav-h)+0.5rem)] pt-[calc(var(--nav-h)+clamp(2.5rem,7vw,5rem))]">
       <div
         aria-hidden="true"
         className="ambient pointer-events-none absolute -inset-x-[15%] top-0 -z-10 h-[52rem]"

@@ -545,3 +545,114 @@ html[data-motion="reduce"]::view-transition-new(*) {
     margin: 14mm 14mm 16mm;
   }
 }
+
+/*
+ * X-ray mode (<html data-xray>, toggled by x, the palette or the footer):
+ * each [data-xray] building block gets an outline and a label with how it
+ * is built. Every tagged element is already positioned, so turning it on
+ * never moves anything; the label is its ::before (none of them use one).
+ */
+html[data-xray] [data-xray] {
+  outline: 1px dashed rgb(92 164 255 / 0.8);
+  outline-offset: -1px;
+}
+
+html[data-xray] [data-xray]::before {
+  content: attr(data-xray);
+  position: absolute;
+  /* Blocks that start under the fixed header set --xray-top to clear it;
+     the header's own label sits at the right, clear of theirs. */
+  top: var(--xray-top, 0.5rem);
+  right: var(--xray-right, auto);
+  left: var(--xray-left, 0.5rem);
+  z-index: 45;
+  max-width: min(30rem, calc(100% - 1rem));
+  padding: 0.3rem 0.55rem;
+  border-radius: 0.4rem;
+  background: rgb(10 102 216 / 0.94);
+  box-shadow: 0 0.25rem 1rem rgb(0 0 0 / 0.35);
+  color: #fff;
+  font: 500 0.6875rem/1.35 var(--font-mono);
+  letter-spacing: 0;
+  text-align: left;
+  text-transform: none;
+  white-space: normal;
+  pointer-events: none;
+}
+
+/* Labels about something only wide screens have (the header's page pill). */
+@media (max-width: 47.99rem) {
+  html[data-xray] [data-xray-wide]::before {
+    display: none;
+  }
+}
+
+/* Controls that need script: hidden without it (unlayered, so it beats their display utilities). */
+html:not([data-js]) .palette-button,
+html:not([data-js]) .xray-toggle {
+  display: none;
+}
+
+@layer components {
+  .xray-hud {
+    position: fixed;
+    bottom: max(1rem, env(safe-area-inset-bottom));
+    left: 50%;
+    z-index: 60;
+    display: flex;
+    align-items: center;
+    gap: 0.65rem;
+    width: max-content;
+    max-width: calc(100vw - 2rem);
+    padding: 0.4rem 0.4rem 0.4rem 0.9rem;
+    border-radius: 999px;
+    background: rgb(10 102 216 / 0.96);
+    box-shadow: 0 0.75rem 2rem -0.5rem rgb(0 0 0 / 0.6);
+    color: #fff;
+    font-size: 0.8125rem;
+    translate: -50% 0;
+    animation: xray-in var(--dur-base) var(--ease-out);
+  }
+
+  .xray-hud-dot {
+    width: 0.5rem;
+    height: 0.5rem;
+    flex: none;
+    border-radius: 999px;
+    background: #fff;
+  }
+
+  .xray-hud-exit {
+    min-height: 2.25rem;
+    padding: 0 0.85rem;
+    border-radius: 999px;
+    background: rgb(255 255 255 / 0.18);
+    font-weight: 500;
+    transition: background-color var(--dur-micro) var(--ease-out);
+  }
+
+  .xray-hud-exit:hover {
+    background: rgb(255 255 255 / 0.28);
+  }
+
+  @keyframes xray-in {
+    from {
+      opacity: 0;
+      transform: translateY(0.75rem);
+    }
+  }
+
+  html[data-motion="reduce"] .xray-hud {
+    animation: none;
+  }
+}
+
+@media print {
+  html[data-xray] [data-xray] {
+    outline: none;
+  }
+  html[data-xray] [data-xray]::before,
+  .xray-hud {
+    display: none;
+  }
+}

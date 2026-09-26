@@ -43,7 +43,10 @@ export function SignatureScene({ project }: { project: Project }) {
   const meta = SCENES[project.slug];
   if (!meta) return null;
   return (
-    <figure className="mt-2">
+    <figure
+      data-xray="Pinned scroll scene · each frame computed by the project's scene model (lib/scenes) in its own chunk · steps as text without JavaScript"
+      className="relative mt-2"
+    >
       <SceneLoader slug={project.slug} accent={project.accent} shape={{ steps: meta.steps.length, frames: meta.keyFrames.length, mobile: meta.mobile }} />
       {/* Without JavaScript, the story's steps as text. Scripted browsers
           never parse this; with reduced motion the scene draws its frames. */}

@@ -1,11 +1,14 @@
 import type { Metadata, Viewport } from "next";
 import { Caveat, Inter, JetBrains_Mono } from "next/font/google";
 import { navigation, profile, resume } from "@/content/profile";
+import { projects } from "@/content/projects";
 import { SiteFooter } from "@/components/layout/SiteFooter";
 import { SiteHeader } from "@/components/layout/SiteHeader";
 import { InlineScript } from "@/components/motion/InlineScript";
 import { MotionPreferences } from "@/components/motion/MotionPreferences";
 import { RevealObserver } from "@/components/motion/RevealObserver";
+import { PaletteHost, type PaletteEntry } from "@/components/palette/PaletteHost";
+import { XRayHost } from "@/components/xray/XRay";
 import { motionInitScript } from "@/lib/motion-preference";
 import { siteUrl } from "@/lib/site";
 import "./globals.css";
@@ -40,6 +43,33 @@ export const viewport: Viewport = {
   viewportFit: "cover",
 };
 
+/** What the command palette offers: every project, then the places to go. Slim, since every page carries it. */
+const paletteEntries: PaletteEntry[] = [
+  ...projects.map((p) => ({
+    id: `p-${p.slug}`,
+    group: "Projects" as const,
+    label: p.title,
+    hint: p.tagline,
+    href: `/work/${p.slug}`,
+    keywords: p.categories.join(" "),
+    accent: p.accent,
+    slug: p.slug,
+  })),
+  ...(
+    [
+      ["home", "Home", "The start", "/"],
+      ["hello", "At a glance", "Who Himanshu is, on one screen", "/#hello"],
+      ["experience", "Experience", "The Cleartrip role", "/#experience"],
+      ["journey", "Journey", "Every date, in order", "/#journey"],
+      ["work", "All work", "Every project, with a filter", "/work"],
+      ["lab", "Lab", "Interactive simulations of systems he has built", "/lab"],
+      ["about", "About", "Experience, education and capabilities", "/about"],
+      ["resume", "Résumé", "Ready to print", "/resume"],
+      ["contact", "Contact", "Say hello", "/#contact"],
+    ] as const
+  ).map(([id, label, hint, href]) => ({ id: `g-${id}`, group: "Go to" as const, label, hint, href })),
+];
+
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
     <html
@@ -65,6 +95,8 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
           </main>
           <SiteFooter name={profile.name} />
           <RevealObserver />
+          <PaletteHost entries={paletteEntries} email={profile.email} />
+          <XRayHost />
         </MotionPreferences>
       </body>
     </html>

@@ -72,7 +72,11 @@ export function WorkFilter({ filters, total, children }: Props) {
   };
 
   return (
-    <div ref={root}>
+    <div
+      ref={root}
+      data-xray="Client filter over server-rendered cards · cards glide to their places with view transitions"
+      className="relative"
+    >
       <div ref={chips} role="group" aria-label="Filter projects" data-chips className="relative isolate flex flex-wrap items-center gap-2">
         {pill && (
           <span

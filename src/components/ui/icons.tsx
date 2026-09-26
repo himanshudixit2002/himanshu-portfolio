@@ -92,3 +92,16 @@ export const Dice = (p: IconProps) => (
     ))}
   </Icon>
 );
+
+export const Search = (p: IconProps) => (
+  <Icon {...p}>
+    <circle cx="11" cy="11" r="6.5" />
+    <path d="m16 16 4 4" />
+  </Icon>
+);
+
+export const Sparkle = (p: IconProps) => (
+  <Icon {...p}>
+    <path d="M12 3.5c.5 4.3 2.2 6 6.5 6.5-4.3.5-6 2.2-6.5 6.5-.5-4.3-2.2-6-6.5-6.5 4.3-.5 6-2.2 6.5-6.5Z" />
+  </Icon>
+);

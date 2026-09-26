@@ -6,7 +6,12 @@ import { CopyEmailButton } from "./CopyEmailButton";
 
 export function ContactClose() {
   return (
-    <section id="contact" aria-labelledby="contact-title" className="surface-light section-y bg-paper text-fg">
+    <section
+      id="contact"
+      aria-labelledby="contact-title"
+      data-xray="Server-rendered · the heading lights word by word as it scrolls · the email button leans toward a fine pointer"
+      className="surface-light relative section-y bg-paper text-fg"
+    >
       <div className="container-page">
         <h2 id="contact-title" data-reveal className="max-w-4xl text-display text-[clamp(2.5rem,7vw,6rem)] text-balance">
           <WordReveal text="Have something worth building?" mode="scrub" />

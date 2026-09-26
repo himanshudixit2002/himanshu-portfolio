@@ -1,4 +1,5 @@
 import { MotionToggle } from "@/components/motion/MotionPreferences";
+import { XRayToggle } from "@/components/xray/XRay";
 import { ArrowUp } from "@/components/ui/icons";
 import { Monogram } from "./Monogram";
 
@@ -14,6 +15,7 @@ export function SiteFooter({ name }: { name: string }) {
         </p>
         <div className="site-footer-controls flex flex-wrap items-center gap-x-6 gap-y-1">
           <MotionToggle />
+          <XRayToggle />
           <a
             href="#top"
             className="group inline-flex min-h-11 items-center gap-1.5 rounded-full transition-colors hover:text-fg-inverse active:opacity-70"

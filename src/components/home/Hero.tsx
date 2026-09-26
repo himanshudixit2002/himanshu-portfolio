@@ -20,7 +20,8 @@ export function Hero() {
     <section
       id="top"
       aria-labelledby="hero-title"
-      className="hero-scroll relative isolate overflow-hidden bg-ink pt-[calc(var(--nav-h)+clamp(3rem,9vw,7rem))]"
+      data-xray="Server-rendered · recedes on a CSS scroll timeline as it leaves · tilt and spotlight follow a fine pointer in requestAnimationFrame"
+      className="hero-scroll relative [--xray-top:calc(var(--nav-h)+0.5rem)] isolate overflow-hidden bg-ink pt-[calc(var(--nav-h)+clamp(3rem,9vw,7rem))]"
     >
       <div
         aria-hidden="true"

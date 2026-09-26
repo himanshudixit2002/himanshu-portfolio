@@ -58,7 +58,12 @@ function milestones(): [string, Milestone[]][] {
 /** Scene: the path so far, drawn as you read down it. */
 export function Journey() {
   return (
-    <section id="journey" aria-labelledby="journey-title" className="surface-light sd-sheet section-y bg-paper text-fg">
+    <section
+      id="journey"
+      aria-labelledby="journey-title"
+      data-xray="Server-rendered · the rail draws and the dots light on CSS scroll timelines"
+      className="surface-light sd-sheet relative section-y bg-paper text-fg"
+    >
       <div className="container-page">
         <p data-reveal className="text-eyebrow text-muted">
           Journey

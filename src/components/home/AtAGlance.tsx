@@ -30,7 +30,12 @@ export function AtAGlance() {
   const school = education.school.match(/\(([^)]+)\)/)?.[1] ?? education.school;
 
   return (
-    <section id="hello" aria-labelledby="hello-title" className="surface-light sd-sheet section-y bg-paper text-fg">
+    <section
+      id="hello"
+      aria-labelledby="hello-title"
+      data-xray="Server-rendered bento · the monogram, dots and matrix draw on CSS view timelines"
+      className="surface-light sd-sheet relative section-y bg-paper text-fg"
+    >
       <div className="container-page">
         <p data-reveal className="text-eyebrow text-muted">
           At a glance

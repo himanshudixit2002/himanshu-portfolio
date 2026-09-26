@@ -57,7 +57,12 @@ export default async function CaseStudy({ params }: PageProps<"/work/[slug]">) {
       <LocalNav title={project.title} accent={project.accent} sections={sections} tryId="try" />
 
       {project.metrics.length > 0 && (
-        <section id="overview" aria-label="Overview" className="container-page pt-(--section-y)">
+        <section
+          id="overview"
+          aria-label="Overview"
+          data-xray="Each figure's picture is computed from its own value and label (lib/metric-viz)"
+          className="container-page relative pt-(--section-y)"
+        >
           <Metrics project={project} />
         </section>
       )}

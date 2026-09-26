@@ -78,7 +78,10 @@ export function SnapGallery({ label, items, stackFrom, columns = 1, itemWidth, t
   }`;
 
   return (
-    <div className={`snap-gallery relative ${className}`} data-stack={stackFrom} data-dim={dim} data-static={overflowing ? undefined : ""} style={style}>
+    <div
+      className={`snap-gallery relative ${className}`}
+      data-xray="CSS scroll-snap row · swipes without JavaScript; script drives the dots and arrows"
+      data-stack={stackFrom} data-dim={dim} data-static={overflowing ? undefined : ""} style={style}>
       {swipeHint && overflowing && (
         <Hint id="swipe" arrow="left" tone={tone} touch className="top-[22%] right-3">
           swipe

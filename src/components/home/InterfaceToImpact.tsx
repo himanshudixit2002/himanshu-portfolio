@@ -264,7 +264,12 @@ function StaticScene() {
 
 export function InterfaceToImpact() {
   return (
-    <section id="impact" aria-label="From interface to impact" className="bg-ink">
+    <section
+      id="impact"
+      aria-label="From interface to impact"
+      data-xray="Pinned scroll scene on Motion's useScroll · three still frames on phones, with reduced motion and without JavaScript"
+      className="relative bg-ink"
+    >
       <PinnedScene />
       <StaticScene />
     </section>

@@ -108,7 +108,12 @@ export function LazyVisual({ id }: { id: InteractiveId }) {
   const show = near || mounted;
   const Component = COMPONENTS[id];
   return (
-    <div ref={ref} data-visual={id} className={show ? undefined : HEIGHT[id]}>
+    <div
+      ref={ref}
+      data-visual={id}
+      data-xray="Interactive · its own code chunk, fetched and mounted in idle time or as you approach"
+      className={`relative ${show ? "" : HEIGHT[id]}`}
+    >
       {show ? <Component compact={id === "kv-explorer-compact"} /> : <div className={`${HEIGHT[id]} rounded-[1.75rem] bg-ink-2 ring-1 ring-white/8`} />}
     </div>
   );

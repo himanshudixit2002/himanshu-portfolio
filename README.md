@@ -93,9 +93,18 @@ Only ScopeForge has real screenshots (its repository's synthetic demo workspace)
 - **Things to find** (`src/components/explore`, `src/lib/explored.ts`). Everything here is per visitor, kept in their own browser (falling back to memory when storage is blocked) and read only after mount, so the server's HTML never depends on it.
   - **Explored.** Opening a case study records it (`MarkExplored`). Cards then wear a "Seen" mark, and `/work`, the homepage gallery and the next-project door say how many of the projects have been opened. The pill is laid out from the first paint and shown once the count is known, so nothing moves. Opening the last one plays a thank-you once: a note with a dot per project bursting out in its accent (`Celebration`, loaded only then).
   - **Surprise me** opens a random project not yet seen. It picks on hover, focus or touch and prefetches that page, and the die rolls while it loads. Without JavaScript it is a link to the first project.
-  - **The portrait says hi.** Tap it and he hops, the ring whirls and a speech bubble gives the next line, also announced to screen readers. The lines are invitations, never claims.
+  - **The portrait says hi.** Tap it and he hops, the ring whirls and a speech bubble gives the next line, also announced to screen readers. The lines are invitations, never claims, and point at the shortcuts the device has (⌘K and x with a keyboard, the search button and footer switch on touch).
   - **Hints.** `<Hint>` is a hand-written note (Caveat, not preloaded) with an arrow that draws itself in once the note is fully in view. Its parent is what it points at, and the first touch, keypress or input there retires it for good. `touch` hints ("swipe", on `SnapGallery`'s `swipeHint`) show only where there's no hover and retire on the first scroll.
   - **Spotlight** (homepage hero, fine pointers). A lens follows the pointer and the dot grid inside it moves the other way, so the dots stay fixed while the light passes over them: the practice dots' counter-moving technique. Its layers are promoted only while it's lit.
+  - **Command palette** (`src/components/palette`). ⌘K / Ctrl+K, "/" or the header's search button.
+    - **Contents:** every project (with a "Seen" mark once opened), the places to go, and actions: Surprise me, copy the email address, x-ray mode, reduce motion.
+    - **Search and keys:** it filters as you type (substring first, then letters in order, so "ssk" finds SmartShelfKart). ↑ ↓ choose and Enter runs.
+    - **Mechanics:** it's a native modal `<dialog>`, so focus stays inside and Escape closes it. Focus returns to whatever opened it.
+    - **Loading:** pages carry only the listener (`PaletteHost`) and a slim list built in the root layout; the palette's own code loads on first open.
+  - **X-ray mode** (`x` anywhere but a text field, the palette, or the footer switch). It outlines the page's building blocks and labels each with how it's built, from its `data-xray` attribute.
+    - **Accuracy:** a label must stay true of the code; change it when the code changes.
+    - **Mechanics:** every tagged element is already positioned, so turning it on moves nothing. Blocks under the fixed header set `--xray-top`. `data-xray-wide` hides a label on phones where what it describes isn't shown.
+    - **Lifetime:** it lasts for the visit (`<html data-xray>`), with a corner note to leave it.
   - **Section rail** (homepage, 1280px and up). One dot per section: an observer on a line across the middle of the screen grows the current dot, and it steps aside over the hero. Without JavaScript it's a plain list of links.
 - **Hydrate only what shows.** `usePinShown` (from `ScrollScene`) says whether a pinned track is displayed; render the stage's contents only then, as `InterfaceToImpact` does, so phones don't hydrate a scene they never see. Static fallbacks use plain elements, not animated ones.
 

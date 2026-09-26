@@ -8,8 +8,18 @@ import s from "./portrait.module.css";
 
 const SIZES = "(min-width: 768px) 19rem, 13rem";
 
-/** What the portrait says, one line per tap, round and round. Invitations only. */
-const LINES = ["Hi, I’m Himanshu.", "Everything here is live — poke the cards.", "Can’t pick one? Hit Surprise me."];
+/** What the portrait says, one line per tap, round and round. Invitations only; the shortcuts where there's a keyboard. */
+const LINES = {
+  keys: ["Hi, I’m Himanshu.", "Everything here is live — poke the cards.", "Psst… press ⌘K.", "Try x for x-ray mode.", "Can’t pick one? Hit Surprise me."],
+  touch: [
+    "Hi, I’m Himanshu.",
+    "Everything here is live — poke the cards.",
+    "Psst… try the search button up top.",
+    "Flip on X-ray in the footer.",
+    "Can’t pick one? Hit Surprise me.",
+  ],
+};
+const lines = () => (window.matchMedia("(hover: hover) and (pointer: fine)").matches ? LINES.keys : LINES.touch);
 
 /**
  * Himanshu's photo with depth: shoulders in a glowing disc, head rising out
@@ -27,23 +37,26 @@ export function Portrait({ className = "" }: { className?: string }) {
   const ref = usePointerLight<HTMLDivElement>();
   const { src, alt } = profile.photo;
   const [taps, setTaps] = useState(0);
+  const [line, setLine] = useState("");
   const [talking, setTalking] = useState(false);
   const quiet = useRef(0);
   useEffect(() => () => window.clearTimeout(quiet.current), []);
 
   const hello = () => {
+    const say = lines();
+    const ctrl = /Mac|iPhone|iPad/.test(navigator.platform) ? "⌘K" : "Ctrl+K";
+    setLine(say[taps % say.length].replace("⌘K", ctrl));
     setTaps((n) => n + 1);
     setTalking(true);
     window.clearTimeout(quiet.current);
     quiet.current = window.setTimeout(() => setTalking(false), 4200);
   };
 
-  const line = taps ? LINES[(taps - 1) % LINES.length] : "";
   // Alternate between two identical animations so each tap starts a fresh one.
   const beat = taps ? (taps % 2 ? "a" : "b") : undefined;
 
   return (
-    <div ref={ref} className={`${s.portrait} ${className}`}>
+    <div ref={ref} data-xray="Client · one photo download, layered in 3D with CSS · warms to colour on a view timeline" className={`${s.portrait} ${className}`}>
       <div className={s.float}>
         <div className={s.hop} data-beat={beat}>
           <div className={s.stage}>
@@ -66,7 +79,7 @@ export function Portrait({ className = "" }: { className?: string }) {
       </div>
       <button type="button" onClick={hello} className={s.hi} aria-label="Say hi" />
       <p aria-hidden="true" className={s.bubble} data-show={talking || undefined} data-beat={beat}>
-        {taps % LINES.length === 1 && <Wave />}
+        {line === LINES.keys[0] && <Wave />}
         {line}
       </p>
       <p role="status" className="sr-only">

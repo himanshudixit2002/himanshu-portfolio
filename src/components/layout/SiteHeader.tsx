@@ -2,11 +2,16 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useEffect, useId, useLayoutEffect, useRef, useState } from "react";
+import { useEffect, useId, useLayoutEffect, useRef, useState, useSyncExternalStore } from "react";
 import type { NavItem } from "@/content/types";
 import { Avatar } from "@/components/identity/Portrait";
+import { openPalette } from "@/components/palette/PaletteHost";
+import { Search } from "@/components/ui/icons";
 
 type Props = { name: string; items: NavItem[]; resume?: NavItem };
+
+const onApple = () => /Mac|iPhone|iPad/.test(navigator.platform);
+const noSubscribe = () => () => {};
 
 /** The section a path belongs to: /work/kvstore is under Work. Hash links (/#contact) never are. */
 const isCurrent = (href: string, path: string) => !href.includes("#") && (path === href || path.startsWith(`${href}/`));
@@ -89,6 +94,8 @@ export function SiteHeader({ name, items, resume }: Props) {
   }, [open]);
 
   const solid = !heroPage || pastHero || open;
+  // The shortcut as this keyboard writes it; the key cap is one width either way.
+  const apple = useSyncExternalStore(noSubscribe, onApple, () => true);
 
   return (
     <>
@@ -99,57 +106,83 @@ export function SiteHeader({ name, items, resume }: Props) {
             : "bg-transparent"
         }`}
       >
-        <div className="container-page flex h-(--nav-h) items-center justify-between">
+        <div
+          data-xray="Client · the current page's pill slides between links as a clip-path transition"
+          data-xray-wide
+          className="container-page relative flex h-(--nav-h) items-center justify-between [--xray-left:auto] [--xray-right:max(var(--gutter),env(safe-area-inset-right))] [--xray-top:calc(100%+0.375rem)]"
+        >
           <Link href="/#top" className="group flex min-h-11 items-center gap-2.5 rounded-lg text-[0.9375rem] font-semibold tracking-[-0.01em]">
             <Avatar />
             {name}
           </Link>
 
-          <nav aria-label="Primary" className="hidden md:block">
-            <ul ref={list} className="relative isolate flex items-center gap-1">
-              {mark && (
-                <span
-                  aria-hidden="true"
-                  className={`absolute inset-0 -z-10 bg-white/10 duration-(--dur-base) ease-(--ease-emphasized) ${mark.slide ? "transition-[clip-path,opacity]" : "transition-opacity"} ${mark.on ? "" : "opacity-0"}`}
-                  style={{ clipPath: mark.clip }}
-                />
-              )}
-              {live.map((item) => (
-                <li key={item.href}>
-                  <Link
-                    href={item.href}
-                    aria-current={isCurrent(item.href, pathname) ? "page" : undefined}
-                    className="inline-flex min-h-11 items-center rounded-full px-3.5 text-sm text-muted-inverse transition-colors duration-200 hover:text-fg-inverse active:opacity-70 aria-[current=page]:text-fg-inverse"
-                  >
-                    {item.label}
-                  </Link>
-                </li>
-              ))}
-              {resumeLink && (
-                <li className="ml-2">
-                  <Link
-                    href={resumeLink.href}
-                    aria-current={isCurrent(resumeLink.href, pathname) ? "page" : undefined}
-                    className="inline-flex min-h-9 items-center rounded-full px-3.5 text-sm text-fg-inverse ring-1 ring-white/20 transition-[background-color,scale] duration-200 ring-inset hover:bg-white/8 active:scale-[0.97] aria-[current=page]:bg-white/10"
-                  >
-                    {resumeLink.label}
-                  </Link>
-                </li>
-              )}
-            </ul>
-          </nav>
+          <div className="flex items-center gap-1 md:gap-3">
+            <nav aria-label="Primary" className="hidden md:block">
+              <ul ref={list} className="relative isolate flex items-center gap-1">
+                {mark && (
+                  <span
+                    aria-hidden="true"
+                    className={`absolute inset-0 -z-10 bg-white/10 duration-(--dur-base) ease-(--ease-emphasized) ${mark.slide ? "transition-[clip-path,opacity]" : "transition-opacity"} ${mark.on ? "" : "opacity-0"}`}
+                    style={{ clipPath: mark.clip }}
+                  />
+                )}
+                {live.map((item) => (
+                  <li key={item.href}>
+                    <Link
+                      href={item.href}
+                      aria-current={isCurrent(item.href, pathname) ? "page" : undefined}
+                      className="inline-flex min-h-11 items-center rounded-full px-3.5 text-sm text-muted-inverse transition-colors duration-200 hover:text-fg-inverse active:opacity-70 aria-[current=page]:text-fg-inverse"
+                    >
+                      {item.label}
+                    </Link>
+                  </li>
+                ))}
+                {resumeLink && (
+                  <li className="ml-2">
+                    <Link
+                      href={resumeLink.href}
+                      aria-current={isCurrent(resumeLink.href, pathname) ? "page" : undefined}
+                      className="inline-flex min-h-9 items-center rounded-full px-3.5 text-sm text-fg-inverse ring-1 ring-white/20 transition-[background-color,scale] duration-200 ring-inset hover:bg-white/8 active:scale-[0.97] aria-[current=page]:bg-white/10"
+                    >
+                      {resumeLink.label}
+                    </Link>
+                  </li>
+                )}
+              </ul>
+            </nav>
 
-          <button
-            ref={buttonRef}
-            type="button"
-            className="-mr-2 inline-flex size-11 items-center justify-center rounded-full text-fg-inverse md:hidden"
-            aria-expanded={open}
-            aria-controls={menuId}
-            onClick={() => setOpen((v) => !v)}
-          >
-            <span aria-hidden="true" className="menu-bars" />
-            <span className="sr-only">{open ? "Close menu" : "Open menu"}</span>
-          </button>
+            <button
+              type="button"
+              onClick={openPalette}
+              aria-label="Search and commands"
+              aria-keyshortcuts="Meta+K Control+K /"
+              className="palette-button group hidden min-h-9 items-center gap-2 rounded-full pr-1.5 pl-3 text-muted-inverse ring-1 ring-white/12 transition-[color,background-color,scale] duration-(--dur-micro) ring-inset hover:bg-white/6 hover:text-fg-inverse active:scale-[0.97] md:inline-flex"
+            >
+              <Search className="size-4" />
+              <kbd className="inline-grid h-6 min-w-[3rem] place-items-center rounded-full bg-white/8 px-2 font-sans text-[0.6875rem] font-medium tracking-wide">
+                {apple ? "⌘ K" : "Ctrl K"}
+              </kbd>
+            </button>
+            <button
+              type="button"
+              onClick={openPalette}
+              aria-label="Search and commands"
+              className="palette-button inline-flex size-11 items-center justify-center rounded-full text-fg-inverse md:hidden"
+            >
+              <Search className="size-5" />
+            </button>
+            <button
+              ref={buttonRef}
+              type="button"
+              className="-mr-2 inline-flex size-11 items-center justify-center rounded-full text-fg-inverse md:hidden"
+              aria-expanded={open}
+              aria-controls={menuId}
+              onClick={() => setOpen((v) => !v)}
+            >
+              <span aria-hidden="true" className="menu-bars" />
+              <span className="sr-only">{open ? "Close menu" : "Open menu"}</span>
+            </button>
+          </div>
         </div>
 
         {/* Slides open rather than appearing; closed, it is inert and invisible,
