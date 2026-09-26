@@ -3,6 +3,7 @@ import { kvStore, projects } from "@/content/projects";
 import { ButtonLink } from "@/components/ui/ButtonLink";
 import { ArrowRight } from "@/components/ui/icons";
 import { LazyVisual } from "@/components/visuals/LazyVisual";
+import { CardGrid } from "@/components/work/CardFocus";
 import { ProjectCard } from "@/components/work/ProjectCard";
 
 const MORE = ["self-healing-cache", "scopeforge", "vitals"];
@@ -45,11 +46,11 @@ export function EngineeringScene() {
               All {projects.length} projects <ArrowRight className="size-4" />
             </Link>
           </div>
-          <div className="mt-8 grid gap-5 md:grid-cols-3">
+          <CardGrid className="mt-8 grid gap-5 md:grid-cols-3">
             {more.map((p) => (
               <ProjectCard key={p.slug} project={p} />
             ))}
-          </div>
+          </CardGrid>
         </div>
       </div>
     </section>

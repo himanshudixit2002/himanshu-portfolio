@@ -1,0 +1,260 @@
+/*
+ * Idle loops for the card signatures (MiniVisual). They run only while the
+ * element that holds the drawing ([data-loops]) is active — hovered or
+ * focused, or on touch screens a card crossing the middle of the screen
+ * ([data-active], set by CardFocus) — and only with motion on. Each restarts
+ * from the drawn state, so an inactive card is exactly the still. Small SVGs:
+ * transforms, opacity and dashes only.
+ */
+
+.loop {
+  transform-box: view-box;
+}
+
+/* SmartShelfKart: the layers part and settle. */
+@keyframes spread {
+  50% {
+    transform: translate3d(0, calc(var(--k) * 3.5px), 0);
+  }
+}
+:global(html[data-motion="full"] [data-loops]:hover) .spread,
+:global(html[data-motion="full"] [data-loops]:focus-within) .spread,
+:global(html[data-motion="full"] [data-loops][data-active]) .spread {
+  animation: spread 3.2s var(--ease-in-out) infinite;
+}
+
+/* Elepeia: the heavy bar shrinks to the light one. */
+@keyframes shrink {
+  35%,
+  70% {
+    transform: scaleX(0.03);
+  }
+}
+.shrink {
+  transform-origin: 30px 39px;
+}
+:global(html[data-motion="full"] [data-loops]:hover) .shrink,
+:global(html[data-motion="full"] [data-loops]:focus-within) .shrink,
+:global(html[data-motion="full"] [data-loops][data-active]) .shrink {
+  animation: shrink 3.6s var(--ease-emphasized) infinite;
+}
+
+/* Cue & Coffee: the running tables glow. */
+@keyframes glow {
+  50% {
+    fill-opacity: 0.42;
+  }
+}
+:global(html[data-motion="full"] [data-loops]:hover) .glow,
+:global(html[data-motion="full"] [data-loops]:focus-within) .glow,
+:global(html[data-motion="full"] [data-loops][data-active]) .glow {
+  animation: glow 2s var(--ease-in-out) infinite;
+  animation-delay: calc(var(--k) * 1s);
+}
+
+/* KVStore: the lit shard hops as keys land. */
+@keyframes hop {
+  0%,
+  24% {
+    transform: translate3d(0, 0, 0);
+  }
+  25%,
+  49% {
+    transform: translate3d(-34.5px, -20px, 0);
+  }
+  50%,
+  74% {
+    transform: translate3d(23px, 0, 0);
+  }
+  75%,
+  99% {
+    transform: translate3d(-11.5px, -20px, 0);
+  }
+}
+:global(html[data-motion="full"] [data-loops]:hover) .hop,
+:global(html[data-motion="full"] [data-loops]:focus-within) .hop,
+:global(html[data-motion="full"] [data-loops][data-active]) .hop {
+  animation: hop 3.2s steps(1, end) infinite;
+}
+
+/* Cache: the ring turns… */
+@keyframes turn {
+  to {
+    transform: rotate(360deg);
+  }
+}
+.turn {
+  transform-origin: 80px 50px;
+}
+:global(html[data-motion="full"] [data-loops]:hover) .turn,
+:global(html[data-motion="full"] [data-loops]:focus-within) .turn,
+:global(html[data-motion="full"] [data-loops][data-active]) .turn {
+  animation: turn 9s linear infinite;
+}
+
+/* …and one node drops out and comes back. */
+@keyframes blink {
+  40%,
+  60% {
+    opacity: 0.25;
+  }
+}
+:global(html[data-motion="full"] [data-loops]:hover) .blink,
+:global(html[data-motion="full"] [data-loops]:focus-within) .blink,
+:global(html[data-motion="full"] [data-loops][data-active]) .blink {
+  animation: blink 2.4s var(--ease-in-out) infinite;
+}
+
+/* Vitals: the ring fills and eases back. */
+@keyframes fill {
+  50% {
+    stroke-dasharray: 110 164;
+  }
+}
+:global(html[data-motion="full"] [data-loops]:hover) .fill,
+:global(html[data-motion="full"] [data-loops]:focus-within) .fill,
+:global(html[data-motion="full"] [data-loops][data-active]) .fill {
+  animation: fill 3s var(--ease-in-out) infinite;
+}
+
+/* ScopeForge: the rings draw in toward the guarded centre. */
+@keyframes inward {
+  0%,
+  45% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  50% {
+    transform: scale(1.18);
+    opacity: 0;
+  }
+  85%,
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+.inward {
+  transform-origin: 80px 50px;
+}
+:global(html[data-motion="full"] [data-loops]:hover) .inward,
+:global(html[data-motion="full"] [data-loops]:focus-within) .inward,
+:global(html[data-motion="full"] [data-loops][data-active]) .inward {
+  animation: inward 2.6s var(--ease-out) infinite;
+  animation-delay: calc(var(--k) * 0.18s);
+}
+
+/* RxForce: queued items sync one after another. */
+@keyframes sync {
+  0%,
+  12% {
+    opacity: 0;
+  }
+  24%,
+  82% {
+    opacity: 0.8;
+  }
+  94%,
+  100% {
+    opacity: 0;
+  }
+}
+.sync {
+  opacity: 0;
+}
+:global(html[data-motion="full"] [data-loops]:hover) .sync,
+:global(html[data-motion="full"] [data-loops]:focus-within) .sync,
+:global(html[data-motion="full"] [data-loops][data-active]) .sync {
+  animation: sync 3.2s var(--ease-in-out) infinite;
+  animation-delay: calc(var(--k) * 0.3s);
+}
+
+/* Fraud Ring: the edges draw in. */
+@keyframes draw {
+  0%,
+  35% {
+    stroke-dashoffset: 0;
+  }
+  40% {
+    stroke-dashoffset: 60;
+  }
+  85%,
+  100% {
+    stroke-dashoffset: 0;
+  }
+}
+.draw {
+  stroke-dasharray: 60;
+}
+:global(html[data-motion="full"] [data-loops]:hover) .draw,
+:global(html[data-motion="full"] [data-loops]:focus-within) .draw,
+:global(html[data-motion="full"] [data-loops][data-active]) .draw {
+  animation: draw 2.8s var(--ease-out) infinite;
+  animation-delay: calc(var(--k) * 0.15s);
+}
+
+/* Anomaly Gateway: the outliers blink. */
+:global(html[data-motion="full"] [data-loops]:hover) .flag,
+:global(html[data-motion="full"] [data-loops]:focus-within) .flag,
+:global(html[data-motion="full"] [data-loops][data-active]) .flag {
+  animation: blink 1.6s var(--ease-in-out) infinite;
+  animation-delay: calc(var(--k) * 0.25s);
+}
+
+/* Skintellect: a scan line passes over the face. */
+@keyframes scan {
+  from {
+    transform: translate3d(0, 0, 0);
+  }
+  to {
+    transform: translate3d(0, 46px, 0);
+  }
+}
+.scan {
+  opacity: 0;
+}
+:global(html[data-motion="full"] [data-loops]:hover) .scan,
+:global(html[data-motion="full"] [data-loops]:focus-within) .scan,
+:global(html[data-motion="full"] [data-loops][data-active]) .scan {
+  animation: scan 2.2s var(--ease-in-out) infinite alternate;
+  opacity: 0.8;
+}
+
+/* URL shortener: the code settles out of the id. */
+@keyframes pop {
+  0%,
+  50% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  55% {
+    transform: scale(0.86);
+    opacity: 0.35;
+  }
+  75%,
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+.pop {
+  transform-origin: 80px 64px;
+}
+:global(html[data-motion="full"] [data-loops]:hover) .pop,
+:global(html[data-motion="full"] [data-loops]:focus-within) .pop,
+:global(html[data-motion="full"] [data-loops][data-active]) .pop {
+  animation: pop 2.8s var(--ease-spring) infinite;
+}
+
+/* Two Sum: the pair lights, one after the other. */
+@keyframes pair {
+  50% {
+    fill-opacity: 0.65;
+  }
+}
+:global(html[data-motion="full"] [data-loops]:hover) .pair,
+:global(html[data-motion="full"] [data-loops]:focus-within) .pair,
+:global(html[data-motion="full"] [data-loops][data-active]) .pair {
+  animation: pair 2s var(--ease-in-out) infinite;
+  animation-delay: calc(var(--k) * 0.35s);
+}

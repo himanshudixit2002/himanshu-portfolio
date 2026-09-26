@@ -98,6 +98,7 @@ export function NextProject({ next }: { next: Project }) {
   return (
     <Link
       href={`/work/${next.slug}`}
+      data-loops
       className={`${s.next} group relative isolate grid items-center overflow-hidden rounded-[2rem] bg-ink-2 ring-1 ring-white/8 md:grid-cols-[1fr_20rem]`}
     >
       <span

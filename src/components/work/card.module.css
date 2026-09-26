@@ -1,0 +1,76 @@
+/*
+ * Project card states. A hairline at rest; under a pointer the card lifts
+ * 2px, its hairline takes the project's accent (--card-accent) and a deeper
+ * shadow opens beneath it; a light follows the pointer (CardFocus). Pressing
+ * settles it back down. On touch screens the card crossing the middle of the
+ * screen ([data-active]) gets the accent hairline, and a tap presses it.
+ */
+
+.card {
+  box-shadow:
+    0 0 0 1px rgb(255 255 255 / 0.08),
+    0 0 0 0 rgb(0 0 0 / 0);
+  transition:
+    translate var(--dur-base) var(--ease-out),
+    scale var(--dur-micro) var(--ease-out),
+    box-shadow var(--dur-base) var(--ease-out);
+}
+
+.card:has(:focus-visible),
+.card[data-active] {
+  box-shadow:
+    0 0 0 1px color-mix(in oklab, var(--card-accent) 55%, transparent),
+    0 0 0 0 rgb(0 0 0 / 0);
+}
+
+@media (hover: hover) {
+  .card:hover {
+    translate: 0 -2px;
+    box-shadow:
+      0 0 0 1px color-mix(in oklab, var(--card-accent) 55%, transparent),
+      0 1.5rem 3rem -1.25rem rgb(0 0 0 / 0.7);
+  }
+}
+
+.card:active {
+  translate: 0 0;
+  scale: 0.985;
+}
+
+/* The pointer's light: a soft disc in the accent, centred on the pointer. */
+.light {
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 1;
+  width: 26rem;
+  height: 26rem;
+  margin: -13rem 0 0 -13rem;
+  border-radius: 50%;
+  background: radial-gradient(closest-side, color-mix(in oklab, var(--card-accent) 16%, transparent), transparent);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity var(--dur-base) var(--ease-out);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .card:hover .light {
+    opacity: 1;
+    will-change: transform;
+  }
+}
+
+html[data-motion="reduce"] .light {
+  display: none;
+}
+
+/* The category line brightens with the card. */
+.category {
+  transition: filter var(--dur-base) var(--ease-out);
+}
+
+@media (hover: hover) {
+  .card:hover .category {
+    filter: brightness(1.25);
+  }
+}
