@@ -72,13 +72,13 @@ export default function ResumePage() {
             {profile.role} · {profile.location}
           </p>
           <p className="mt-2 flex flex-wrap gap-x-4 gap-y-1 text-sm text-muted">
-            <a href={`mailto:${profile.email}`} className="text-accent hover:underline">
+            <a href={`mailto:${profile.email}`} className="link-draw text-accent">
               {profile.email}
             </a>
-            <a href={profile.links.linkedin.href} className="text-accent hover:underline">
+            <a href={profile.links.linkedin.href} className="link-draw text-accent">
               linkedin.com/in/himanshudixit2406
             </a>
-            <a href={profile.links.github.href} className="text-accent hover:underline">
+            <a href={profile.links.github.href} className="link-draw text-accent">
               github.com/himanshudixit2002
             </a>
           </p>
@@ -109,7 +109,7 @@ export default function ResumePage() {
                 <div key={slug} className="break-inside-avoid">
                   <div className="flex flex-wrap items-baseline justify-between gap-x-4">
                     <h3 className="font-semibold">
-                      <Link href={`/work/${slug}`} className="hover:underline">
+                      <Link href={`/work/${slug}`} className="link-draw">
                         {p.title}
                       </Link>{" "}
                       <span className="font-normal text-muted">— {p.stack.slice(0, 4).join(", ")}</span>
@@ -157,7 +157,7 @@ export default function ResumePage() {
           <ul className="grid gap-1 pl-5 text-[0.9375rem] [list-style:disc]">
             {certifications.map((c) => (
               <li key={c.name}>
-                <a href={c.href} className="text-accent hover:underline">
+                <a href={c.href} className="link-draw text-accent">
                   {c.name}
                 </a>{" "}
                 — {c.issuer} ({c.year})

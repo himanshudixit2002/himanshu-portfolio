@@ -42,8 +42,9 @@ export function EngineeringScene() {
         <div className="mt-(--section-y)">
           <div className="flex flex-wrap items-end justify-between gap-4">
             <h2 className="text-title text-[clamp(1.75rem,3.4vw,2.75rem)]">More work</h2>
-            <Link href="/work" className="inline-flex min-h-11 items-center gap-2 text-accent-bright hover:underline">
-              All {projects.length} projects <ArrowRight className="size-4" />
+            <Link href="/work" className="group inline-flex min-h-11 items-center gap-2 text-accent-bright">
+              <span className="link-draw">All {projects.length} projects</span>
+              <ArrowRight className="size-4 transition-transform duration-(--dur-base) ease-(--ease-out) group-hover:translate-x-0.5" />
             </Link>
           </div>
           <CardGrid className="mt-8 grid gap-5 md:grid-cols-3">

@@ -69,6 +69,9 @@ html {
   scroll-padding-top: calc(var(--chrome-h) + 1rem);
   -webkit-text-size-adjust: 100%;
   text-size-adjust: 100%;
+  /* Taps show their own :active states instead of the grey flash. */
+  -webkit-tap-highlight-color: transparent;
+  scrollbar-color: #3a3b42 var(--color-ink);
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -97,6 +100,32 @@ body {
   border-radius: 6px;
 }
 
+/* The focus ring opens out from the element. Low specificity, so an element's
+   own animation always wins over it. */
+@keyframes focus-ring {
+  from {
+    outline-color: transparent;
+    outline-offset: 0;
+  }
+}
+
+:where(:focus-visible) {
+  animation: focus-ring var(--dur-micro) var(--ease-out);
+}
+
+/* Body copy avoids a lonely last word; short headings balance their lines. */
+:where(p, li, dd, figcaption) {
+  text-wrap: pretty;
+}
+
+:where(h1, h2, h3) {
+  text-wrap: balance;
+}
+
+:where(blockquote, q) {
+  hanging-punctuation: first;
+}
+
 .surface-light :focus-visible {
   outline-color: var(--color-accent);
 }
@@ -105,7 +134,8 @@ body {
   width: 100%;
   max-width: calc(80rem + 2 * var(--gutter));
   margin-inline: auto;
-  padding-inline: var(--gutter);
+  padding-left: max(var(--gutter), env(safe-area-inset-left));
+  padding-right: max(var(--gutter), env(safe-area-inset-right));
 }
 
 @utility section-y {
@@ -162,6 +192,89 @@ body {
   .disclosure > * {
     min-height: 0;
     overflow: hidden;
+  }
+}
+
+/* ---------------------------------------------------------------------------
+ * Small shared details.
+ * ------------------------------------------------------------------------- */
+
+@layer components {
+  /* A text link's underline draws in from the left under a pointer or focus.
+     Put it on the link, or on the text inside a link that also holds an icon. */
+  .link-draw {
+    background: linear-gradient(currentColor, currentColor) no-repeat 0 100% / 0 1px;
+    transition: background-size var(--dur-base) var(--ease-out);
+  }
+
+  .link-draw:focus-visible,
+  :is(a, button):focus-visible .link-draw {
+    background-size: 100% 1px;
+  }
+
+  @media (hover: hover) {
+    .link-draw:hover,
+    :is(a, button):hover .link-draw {
+      background-size: 100% 1px;
+    }
+  }
+
+  /* The menu button's two bars cross into an X, with a little spring. */
+  .menu-bars {
+    position: relative;
+    display: block;
+    width: 1.125rem;
+    height: 0.75rem;
+  }
+
+  .menu-bars::before,
+  .menu-bars::after {
+    content: "";
+    position: absolute;
+    inset-inline: 0;
+    top: 50%;
+    height: 1.5px;
+    margin-top: -0.75px;
+    border-radius: 1px;
+    background: currentColor;
+    transition: transform var(--dur-base) var(--ease-spring);
+  }
+
+  .menu-bars::before {
+    transform: translate3d(0, -3.5px, 0);
+  }
+
+  .menu-bars::after {
+    transform: translate3d(0, 3.5px, 0);
+  }
+
+  [aria-expanded="true"] > .menu-bars::before {
+    transform: rotate(45deg);
+  }
+
+  [aria-expanded="true"] > .menu-bars::after {
+    transform: rotate(-45deg);
+  }
+
+  /* Loading placeholder: a faint band of light passes across. */
+  .shimmer {
+    position: relative;
+    overflow: hidden;
+  }
+
+  .shimmer::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(100deg, transparent 30%, rgb(255 255 255 / 0.045) 50%, transparent 70%);
+    transform: translate3d(-100%, 0, 0);
+    animation: shimmer 1.8s var(--ease-in-out) infinite;
+  }
+}
+
+@keyframes shimmer {
+  to {
+    transform: translate3d(100%, 0, 0);
   }
 }
 
@@ -317,14 +430,43 @@ html[data-motion="reduce"]::view-transition-new(*) {
     opacity: 1 !important;
     transform: none !important;
   }
+  /* Everything prints in its final, still state. */
+  *,
+  *::before,
+  *::after {
+    animation: none !important;
+    transition: none !important;
+  }
+  /* Chrome and pinned scenes go; a scene's static twin prints in its place,
+     and the page's own text carries the rest. */
   .site-header,
   .site-footer,
+  .local-nav,
+  .scene-pinned,
+  .scene-track,
+  [data-visual],
   .no-print {
     display: none !important;
+  }
+  .scene-static {
+    display: block !important;
   }
   body {
     background: #fff !important;
     color: #000 !important;
+  }
+  /* Dark sections print as ink on paper (the résumé is already light). */
+  main :where(section, article, div, figure):not(.surface-light, .surface-light *) {
+    background: transparent !important;
+    box-shadow: none !important;
+  }
+  main :where(h1, h2, h3, h4, p, li, dt, dd, span, strong, figcaption, a):not(.surface-light *) {
+    color: #000 !important;
+  }
+  main a[href^="http"]:not(.surface-light *)::after {
+    content: " (" attr(href) ")";
+    font-size: 0.85em;
+    word-break: break-all;
   }
   @page {
     margin: 14mm 14mm 16mm;

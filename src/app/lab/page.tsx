@@ -72,8 +72,9 @@ export default function LabPage() {
                 </h2>
                 <p className="mt-3 text-muted-inverse">{lab.body}</p>
               </div>
-              <Link href={`/work/${lab.slug}`} className="inline-flex min-h-11 items-center gap-2 text-sm text-accent-bright hover:underline">
-                Read the case study <ArrowRight className="size-4" />
+              <Link href={`/work/${lab.slug}`} className="group inline-flex min-h-11 items-center gap-2 text-sm text-accent-bright">
+                <span className="link-draw">Read the case study</span>
+                <ArrowRight className="size-4 transition-transform duration-(--dur-base) ease-(--ease-out) group-hover:translate-x-0.5" />
               </Link>
             </div>
             <LazyVisual id={lab.id} />

@@ -1,0 +1,51 @@
+/*
+ * The 404 mark: a link, broken. The halves ease apart and back and the
+ * sparks at the break flicker, only with motion on; otherwise it is still.
+ */
+
+.half {
+  transform-box: view-box;
+}
+
+.left {
+  transform-origin: 34px 50px;
+}
+
+.right {
+  transform-origin: 126px 50px;
+}
+
+@keyframes left {
+  to {
+    transform: translate3d(-3px, 1px, 0) rotate(-5deg);
+  }
+}
+
+@keyframes right {
+  to {
+    transform: translate3d(3px, -1px, 0) rotate(5deg);
+  }
+}
+
+@keyframes spark {
+  0%,
+  100% {
+    opacity: 0.9;
+  }
+  50% {
+    opacity: 0.2;
+  }
+}
+
+:global(html[data-motion="full"]) .left {
+  animation: left 2.8s var(--ease-in-out) infinite alternate;
+}
+
+:global(html[data-motion="full"]) .right {
+  animation: right 2.8s var(--ease-in-out) infinite alternate;
+}
+
+:global(html[data-motion="full"]) .spark {
+  animation: spark 1.4s var(--ease-in-out) infinite;
+  animation-delay: calc(var(--k) * 0.2s);
+}

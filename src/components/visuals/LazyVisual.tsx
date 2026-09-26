@@ -64,7 +64,7 @@ const HEIGHT: Record<InteractiveId, string> = {
 
 const placeholder = (height: string) =>
   function Placeholder() {
-    return <div className={`${height} animate-pulse rounded-[1.75rem] bg-ink-2 ring-1 ring-white/8`} />;
+    return <div className={`${height} shimmer rounded-[1.75rem] bg-ink-2 ring-1 ring-white/8`} />;
   };
 
 const COMPONENTS = Object.fromEntries(

@@ -68,7 +68,7 @@ export function SnapGallery({ label, items, stackFrom, columns = 1, itemWidth, t
   };
 
   const style = { ...(itemWidth ? { "--snap-w": itemWidth } : {}), "--stack-cols": columns } as CSSProperties;
-  const control = `grid size-11 place-items-center rounded-full transition-[background-color,opacity,transform] duration-(--dur-micro) active:scale-95 disabled:opacity-30 ${
+  const control = `grid size-11 place-items-center rounded-full transition-[background-color,opacity,scale] duration-(--dur-micro) active:scale-95 disabled:opacity-30 ${
     light ? "bg-black/6 text-fg enabled:hover:bg-black/10" : "bg-white/8 text-fg-inverse enabled:hover:bg-white/14"
   }`;
 

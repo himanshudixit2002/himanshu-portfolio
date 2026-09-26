@@ -111,7 +111,7 @@ export function LocalNav({ title, accent, sections, tryId }: Props) {
         {tryId && (
           <a
             href={`#${tryId}`}
-            className="inline-flex h-8 flex-none items-center rounded-full px-3.5 text-[0.8125rem] font-semibold text-ink transition-[filter,transform] duration-(--dur-micro) hover:brightness-110 active:scale-95"
+            className="inline-flex h-8 flex-none items-center rounded-full px-3.5 text-[0.8125rem] font-semibold text-ink transition-[filter,scale] duration-(--dur-micro) hover:brightness-110 active:scale-95"
             style={{ background: accent }}
           >
             Try it

@@ -24,7 +24,7 @@ export function Metrics({ project }: { project: Project }) {
             <span className={`items-end pb-4 sm:flex sm:min-h-14 ${viz.kind === "none" ? "hidden" : "flex min-h-14"}`}>
               <MetricFigure viz={viz} accent={project.accent} />
             </span>
-            <span className="text-title block text-[clamp(2.25rem,4vw,3.25rem)]">{m.value}</span>
+            <span className="text-title block text-[clamp(2.25rem,4vw,3.25rem)] tabular-nums">{m.value}</span>
           </dd>
         </div>
         );
@@ -99,7 +99,7 @@ export function NextProject({ next }: { next: Project }) {
     <Link
       href={`/work/${next.slug}`}
       data-loops
-      className={`${s.next} group relative isolate grid items-center overflow-hidden rounded-[2rem] bg-ink-2 ring-1 ring-white/8 md:grid-cols-[1fr_20rem]`}
+      className={`${s.next} group relative isolate grid items-center overflow-hidden rounded-[2rem] bg-ink-2 ring-1 ring-white/8 md:grid-cols-[1fr_20rem] print:hidden`}
     >
       <span
         aria-hidden="true"

@@ -69,8 +69,9 @@ export function Experience({ full = false, headingLevel = 2 }: { full?: boolean;
         </div>
 
         {!full && (
-          <Link href="/about#experience" className="mt-8 inline-flex min-h-11 items-center gap-2 text-accent hover:underline">
-            More on how these work <ArrowRight className="size-4" />
+          <Link href="/about#experience" className="group mt-8 inline-flex min-h-11 items-center gap-2 text-accent">
+            <span className="link-draw">More on how these work</span>
+            <ArrowRight className="size-4 transition-transform duration-(--dur-base) ease-(--ease-out) group-hover:translate-x-0.5" />
           </Link>
         )}
       </div>

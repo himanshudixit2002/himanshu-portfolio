@@ -58,7 +58,7 @@ export default function AboutPage() {
             <ul className="mt-4 grid gap-3">
               {certifications.map((c) => (
                 <li key={c.name}>
-                  <a href={c.href} target="_blank" rel="noopener noreferrer" className="font-semibold text-accent hover:underline">
+                  <a href={c.href} target="_blank" rel="noopener noreferrer" className="link-draw font-semibold text-accent">
                     {c.name}
                     <span className="sr-only"> (opens in a new tab)</span>
                   </a>

@@ -33,6 +33,9 @@ export const metadata: Metadata = {
 export const viewport: Viewport = {
   themeColor: "#08090b",
   colorScheme: "dark",
+  // Edge to edge on notched phones; container-page and the footer keep
+  // content inside the safe area.
+  viewportFit: "cover",
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
