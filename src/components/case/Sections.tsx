@@ -8,6 +8,7 @@ import { SnapGallery } from "@/components/motion/SnapGallery";
 import { ArrowRight } from "@/components/ui/icons";
 import { MiniVisual } from "@/components/visuals/MiniVisual";
 import { MetricFigure } from "./MetricFigure";
+import { PullNext } from "./PullNext";
 import s from "./case.module.css";
 
 const stagger = (i: number) => ({ "--reveal-i": i }) as CSSProperties;
@@ -19,7 +20,7 @@ export function Metrics({ project }: { project: Project }) {
       {project.metrics.map((m, i) => {
         const viz = vizFor(m);
         return (
-        <div key={m.label} data-reveal style={stagger(i)} className="flex flex-col border-t border-white/12 pt-5">
+        <div key={m.label} data-reveal data-replay-on="" style={stagger(i)} className="flex flex-col border-t border-white/12 pt-5">
           <dt className="order-2 mt-2 text-sm leading-relaxed text-muted-inverse">{m.label}</dt>
           <dd className="order-1">
             {/* Tiles side by side keep their numbers level; alone, an empty slot collapses. */}
@@ -38,8 +39,8 @@ export function Metrics({ project }: { project: Project }) {
 /** Decisions as an Apple-style gallery: a snapping row on phones, a grid from 768px. */
 export function Decisions({ project }: { project: Project }) {
   const cards = project.decisions.map((d, i) => (
-    <article key={d.title} className="flex h-full flex-col rounded-[1.5rem] bg-snow p-6 ring-1 ring-black/5 md:p-7">
-      <span className="font-mono text-xs text-accent">{String(i + 1).padStart(2, "0")}</span>
+    <article key={d.title} className="group flex h-full flex-col rounded-[1.5rem] bg-snow p-6 ring-1 ring-black/5 md:p-7">
+      <span className={`${s.number} font-mono text-xs text-accent`}>{String(i + 1).padStart(2, "0")}</span>
       <h3 className="mt-2 text-lg font-semibold tracking-[-0.015em] text-balance">{d.title}</h3>
       <p className="mt-2 leading-relaxed text-muted">{d.body}</p>
     </article>
@@ -124,6 +125,7 @@ export function NextProject({ next }: { next: Project }) {
       <span aria-hidden="true" className="hidden aspect-[16/10] [mask-image:radial-gradient(closest-side,black_55%,transparent)] md:block">
         <MiniVisual id={next.visual} accent={next.accent} />
       </span>
+      <PullNext slug={next.slug} />
     </Link>
   );
 }

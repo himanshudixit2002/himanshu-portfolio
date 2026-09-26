@@ -182,6 +182,59 @@ export function Fx({ projects }: { projects: Slim[] }) {
     };
   }, []);
 
+  // ── Figures that draw again ─────────────────────────────────────────
+  // [data-replay-on] draws its picture when it first comes well into view,
+  // and again under a pointer or a tap (case.module.css). Until its first
+  // pass it waits undrawn — but only once this is running (data-replay-ready).
+  useEffect(() => {
+    if (reduced) return;
+    const root = document.documentElement;
+    const last = new WeakMap<Element, number>();
+    const replay = (el: HTMLElement) => {
+      const now = performance.now();
+      if (now - (last.get(el) ?? -Infinity) < 1300) return;
+      last.set(el, now);
+      el.dataset.replay = el.dataset.replay === "a" ? "b" : "a";
+    };
+    const seen = new IntersectionObserver(
+      (entries) => {
+        for (const entry of entries) {
+          if (!entry.isIntersecting) continue;
+          seen.unobserve(entry.target);
+          replay(entry.target as HTMLElement);
+        }
+      },
+      { threshold: 0.5 },
+    );
+    // The pass on arrival is for fine pointers only: redrawing many small
+    // SVG shapes is main-thread work, and on a phone it landed mid-scroll.
+    // Phones keep the figures drawn and replay them on a tap.
+    const fine = window.matchMedia("(hover: hover) and (pointer: fine)").matches;
+    const frame = requestAnimationFrame(() => {
+      if (!fine) return;
+      document.querySelectorAll<HTMLElement>("[data-replay-on]:not([data-replay])").forEach((el) => seen.observe(el));
+      root.setAttribute("data-replay-ready", "");
+    });
+    const onOver = (event: PointerEvent) => {
+      if (event.pointerType !== "mouse") return;
+      const el = (event.target as Element | null)?.closest?.<HTMLElement>("[data-replay-on][data-replay]");
+      if (el && !el.contains(event.relatedTarget as Node | null)) replay(el);
+    };
+    const onDown = (event: PointerEvent) => {
+      if (event.pointerType === "mouse") return;
+      const el = (event.target as Element | null)?.closest?.<HTMLElement>("[data-replay-on]");
+      if (el) replay(el);
+    };
+    document.addEventListener("pointerover", onOver, { passive: true });
+    document.addEventListener("pointerdown", onDown, { passive: true });
+    return () => {
+      cancelAnimationFrame(frame);
+      seen.disconnect();
+      document.removeEventListener("pointerover", onOver);
+      document.removeEventListener("pointerdown", onDown);
+    };
+  }, [pathname, reduced]);
+
   // ── Discoveries ─────────────────────────────────────────────────────
   useEffect(() => {
     let timer = 0;

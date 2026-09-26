@@ -4,6 +4,7 @@ import type { Project } from "@/content/types";
 import { formatPeriod } from "@/lib/format";
 import { WordReveal } from "@/components/motion/Text";
 import { ButtonLink } from "@/components/ui/ButtonLink";
+import { HeroTilt } from "@/components/home/HeroTilt";
 import { HeroDevice } from "./HeroDevice";
 
 const rise = (i: number) => ({ "--i": i }) as CSSProperties;
@@ -80,7 +81,10 @@ export function CaseHero({ project }: { project: Project }) {
           only as it nears the screen; the estimate is its height at that width. */}
       <div className="container-page mt-16 pb-6 md:mt-24 [perspective:1600px]">
         <div className="sd-tilt-flat max-md:[contain-intrinsic-size:auto_calc((100vw-2rem)*0.78)] max-md:[content-visibility:auto]">
-          <HeroDevice project={project} />
+          {/* It lies back until it scrolls into place, and leans toward a fine pointer. */}
+          <HeroTilt>
+            <HeroDevice project={project} />
+          </HeroTilt>
         </div>
       </div>
       {/* The local nav appears once this has scrolled under the header. */}

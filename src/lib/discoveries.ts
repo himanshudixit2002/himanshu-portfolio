@@ -21,6 +21,7 @@ export const DISCOVERIES: Discovery[] = [
   { id: "bounce", name: "Bouncy", hint: "The headline's full stop looks restless.", href: "/#top" },
   { id: "ripple", name: "Ripple", hint: "Six hundred dots, waiting for a tap.", href: "/#hello" },
   { id: "explorer", name: "Completionist", hint: "Open every project.", href: "/work" },
+  { id: "pull", name: "Pull through", hint: "At the end of a case study, keep scrolling.", href: "/work/smartshelfkart" },
   { id: "konami", name: "Old school", hint: "A classic cheat code works here." },
 ];
 

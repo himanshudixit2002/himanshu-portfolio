@@ -114,6 +114,11 @@ Only ScopeForge has real screenshots (its repository's synthetic demo workspace)
       - The footer's HD turns over under the pointer.
       - A hidden tab's title asks you to come back.
       - Developers get a hello in the console.
+  - **Work and case studies:**
+    - **Tilt:** project cards tilt a few degrees toward a fine pointer, set by `useCardFocus`'s single listener alongside the light. A case study's device leans the same way (`HeroTilt`) once it's on screen.
+    - **Figures that draw again** (`[data-replay-on]`, `Fx`). A metric's picture draws when it first comes well into view, then again under the pointer or a tap. It uses two alternating keyframe sets in `case.module.css`. The arrival pass is for fine pointers only: redrawing many small SVG shapes is main-thread work, and on a phone it landed mid-scroll (0 to 5 frames over 50ms on KVStore). Phones keep the figures drawn and replay on a tap.
+    - **Small ones:** decision numbers turn over, and "Try it" wiggles once when its interactive arrives.
+    - **Pull to the next project** (`PullNext`, wheel only). At the very bottom, with the door fully in view, more scrolling fills a ring on the door, and a full ring opens the next project. Upward scroll or a pause lets go.
   - **Discoveries** (`src/lib/discoveries.ts`). Small secrets, recorded per visitor by `discover(id)` in `lib/explored`. The first find shows a note under the header, and the palette lists them all, with a hint for those still to find. Add one by listing it there and calling `discover` where it happens. Current ones:
     - hearing all the portrait's lines
     - opening the palette
@@ -121,6 +126,7 @@ Only ScopeForge has real screenshots (its repository's synthetic demo workspace)
     - bouncing the hero's full stop
     - rippling the practice dots
     - exploring every project
+    - pulling through to the next project
     - the Konami code, which bursts sparks in every project's accent
   - **Command palette** (`src/components/palette`). ⌘K / Ctrl+K, "/" or the header's search button.
     - **Contents:** every project (with a "Seen" mark once opened), the places to go, and actions: Surprise me, copy the email address, x-ray mode, reduce motion.

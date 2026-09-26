@@ -57,6 +57,121 @@
   stroke-dashoffset: 1;
 }
 
+/* Replaying a figure: when it first comes into view, and again under a
+   pointer or a tap, Fx flips data-replay between two identical sets of
+   keyframes, so each pass starts fresh. The same pictures, drawn again. */
+@keyframes unit-a {
+  from {
+    opacity: 0.12;
+    transform: scale(0.35);
+  }
+}
+
+@keyframes unit-b {
+  from {
+    opacity: 0.12;
+    transform: scale(0.35);
+  }
+}
+
+@keyframes fill-a {
+  from {
+    transform: scaleX(0);
+  }
+}
+
+@keyframes fill-b {
+  from {
+    transform: scaleX(0);
+  }
+}
+
+@keyframes shrink-a {
+  from {
+    transform: scale(var(--from, 1));
+  }
+}
+
+@keyframes shrink-b {
+  from {
+    transform: scale(var(--from, 1));
+  }
+}
+
+@keyframes draw-a {
+  from {
+    stroke-dashoffset: 1;
+  }
+}
+
+@keyframes draw-b {
+  from {
+    stroke-dashoffset: 1;
+  }
+}
+
+/* Before its first pass, a figure waits undrawn. */
+:global(html[data-replay-ready][data-motion="full"]) :global([data-replay-on]:not([data-replay])) .unit {
+  opacity: 0.12;
+  transform: scale(0.35);
+}
+
+:global(html[data-replay-ready][data-motion="full"]) :global([data-replay-on]:not([data-replay])) .fill {
+  transform: scaleX(0);
+}
+
+:global(html[data-replay-ready][data-motion="full"]) :global([data-replay-on]:not([data-replay])) .shrink {
+  transform: scale(var(--from, 1));
+}
+
+:global(html[data-replay-ready][data-motion="full"]) :global([data-replay-on]:not([data-replay])) .draw {
+  stroke-dashoffset: 1;
+}
+
+:global(html[data-motion="full"]) :global([data-replay="a"]) .unit {
+  animation: unit-a 520ms var(--ease-spring) calc(var(--u, 0) * 16ms) both;
+}
+
+:global(html[data-motion="full"]) :global([data-replay="b"]) .unit {
+  animation: unit-b 520ms var(--ease-spring) calc(var(--u, 0) * 16ms) both;
+}
+
+:global(html[data-motion="full"]) :global([data-replay="a"]) .fill {
+  animation: fill-a 1000ms var(--ease-emphasized) calc(var(--u, 0) * 90ms) both;
+}
+
+:global(html[data-motion="full"]) :global([data-replay="b"]) .fill {
+  animation: fill-b 1000ms var(--ease-emphasized) calc(var(--u, 0) * 90ms) both;
+}
+
+:global(html[data-motion="full"]) :global([data-replay="a"]) .shrink {
+  animation: shrink-a 1200ms var(--ease-emphasized) 120ms both;
+}
+
+:global(html[data-motion="full"]) :global([data-replay="b"]) .shrink {
+  animation: shrink-b 1200ms var(--ease-emphasized) 120ms both;
+}
+
+:global(html[data-motion="full"]) :global([data-replay="a"]) .draw {
+  animation: draw-a 900ms var(--ease-emphasized) calc(var(--u, 0) * 160ms) both;
+}
+
+:global(html[data-motion="full"]) :global([data-replay="b"]) .draw {
+  animation: draw-b 900ms var(--ease-emphasized) calc(var(--u, 0) * 160ms) both;
+}
+
+/* Decision numbers turn over under the pointer. */
+.number {
+  display: inline-block;
+  transition: rotate 700ms var(--ease-spring);
+}
+
+@media (hover: hover) {
+  :global(html[data-motion="full"]) :global(.group):hover .number {
+    rotate: x 360deg;
+  }
+}
+
 /* Proof icons -------------------------------------------------------------- */
 
 .tick {

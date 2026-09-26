@@ -26,6 +26,7 @@ export function LocalNav({ title, accent, sections, tryId }: Props) {
   const [bar, setBar] = useState({ x: 0, w: 0 });
   const row = useRef<HTMLUListElement>(null);
   const self = useRef<HTMLElement>(null);
+  const tryLink = useRef<HTMLAnchorElement>(null);
   const { reduced } = useMotionPreference();
 
   // Once per frame while scrolling: show the bar once the hero's end reaches
@@ -61,6 +62,22 @@ export function LocalNav({ title, accent, sections, tryId }: Props) {
       window.removeEventListener("resize", onScroll);
     };
   }, [sections]);
+
+  // "Try it" gives one small wiggle the first time the interactive comes into view.
+  useEffect(() => {
+    const target = tryId ? document.getElementById(tryId) : null;
+    if (!target || reduced) return;
+    const seen = new IntersectionObserver(
+      ([entry]) => {
+        if (!entry.isIntersecting) return;
+        seen.disconnect();
+        tryLink.current?.setAttribute("data-wiggle", "");
+      },
+      { threshold: 0.25 },
+    );
+    seen.observe(target);
+    return () => seen.disconnect();
+  }, [tryId, reduced]);
 
   // Move the underline to the current link, and keep it in view on phones.
   useLayoutEffect(() => {
@@ -110,8 +127,9 @@ export function LocalNav({ title, accent, sections, tryId }: Props) {
         </ul>
         {tryId && (
           <a
+            ref={tryLink}
             href={`#${tryId}`}
-            className="hit inline-flex h-8 flex-none items-center rounded-full px-3.5 text-[0.8125rem] font-semibold text-ink transition-[filter,scale] duration-(--dur-micro) hover:brightness-110 active:scale-95"
+            className="try-it hit inline-flex h-8 flex-none items-center rounded-full px-3.5 text-[0.8125rem] font-semibold text-ink transition-[filter,scale] duration-(--dur-micro) hover:brightness-110 active:scale-95"
             style={{ background: accent }}
           >
             Try it
