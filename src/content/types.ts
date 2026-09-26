@@ -17,6 +17,8 @@ export type Profile = {
   headline: [string, string];
   intro: string;
   bio: string[];
+  /** What Himanshu is looking for now, shown in the hero and the intro. */
+  availability: string;
   email: string;
   links: {
     github: LinkItem;

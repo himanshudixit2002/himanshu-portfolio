@@ -216,7 +216,8 @@ async function feel() {
           document.querySelectorAll(".wr-scrub .wr-w").forEach((el) => {
             if (reading(el) && Number(getComputedStyle(el).opacity) < 0.85) now.add(where(el, "dim words"));
           });
-          document.querySelectorAll(".snap-track article [aria-hidden='true'], .scene-frames li > [aria-hidden='true']").forEach((el) => {
+          // A scene card's or frame's drawing box (not a project card's light layer).
+          document.querySelectorAll(".snap-track article > div[aria-hidden='true'], .scene-frames li > [aria-hidden='true']").forEach((el) => {
             if (reading(el) && !el.querySelector("svg")) now.add(where(el, "undrawn"));
           });
           document.querySelectorAll("[data-visual]").forEach((el) => {

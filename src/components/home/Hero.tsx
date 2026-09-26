@@ -3,7 +3,7 @@ import { profile } from "@/content/profile";
 import { KvTerminalArt } from "@/components/art/KvTerminalArt";
 import { NovaPhoneArt, SskOverviewArt } from "@/components/art/SmartShelfKartArt";
 import { ButtonLink } from "@/components/ui/ButtonLink";
-import { ArrowDown } from "@/components/ui/icons";
+import { ArrowDown, ArrowRight } from "@/components/ui/icons";
 import { HeroTilt } from "./HeroTilt";
 
 const rise = (i: number) => ({ "--i": i }) as CSSProperties;
@@ -27,6 +27,15 @@ export function Hero() {
       />
 
       <div className="container-page">
+        <a
+          href="#contact"
+          className="hero-rise group mb-7 inline-flex min-h-11 items-center gap-2.5 rounded-full bg-white/6 pr-4 pl-3.5 text-sm font-medium text-fg-inverse ring-1 ring-white/12 transition-[background-color,scale] duration-(--dur-micro) ring-inset hover:bg-white/10 active:scale-[0.97]"
+          style={rise(0)}
+        >
+          <span aria-hidden="true" className="live-dot" />
+          {profile.availability}
+          <ArrowRight className="size-3.5 text-muted-inverse transition-transform duration-(--dur-base) ease-(--ease-out) group-hover:translate-x-0.5" />
+        </a>
         <h1 id="hero-title">
           <span className="hero-rise block text-[0.9375rem] font-semibold text-fg-inverse" style={rise(0)}>
             {profile.name}

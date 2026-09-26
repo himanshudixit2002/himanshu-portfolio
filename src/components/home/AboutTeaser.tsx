@@ -14,7 +14,8 @@ export function AboutTeaser() {
           <h2 id="about-title" data-reveal className="mt-4 text-display text-[clamp(2.25rem,4.8vw,3.75rem)] text-balance">
             The person behind the work.
           </h2>
-          {profile.bio.slice(0, 2).map((p) => (
+          {/* The first paragraph opens the page, in AtAGlance. */}
+          {profile.bio.slice(1, 2).map((p) => (
             <p key={p} data-reveal className="mt-5 leading-relaxed text-muted-inverse">
               {p}
             </p>

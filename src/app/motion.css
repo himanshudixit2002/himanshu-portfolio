@@ -106,11 +106,11 @@
    * it's still loading. --sd-i staggers siblings by a few vh.
    */
 
-  /* In place by the time its top is a fifth of the way up the screen. */
+  /* In place by the time its top is a seventh of the way up the screen. */
   html[data-motion="full"] .sd-rise {
     animation: sd-rise linear both;
     animation-timeline: view();
-    animation-range: cover calc(var(--sd-i, 0) * 3vh) cover calc(18vh + var(--sd-i, 0) * 3vh);
+    animation-range: cover calc(var(--sd-i, 0) * 2vh) cover calc(14vh + var(--sd-i, 0) * 2vh);
   }
 
   html[data-motion="full"] .sd-scale-in {
@@ -452,6 +452,11 @@ html[data-js] .snap-gallery:not([data-static]) .snap-item:not([data-active]) {
 }
 
 @media (min-width: 768px) {
+  .snap-gallery[data-dim="phone"] .snap-item {
+    opacity: 1 !important;
+    transform: none !important;
+  }
+
   .snap-gallery[data-stack="md"] .snap-track {
     display: grid;
     grid-template-columns: repeat(var(--stack-cols, 1), minmax(0, 1fr));

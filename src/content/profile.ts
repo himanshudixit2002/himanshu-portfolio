@@ -11,6 +11,7 @@ export const profile: Profile = {
     "At Cleartrip I worked on hotel and flight booking — geospatial search, caching and regression automation. Alongside it I've shipped products for a menswear label and a snooker club, a multi-tenant inventory platform with an AI assistant, and systems projects built to understand how things fail.",
     "I studied Computer Science and Engineering at VIT, specialising in data science.",
   ],
+  availability: "Open to full-time roles",
   email: "himanshudixit2406@gmail.com",
   links: {
     github: { label: "GitHub", href: "https://github.com/himanshudixit2002" },

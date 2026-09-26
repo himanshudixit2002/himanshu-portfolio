@@ -256,6 +256,27 @@ body {
     transform: rotate(-45deg);
   }
 
+  /* A live status: a steady dot whose ring pings outward. */
+  .live-dot {
+    position: relative;
+    display: inline-block;
+    flex: none;
+    width: 0.5rem;
+    height: 0.5rem;
+    border-radius: 999px;
+    background: var(--live, #34d399);
+  }
+
+  .live-dot::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    background: inherit;
+    opacity: 0;
+    animation: live-ping 2.4s var(--ease-out) infinite;
+  }
+
   /* Loading placeholder: a faint band of light passes across. */
   .shimmer {
     position: relative;
@@ -269,6 +290,18 @@ body {
     background: linear-gradient(100deg, transparent 30%, rgb(255 255 255 / 0.045) 50%, transparent 70%);
     transform: translate3d(-100%, 0, 0);
     animation: shimmer 1.8s var(--ease-in-out) infinite;
+  }
+}
+
+@keyframes live-ping {
+  0% {
+    opacity: 0.55;
+    transform: scale(1);
+  }
+  70%,
+  100% {
+    opacity: 0;
+    transform: scale(2.8);
   }
 }
 
@@ -320,7 +353,7 @@ body {
   html[data-motion="full"] [data-reveal] {
     animation: sd-rise linear both;
     animation-timeline: view();
-    animation-range: cover calc(var(--reveal-i, 0) * 2vh) cover calc(15vh + var(--reveal-i, 0) * 2vh);
+    animation-range: cover calc(var(--reveal-i, 0) * 1.5vh) cover calc(14vh + var(--reveal-i, 0) * 1.5vh);
   }
 }
 

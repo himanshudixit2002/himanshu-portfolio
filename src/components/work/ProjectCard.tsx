@@ -8,14 +8,14 @@ import styles from "./card.module.css";
 
 export const categoryId = (c: string) => c.toLowerCase().replace(/[^a-z]+/g, "-").replace(/^-|-$/g, "");
 
-export function ProjectCard({ project, large = false, headingLevel = 3 }: { project: Project; large?: boolean; headingLevel?: 2 | 3 }) {
+export function ProjectCard({ project, large = false, headingLevel = 3, className = "" }: { project: Project; large?: boolean; headingLevel?: 2 | 3; className?: string }) {
   const Heading = `h${headingLevel}` as const;
   return (
     <article
       data-card
       data-loops
       data-cats={project.categories.map(categoryId).join(" ")}
-      className={`${styles.card} group relative flex flex-col overflow-hidden rounded-[1.75rem] bg-ink-2 ${large ? "lg:col-span-2 lg:grid lg:grid-cols-[1.2fr_1fr]" : ""}`}
+      className={`${styles.card} group relative flex flex-col overflow-hidden rounded-[1.75rem] bg-ink-2 ${large ? "lg:col-span-2 lg:grid lg:grid-cols-[1.2fr_1fr]" : ""} ${className}`}
       style={{ "--card-accent": project.accent } as CSSProperties}
     >
       <span aria-hidden="true" data-card-light className={styles.light} />

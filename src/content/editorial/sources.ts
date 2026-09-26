@@ -36,6 +36,11 @@ export const sources: SourceNote[] = [
     verified: "Each achievement stated in both PDFs; the data-science PDF phrases the first three differently and omits the 30%. Employer claims cannot be checked publicly — shown as text, never as animated counters.",
   },
   {
+    claim: "Availability: open to full-time roles",
+    source: "Himanshu, in conversation (2026-09-26)",
+    verified: "Stated by Himanshu for the hero badge and the homepage introduction. Update or remove when it changes.",
+  },
+  {
     claim: "Education: VIT B.Tech CSE, specialization in Data Science, 2021–2025",
     source: `${R_DS}; ~/Desktop/resume/resume`,
     verified: "Specialization stated in two sources; the other résumés omit it rather than contradict it.",

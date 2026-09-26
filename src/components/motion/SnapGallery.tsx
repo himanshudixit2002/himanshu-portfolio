@@ -14,6 +14,8 @@ type Props = {
   /** Card width, as a CSS length. */
   itemWidth?: string;
   tone?: "dark" | "light";
+  /** Dim the cards beside the current one everywhere, or only on phones (for rows that show several cards at once on wider screens). */
+  dim?: "always" | "phone";
   className?: string;
 };
 
@@ -23,7 +25,7 @@ type Props = {
  * the row scrolls with a finger, trackpad, keyboard or the controls. Without
  * JavaScript it is still a swipeable, snapping row.
  */
-export function SnapGallery({ label, items, stackFrom, columns = 1, itemWidth, tone = "dark", className = "" }: Props) {
+export function SnapGallery({ label, items, stackFrom, columns = 1, itemWidth, tone = "dark", dim = "always", className = "" }: Props) {
   const track = useRef<HTMLOListElement>(null);
   const [active, setActive] = useState(0);
   // Whether the row is wider than its box; if every card fits there is nothing to page through.
@@ -73,7 +75,7 @@ export function SnapGallery({ label, items, stackFrom, columns = 1, itemWidth, t
   }`;
 
   return (
-    <div className={`snap-gallery ${className}`} data-stack={stackFrom} data-static={overflowing ? undefined : ""} style={style}>
+    <div className={`snap-gallery ${className}`} data-stack={stackFrom} data-dim={dim} data-static={overflowing ? undefined : ""} style={style}>
       <ol ref={track} aria-label={label} tabIndex={0} className="snap-track relative rounded-[1.75rem] outline-offset-4">
         {items.map((item, i) => (
           <li key={i} data-index={i} data-active={i === active || undefined} className="snap-item">

@@ -1,0 +1,126 @@
+/*
+ * At a glance. The motion is all scroll-driven and compositor-friendly, and
+ * every piece rests in its finished state where scroll timelines are
+ * missing, under reduced motion and without JavaScript:
+ *
+ * - the HD monogram writes itself stroke by stroke as the section arrives
+ *   (and again under a pointer),
+ * - a band of light crosses the 600 practice dots as the tile passes,
+ * - the project matrix fills in column by column.
+ */
+
+/* ── Monogram ─────────────────────────────────────────────────────────── */
+
+/* Timelines hang on HTML boxes: Chrome makes no view timeline for an <svg>. */
+.monoTile {
+  view-timeline: --mono block;
+}
+
+.stroke {
+  stroke-dasharray: 1;
+  stroke-dashoffset: 0;
+}
+
+@keyframes write {
+  from {
+    stroke-dashoffset: 1;
+  }
+}
+
+@supports (animation-timeline: view()) {
+  :global(html[data-motion="full"]) .stroke {
+    animation: write linear both;
+    animation-timeline: --mono;
+    animation-range: cover calc(var(--k) * 4vh) cover calc(16vh + var(--k) * 4vh);
+  }
+}
+
+@media (hover: hover) {
+  /* The shorthand resets the timeline: under a pointer it writes on time. */
+  :global(html[data-motion="full"]) .monoTile:hover .stroke {
+    animation: write 700ms var(--ease-out) both;
+    animation-delay: calc(var(--k) * 110ms);
+  }
+}
+
+/* ── Practice dots ────────────────────────────────────────────────────── */
+
+/* The lit copy of the dots sits in a band that slides across while the
+   dots inside it slide back the same distance: the band moves, the dots
+   stay put. Both are transforms. */
+.band {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  -webkit-mask-image: linear-gradient(90deg, transparent 0%, #000 42%, #000 58%, transparent 100%);
+  mask-image: linear-gradient(90deg, transparent 0%, #000 42%, #000 58%, transparent 100%);
+  transform: translate3d(-100%, 0, 0);
+}
+
+.bandDots {
+  position: absolute;
+  inset: 0;
+  transform: translate3d(100%, 0, 0);
+}
+
+@keyframes band {
+  from {
+    transform: translate3d(-100%, 0, 0);
+  }
+  to {
+    transform: translate3d(100%, 0, 0);
+  }
+}
+
+@keyframes bandDots {
+  from {
+    transform: translate3d(100%, 0, 0);
+  }
+  to {
+    transform: translate3d(-100%, 0, 0);
+  }
+}
+
+.dots {
+  view-timeline: --dots block;
+}
+
+@supports (animation-timeline: view()) {
+  :global(html[data-motion="full"]) .band {
+    animation: band linear both;
+    animation-timeline: --dots;
+    animation-range: cover 0% cover 100%;
+  }
+
+  :global(html[data-motion="full"]) .bandDots {
+    animation: bandDots linear both;
+    animation-timeline: --dots;
+    animation-range: cover 0% cover 100%;
+  }
+}
+
+/* ── Project matrix ───────────────────────────────────────────────────── */
+
+.matrixBox {
+  view-timeline: --matrix block;
+}
+
+.column {
+  transform-box: fill-box;
+  transform-origin: 50% 100%;
+}
+
+@keyframes column {
+  from {
+    opacity: 0;
+    transform: translate3d(0, 6px, 0);
+  }
+}
+
+@supports (animation-timeline: view()) {
+  :global(html[data-motion="full"]) .column {
+    animation: column linear both;
+    animation-timeline: --matrix;
+    animation-range: cover calc(var(--k) * 1.1vh) cover calc(8vh + var(--k) * 1.1vh);
+  }
+}
