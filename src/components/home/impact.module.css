@@ -32,12 +32,14 @@
   pointer-events: none;
 }
 
+/* A plain scrim, no backdrop blur: under a drawing that scales on every frame
+   of the scroll, the blur had to be redone every frame (it was most of this
+   scene's dropped frames). */
 .scrim {
   position: absolute;
   inset: 0;
   border-radius: 1.2cqw;
-  background: rgb(8 9 11 / 0.66);
-  backdrop-filter: blur(2px);
+  background: rgb(8 9 11 / 0.74);
 }
 
 .links {
@@ -126,4 +128,222 @@
   border-radius: 50%;
   background: #0a66d8;
   color: #fff;
+}
+
+/* ── The pinned scene ───────────────────────────────────────────────────
+ * Scroll-told in CSS alone. The track is 210vh with a sticky stage; its
+ * view timeline's `contain` range runs from the track's top reaching the top
+ * of the screen to its bottom reaching the bottom (0% to 100% below). Each
+ * piece names where on it it plays with animation-range (set inline for the
+ * nodes, badges and links). Transforms and opacity, except the links' short
+ * draw. Shown from 768px with motion on and where scroll timelines exist;
+ * otherwise the three still frames stand in.
+ */
+
+.track {
+  position: relative;
+  display: none;
+  height: 210vh;
+  view-timeline: --impact block;
+}
+
+@supports (animation-timeline: view()) {
+  @media (min-width: 768px) {
+    :global(html[data-motion="full"]) .track {
+      display: block;
+    }
+
+    :global(html[data-motion="full"]) .still {
+      display: none;
+    }
+  }
+}
+
+@media print {
+  .track {
+    display: none !important;
+  }
+
+  .still {
+    display: block !important;
+  }
+}
+
+.grow,
+.systems,
+.checks,
+.arrive,
+.draw,
+.caption,
+.fill {
+  animation-timeline: --impact;
+  animation-fill-mode: both;
+  animation-timing-function: linear;
+  animation-range: contain 0% contain 100%;
+}
+
+.grow {
+  transform-origin: center;
+  animation-name: impact-grow;
+}
+
+@keyframes impact-grow {
+  0% {
+    transform: translate3d(0, 48px, 0) scale(0.78);
+  }
+  30%,
+  100% {
+    transform: none;
+  }
+}
+
+.systems {
+  animation-name: impact-systems;
+}
+
+@keyframes impact-systems {
+  0%,
+  36% {
+    opacity: 0;
+  }
+  46%,
+  100% {
+    opacity: 1;
+  }
+}
+
+.checks {
+  animation-name: impact-checks;
+}
+
+@keyframes impact-checks {
+  0%,
+  68% {
+    opacity: 0;
+  }
+  78%,
+  100% {
+    opacity: 1;
+  }
+}
+
+/* Nodes and badges keep their centring translate; the arrival scales. */
+.arrive {
+  animation-name: impact-arrive;
+}
+
+@keyframes impact-arrive {
+  from {
+    opacity: 0;
+    transform: scale(0.88);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+.draw {
+  stroke-dasharray: 1;
+  animation-name: impact-draw;
+}
+
+@keyframes impact-draw {
+  from {
+    stroke-dashoffset: 1;
+  }
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+.caption0 {
+  animation-name: impact-caption-0;
+}
+
+.caption1 {
+  animation-name: impact-caption-1;
+}
+
+.caption2 {
+  animation-name: impact-caption-2;
+}
+
+@keyframes impact-caption-0 {
+  0%,
+  30% {
+    opacity: 1;
+    transform: none;
+  }
+  36%,
+  100% {
+    opacity: 0;
+    transform: translate3d(0, -16px, 0);
+  }
+}
+
+@keyframes impact-caption-1 {
+  0%,
+  36% {
+    opacity: 0;
+    transform: translate3d(0, 16px, 0);
+  }
+  42%,
+  62% {
+    opacity: 1;
+    transform: none;
+  }
+  68%,
+  100% {
+    opacity: 0;
+    transform: translate3d(0, -16px, 0);
+  }
+}
+
+@keyframes impact-caption-2 {
+  0%,
+  68% {
+    opacity: 0;
+    transform: translate3d(0, 16px, 0);
+  }
+  74%,
+  100% {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+/* The phase bars: the first is always lit; the others light as their phase begins. */
+.fill {
+  transform-origin: left;
+}
+
+.fill1 {
+  animation-name: impact-fill-1;
+}
+
+.fill2 {
+  animation-name: impact-fill-2;
+}
+
+@keyframes impact-fill-1 {
+  0%,
+  35.5% {
+    transform: scaleX(0);
+  }
+  36%,
+  100% {
+    transform: none;
+  }
+}
+
+@keyframes impact-fill-2 {
+  0%,
+  67.5% {
+    transform: scaleX(0);
+  }
+  68%,
+  100% {
+    transform: none;
+  }
 }

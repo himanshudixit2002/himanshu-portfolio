@@ -106,7 +106,12 @@ Only ScopeForge has real screenshots (its repository's synthetic demo workspace)
     - **Mechanics:** every tagged element is already positioned, so turning it on moves nothing. Blocks under the fixed header set `--xray-top`. `data-xray-wide` hides a label on phones where what it describes isn't shown.
     - **Lifetime:** it lasts for the visit (`<html data-xray>`), with a corner note to leave it.
   - **Section rail** (homepage, 1280px and up). One dot per section: an observer on a line across the middle of the screen grows the current dot, and it steps aside over the hero. Without JavaScript it's a plain list of links.
-- **Hydrate only what shows.** `usePinShown` (from `ScrollScene`) says whether a pinned track is displayed; render the stage's contents only then, as `InterfaceToImpact` does, so phones don't hydrate a scene they never see. Static fallbacks use plain elements, not animated ones.
+- **Hydrate only what shows.** `usePinShown` (from `ScrollScene`) says whether a pinned track is displayed; render the stage's contents only then, so phones don't hydrate a scene they never see. Static fallbacks use plain elements, not animated ones.
+- **A pinned scene in CSS alone** (`InterfaceToImpact`). The homepage's "From interface to impact" is a server component. Its track has a view timeline, and every piece's keyframes run on it, with `animation-range` set inline for the pieces that arrive in turn. Only the three phase buttons are script (`PhaseJump`).
+  - **Why:** it used Motion's `useScroll`, mounted after hydration. The mount was about 270ms at 4× CPU and landed when a reader starts scrolling. It was the worst frame on the desktop homepage (about 300ms), and is now gone; the worst is about 150ms.
+  - **Cost:** the drawing is now laid out with the page, so desktop blocking time at 4× is about 12% higher (+25ms) and first paint about +50ms. Phones don't lay it out.
+  - **Fallback:** browsers without scroll timelines get the three still frames.
+  - **No backdrop blur over moving art:** the scrim over the drawing is now a plain dark layer. Its 2px blur had to be redone on every frame the drawing scaled, which was most of this scene's other slow frames (11 down to 4 over four runs).
 
 ### Case studies
 
