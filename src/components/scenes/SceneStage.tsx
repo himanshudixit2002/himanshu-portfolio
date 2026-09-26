@@ -37,7 +37,7 @@ export function SceneFrames({ meta, frames }: { meta: SceneMeta; frames: ReactNo
         {meta.keyFrames.map((k, i) => (
           <li key={k} className="grid gap-5 md:grid-cols-[minmax(0,20rem)_minmax(0,1fr)] md:items-center md:gap-14">
             <div aria-hidden="true" className="aspect-[360/460] rounded-[1.75rem] bg-ink-2 p-4 ring-1 ring-white/8 md:order-2 md:aspect-[640/520] md:p-6">
-              <IdleDraw>{frames[i]}</IdleDraw>
+              <IdleDraw eager={i === 0}>{frames[i]}</IdleDraw>
             </div>
             <div>
               <p className="text-eyebrow text-dim-inverse">
@@ -75,7 +75,7 @@ export function StepCards({ meta, label, frames }: { meta: SceneMeta; label: str
     <article key={step.title} className="flex h-full flex-col rounded-[1.75rem] bg-ink-2 p-4 ring-1 ring-white/8">
       {/* The drawing runs nearly edge to edge, so its type reads at phone size. */}
       <div aria-hidden="true" className="-mx-2 aspect-[360/480]">
-        <CardDraw>{frames[i]}</CardDraw>
+        <CardDraw eager={i < 2}>{frames[i]}</CardDraw>
       </div>
       <p className="mt-5 text-eyebrow text-dim-inverse">
         {String(i + 1).padStart(2, "0")} / {count}

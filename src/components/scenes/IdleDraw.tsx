@@ -6,20 +6,23 @@ import { useIdle } from "@/lib/idle";
 /**
  * A static frame's drawing, drawn in an idle period of its own: a row of
  * frames appears one by one instead of in a single long frame. Its box is
- * sized by the parent, so nothing moves when it arrives.
+ * sized by the parent, so nothing moves when it arrives. `eager` draws it in
+ * the first idle time after load, without waiting for scrolling to settle —
+ * for what a reader reaches first, so it's never blank when they get there.
  */
-export function IdleDraw({ children }: { children: ReactNode }) {
-  return useIdle() ? <div className="drawn-in h-full">{children}</div> : null;
+export function IdleDraw({ children, eager = false }: { children: ReactNode; eager?: boolean }) {
+  return useIdle(eager ? "high" : "low") ? <div className="drawn-in h-full">{children}</div> : null;
 }
 
 /**
  * A step card's drawing: as IdleDraw, but only once the card is within half
- * the row's width of its visible part — on load, the card in view and the
- * one peeking in; the rest are drawn as the row is swiped towards them.
+ * the row's width of its visible part; the rest are drawn as the row is
+ * swiped towards them. The first cards pass `eager` and are drawn right after
+ * load, wherever the row is, so the row is ready when it scrolls into view.
  */
-export function CardDraw({ children }: { children: ReactNode }) {
+export function CardDraw({ children, eager = false }: { children: ReactNode; eager?: boolean }) {
   const [box, setBox] = useState<HTMLDivElement | null>(null);
-  const [near, setNear] = useState(false);
+  const [near, setNear] = useState(eager);
   useEffect(() => {
     if (!box || near) return;
     const row = box.closest(".snap-track");
@@ -29,7 +32,7 @@ export function CardDraw({ children }: { children: ReactNode }) {
   }, [box, near]);
   return (
     <div ref={setBox} className="h-full">
-      {near && <IdleDraw>{children}</IdleDraw>}
+      {near && <IdleDraw eager={eager}>{children}</IdleDraw>}
     </div>
   );
 }

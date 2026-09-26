@@ -5,40 +5,47 @@ import { useLayoutEffect } from "react";
 
 /**
  * Drives every `[data-reveal]` element on the page with one observer, so
- * server components can opt into a section entrance with an attribute.
- * Anything already on screen when this runs is marked shown immediately; the
- * rest fade up as they enter. Nothing is hidden until this has run.
+ * server components can opt into a section entrance with an attribute — in
+ * browsers without scroll timelines; the rest do it in CSS (globals.css).
+ *
+ * Nothing is hidden until the observer's first report: it marks whatever is
+ * on screen, or already scrolled past, as shown, and only then sets
+ * data-reveal-ready — so nothing on screen flashes out and back. The rest
+ * fade up as they come within a sixth of a screen of the bottom edge, so the
+ * fade is done by the time they reach the part of the screen you read.
+ * Positions come from the observer alone; nothing measures the page, so
+ * off-screen sections are never laid out early just to be checked.
  */
 export function RevealObserver() {
   const pathname = usePathname();
 
   useLayoutEffect(() => {
+    // Scroll timelines drive reveals in CSS (globals.css); nothing to do.
+    if (CSS.supports("animation-timeline: view()")) return;
     const root = document.documentElement;
     const pending = Array.from(document.querySelectorAll<HTMLElement>("[data-reveal]:not([data-shown])"));
-    const viewportBottom = window.innerHeight;
-
-    const offscreen = pending.filter((el) => {
-      const top = el.getBoundingClientRect().top;
-      if (top < viewportBottom) {
-        el.setAttribute("data-shown", "");
-        return false;
-      }
-      return true;
-    });
+    // A new page starts fully visible, like the first one, until the report.
+    root.removeAttribute("data-reveal-ready");
+    let first = true;
 
     const observer = new IntersectionObserver(
       (entries) => {
         for (const entry of entries) {
-          if (!entry.isIntersecting) continue;
+          const past = first && entry.boundingClientRect.bottom < 0;
+          if (!entry.isIntersecting && !past) continue;
           entry.target.setAttribute("data-shown", "");
           observer.unobserve(entry.target);
         }
+        if (first) {
+          first = false;
+          root.setAttribute("data-reveal-ready", "");
+        }
       },
-      { rootMargin: "0px 0px -8% 0px", threshold: 0.01 },
+      { rootMargin: "0px 0px 16% 0px" },
     );
 
-    offscreen.forEach((el) => observer.observe(el));
-    root.setAttribute("data-reveal-ready", "");
+    pending.forEach((el) => observer.observe(el));
+    if (!pending.length) root.setAttribute("data-reveal-ready", "");
 
     return () => observer.disconnect();
   }, [pathname]);

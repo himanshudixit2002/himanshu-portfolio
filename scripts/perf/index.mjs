@@ -6,6 +6,7 @@
  *   npm run perf -- load    [--routes /,/lab] [--runs 7] [--compare http://localhost:3200]
  *   npm run perf -- heights [--widths 390,700,900,1152,1440]
  *   npm run perf -- shots   [--routes /work/kvstore] [--widths 390,1440] [--scenes] [--reduced] [--nojs] [--out perf-shots]
+ *   npm run perf -- feel    [--routes /] [--widths 390,1440] [--throttle 4] [--net 4g] [--speed 1400]
  *
  * Common: --base http://localhost:3000. Uses Playwright's Chromium; set
  * CHROMIUM_PATH to use another build. Not part of CI — numbers depend on the
@@ -31,10 +32,22 @@ const median = (values) => values.slice().sort((a, b) => a - b)[Math.floor(value
 
 const browser = await chromium.launch({ executablePath: process.env.CHROMIUM_PATH || undefined });
 
-async function newPage({ width, height = 900, throttle = 1, reduced = false, js = true } = {}) {
-  const context = await browser.newContext({ viewport: { width, height }, reducedMotion: reduced ? "reduce" : "no-preference", javaScriptEnabled: js });
+async function newPage({ width, height = 900, throttle = 1, reduced = false, js = true, touch = false, net = false } = {}) {
+  const context = await browser.newContext({
+    viewport: { width, height },
+    reducedMotion: reduced ? "reduce" : "no-preference",
+    javaScriptEnabled: js,
+    hasTouch: touch,
+    isMobile: touch,
+  });
   const page = await context.newPage();
-  if (throttle > 1) await (await context.newCDPSession(page)).send("Emulation.setCPUThrottlingRate", { rate: throttle });
+  const cdp = throttle > 1 || net ? await context.newCDPSession(page) : null;
+  if (throttle > 1) await cdp.send("Emulation.setCPUThrottlingRate", { rate: throttle });
+  // A typical 4G connection: 150ms round trips, 9 Mbit/s down.
+  if (net) {
+    await cdp.send("Network.enable");
+    await cdp.send("Network.emulateNetworkConditions", { offline: false, latency: 150, downloadThroughput: (9 * 1024 * 1024) / 8, uploadThroughput: (1.5 * 1024 * 1024) / 8 });
+  }
   const errors = [];
   page.on("pageerror", (e) => errors.push(e.message));
   page.on("console", (m) => m.type() === "error" && !m.text().includes("404") && errors.push(m.text()));
@@ -57,7 +70,8 @@ async function scroll() {
       const frames = await page.evaluate(async () => {
         const gaps = [];
         let last = performance.now();
-        const max = document.documentElement.scrollHeight - innerHeight;
+        // Read every frame: the page can shrink as drawings replace their reserved space.
+        const max = () => document.documentElement.scrollHeight - innerHeight;
         await new Promise((done) => {
           const step = () => {
             const now = performance.now();
@@ -65,7 +79,7 @@ async function scroll() {
             last = now;
             const y = scrollY + 40;
             window.scrollTo({ top: y, behavior: "instant" });
-            if (y >= max) done();
+            if (y >= max()) done();
             else requestAnimationFrame(step);
           };
           requestAnimationFrame(step);
@@ -169,7 +183,77 @@ async function shots() {
   console.log(`Screenshots in ${dir}/`);
 }
 
-const commands = { scroll, load, heights, shots };
+/**
+ * How ready a page looks while you scroll through it. Scrolls at a brisk
+ * reading pace (--speed px/s, from 1.2s after the page first renders) and
+ * adds up, per section, how long content sat in the part of the screen you
+ * read (15–85% of its height) still faded by an entrance (opacity under
+ * 0.85), undrawn (a scene card or frame without its drawing), as a
+ * placeholder, or as an image still loading. Phones are emulated with touch.
+ */
+async function feel() {
+  const throttle = Number(flags.throttle ?? 1);
+  for (const width of list(flags.widths, ["390", "1440"]).map(Number)) {
+    const phone = width < 768;
+    for (const route of ROUTES) {
+      const { page, context } = await newPage({ width, height: phone ? 844 : 900, throttle: phone ? throttle : 1, touch: phone, net: flags.net === "4g" });
+      await page.goto(BASE + route, { waitUntil: "domcontentloaded" });
+      await page.waitForTimeout(1200);
+      const speed = Number(flags.speed ?? (phone ? 1400 : 1800));
+      const found = await page.evaluate(async (speed) => {
+        const vh = innerHeight;
+        const time = new Map();
+        const where = (el, what) => `${what} in #${el.closest("[id]")?.id ?? "?"}`;
+        const reading = (el) => {
+          const r = el.getBoundingClientRect();
+          return r.height > 0 && r.bottom > vh * 0.15 && r.top < vh * 0.85 && r.right > 0 && r.left < innerWidth;
+        };
+        const check = (dt) => {
+          const now = new Set();
+          document.querySelectorAll("[data-reveal], .sd-rise, .sd-scale-in, .sd-mask-up, .wr-scrub").forEach((el) => {
+            if (reading(el) && Number(getComputedStyle(el).opacity) < 0.85) now.add(where(el, "faded"));
+          });
+          document.querySelectorAll(".wr-scrub .wr-w").forEach((el) => {
+            if (reading(el) && Number(getComputedStyle(el).opacity) < 0.85) now.add(where(el, "dim words"));
+          });
+          document.querySelectorAll(".snap-track article [aria-hidden='true'], .scene-frames li > [aria-hidden='true']").forEach((el) => {
+            if (reading(el) && !el.querySelector("svg")) now.add(where(el, "undrawn"));
+          });
+          document.querySelectorAll("[data-visual]").forEach((el) => {
+            if (reading(el) && el.firstElementChild?.childElementCount === 0) now.add(where(el, "placeholder"));
+          });
+          document.querySelectorAll("img").forEach((el) => {
+            if (reading(el) && !el.complete) now.add(where(el, "image loading"));
+          });
+          for (const key of now) time.set(key, (time.get(key) ?? 0) + dt);
+        };
+        // The page can grow or shrink as drawings replace their reserved
+        // space, so the end is read every frame; stop if scrolling stalls.
+        let last = performance.now();
+        let still = 0;
+        while (still < 30) {
+          await new Promise((r) => requestAnimationFrame(r));
+          const t = performance.now();
+          const dt = t - last;
+          last = t;
+          const max = document.documentElement.scrollHeight - vh;
+          if (scrollY >= max - 2) break;
+          const before = scrollY;
+          scrollTo({ top: Math.min(max, scrollY + (speed * dt) / 1000), behavior: "instant" });
+          still = scrollY === before ? still + 1 : 0;
+          check(dt);
+        }
+        return [...time].sort((a, b) => b[1] - a[1]);
+      }, speed);
+      const total = found.reduce((sum, [, ms]) => sum + ms, 0);
+      console.log(`${String(width).padStart(4)} ${route.padEnd(26)} not ready in view ${Math.round(total)}ms total`);
+      for (const [key, ms] of found) if (ms >= 50) console.log(`       ${String(Math.round(ms)).padStart(5)}ms  ${key}`);
+      await context.close();
+    }
+  }
+}
+
+const commands = { scroll, load, heights, shots, feel };
 if (!commands[command]) {
   console.error(`Unknown command "${command}". Use one of: ${Object.keys(commands).join(", ")}.`);
   process.exitCode = 1;

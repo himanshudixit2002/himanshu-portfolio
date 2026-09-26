@@ -14,14 +14,14 @@
 @keyframes sd-rise {
   from {
     opacity: 0;
-    transform: translate3d(0, 2.25rem, 0);
+    transform: translate3d(0, 1.5rem, 0);
   }
 }
 
 @keyframes sd-scale-in {
   from {
-    opacity: 0.5;
-    transform: scale(0.9);
+    opacity: 0.7;
+    transform: scale(0.94);
   }
 }
 
@@ -67,7 +67,7 @@
 
 @keyframes sd-word {
   from {
-    opacity: 0.2;
+    opacity: 0.32;
   }
   to {
     opacity: 1;
@@ -100,31 +100,38 @@
     animation-range: entry 0% entry 100%;
   }
 
-  /* Fully in place once its top is about a third of the way up the screen. */
+  /*
+   * Entrances finish at the bottom edge of the screen, never where you read
+   * (about 15-85% of the viewport): content arriving mid-screen looks like
+   * it's still loading. --sd-i staggers siblings by a few vh.
+   */
+
+  /* In place by the time its top is a fifth of the way up the screen. */
   html[data-motion="full"] .sd-rise {
     animation: sd-rise linear both;
     animation-timeline: view();
-    animation-range: cover 3vh cover 34vh;
+    animation-range: cover calc(var(--sd-i, 0) * 3vh) cover calc(18vh + var(--sd-i, 0) * 3vh);
   }
 
   html[data-motion="full"] .sd-scale-in {
     animation: sd-scale-in linear both;
     animation-timeline: view();
-    animation-range: cover 0% cover 62vh;
+    animation-range: cover 0% cover 30vh;
   }
 
-  /* A device lying back that settles flat as it comes up the screen. */
+  /* A device lying back that settles flat as it comes up the screen. It
+     never fades, so it reads as a drawing from the moment it appears. */
   html[data-motion="full"] .sd-tilt-flat {
     animation: sd-tilt-flat linear both;
     animation-timeline: view();
-    animation-range: cover 0% cover 70vh;
+    animation-range: cover 0% cover 45vh;
     transform-origin: 50% 100%;
   }
 
   html[data-motion="full"] .sd-mask-up {
     animation: sd-mask-up linear both;
     animation-timeline: view();
-    animation-range: cover 4vh cover 40vh;
+    animation-range: cover 0% cover 22vh;
   }
 
   /* Drifts against the scroll; set --sd-shift for depth (bigger = nearer). */

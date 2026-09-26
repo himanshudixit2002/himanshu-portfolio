@@ -8,13 +8,17 @@ import { startTransition, useEffect, useState } from "react";
  *
  * "low" work (static drawings nobody needs yet) goes after everything else,
  * and only once scrolling has settled: a fresh SVG's first layout is slow
- * enough to drop frames on a mid-range phone. Client-only.
+ * enough to drop frames on a mid-range phone. "high" work (what a reader
+ * reaches first) gets an idle callback of its own with a deadline: a slow
+ * phone that keeps scrolling has no idle periods, and a blank card is worse
+ * than one busy frame. Client-only.
  */
 const queues: Record<"normal" | "low", (() => void)[]> = { normal: [], low: [] };
 let draining = false;
 let lastScroll = -Infinity;
 const SETTLED = 300;
-const later = (fn: () => void) => (typeof window.requestIdleCallback === "function" ? window.requestIdleCallback(fn) : window.setTimeout(fn, 200));
+const later = (fn: () => void, deadline?: number) =>
+  typeof window.requestIdleCallback === "function" ? window.requestIdleCallback(fn, deadline ? { timeout: deadline } : undefined) : window.setTimeout(fn, 200);
 
 function next() {
   if (queues.normal.length) queues.normal.shift()!();
@@ -23,7 +27,16 @@ function next() {
   else draining = false;
 }
 
-export function whenIdle(task: () => void, priority: "normal" | "low" = "normal") {
+/**
+ * Queue a task for an idle period. "high" runs in the next idle period, or
+ * within 400ms whatever happens; "low" waits for normal work and for
+ * scrolling to settle.
+ */
+export function whenIdle(task: () => void, priority: "high" | "normal" | "low" = "normal") {
+  if (priority === "high") {
+    later(task, 400);
+    return;
+  }
   if (priority === "low" && lastScroll === -Infinity) {
     // Scroll events on the page and in any scroller (capture sees both).
     lastScroll = 0;
@@ -35,15 +48,19 @@ export function whenIdle(task: () => void, priority: "normal" | "low" = "normal"
   later(next);
 }
 
-/** False until an idle period of its own has come round (after normal-priority work, with scrolling settled), then true, set as an interruptible transition. */
-export function useIdle() {
+/**
+ * False until an idle period of its own has come round, then true, set as an
+ * interruptible transition. "low" (the default) also waits for normal work
+ * and for scrolling to settle; "high" is for what a reader reaches first.
+ */
+export function useIdle(priority: "high" | "normal" | "low" = "low") {
   const [ready, setReady] = useState(false);
   useEffect(() => {
     let cancelled = false;
-    whenIdle(() => !cancelled && startTransition(() => setReady(true)), "low");
+    whenIdle(() => !cancelled && startTransition(() => setReady(true)), priority);
     return () => {
       cancelled = true;
     };
-  }, []);
+  }, [priority]);
   return ready;
 }

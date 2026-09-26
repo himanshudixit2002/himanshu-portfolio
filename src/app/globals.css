@@ -307,20 +307,33 @@ body {
 }
 
 /* ---------------------------------------------------------------------------
- * Section reveals. Elements are hidden only once the observer is running
- * (data-reveal-ready), so content never depends on JavaScript to appear.
+ * Section reveals. Where scroll timelines exist they are tied to scroll, like
+ * the sd-* entrances: seen as you scroll gently, and finished by the time an
+ * element is a sixth of the way up the screen however fast you go — a fade
+ * on a timer was still running mid-screen after a quick flick. Elsewhere
+ * RevealObserver fades them in as they near the screen; elements are hidden
+ * only once it is running (data-reveal-ready), so content never depends on
+ * JavaScript to appear.
  * ------------------------------------------------------------------------- */
+
+@supports (animation-timeline: view()) {
+  html[data-motion="full"] [data-reveal] {
+    animation: sd-rise linear both;
+    animation-timeline: view();
+    animation-range: cover calc(var(--reveal-i, 0) * 2vh) cover calc(15vh + var(--reveal-i, 0) * 2vh);
+  }
+}
 
 html[data-reveal-ready] [data-reveal]:not([data-shown]) {
   opacity: 0;
-  transform: translate3d(0, 20px, 0);
+  transform: translate3d(0, 14px, 0);
 }
 
 [data-reveal] {
   transition:
-    opacity 600ms var(--ease-out),
-    transform 600ms var(--ease-out);
-  transition-delay: calc(var(--reveal-i, 0) * 80ms);
+    opacity 480ms var(--ease-out),
+    transform 480ms var(--ease-out);
+  transition-delay: calc(var(--reveal-i, 0) * 60ms);
 }
 
 /* ---------------------------------------------------------------------------
