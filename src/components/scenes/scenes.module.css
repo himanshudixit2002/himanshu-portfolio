@@ -46,6 +46,8 @@
   }
 }
 
+/* Turns about the centre of its own box: give it a shape centred there (a
+   dashed circle, not an open arc, whose box is off-centre). */
 .spin {
   transform-box: fill-box;
   transform-origin: center;

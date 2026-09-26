@@ -31,11 +31,15 @@ function Garment({ x, y, scale, sharp }: { x: number; y: number; scale: number; 
   );
 }
 
+const QUARTER = (2 * Math.PI * 22) / 4;
+
 function Spinner({ cx, cy, show }: { cx: number; cy: number; show: boolean }) {
   return (
     <g className={s.t} style={{ opacity: show ? 1 : 0 }}>
       <circle cx={cx} cy={cy} r="22" fill="none" stroke="#e7e2d9" strokeWidth="5" />
-      <path className={s.spin} d={`M${cx} ${cy - 22}a22 22 0 0 1 22 22`} fill="none" stroke="#78716c" strokeWidth="5" strokeLinecap="round" />
+      {/* A quarter of the track, drawn as a dashed full circle so its own box is centred on the track and it spins in place.
+          The offset puts the dash at 12 to 3 o'clock when still. */}
+      <circle className={s.spin} cx={cx} cy={cy} r="22" fill="none" stroke="#78716c" strokeWidth="5" strokeLinecap="round" strokeDasharray={`${QUARTER} ${QUARTER * 3}`} strokeDashoffset={QUARTER} />
       <text x={cx} y={cy + 56} fontSize="12" fill="#a8a29e" textAnchor="middle" className={s.mono}>
         0 products in the HTML
       </text>
