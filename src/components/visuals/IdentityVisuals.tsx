@@ -40,8 +40,8 @@ export function Timeline() {
             const right = pct(r.period.end ?? NOW) + 100 / SPAN;
             return (
               <li key={r.key} className="grid grid-cols-[7.5rem_1fr] items-center gap-3 sm:grid-cols-[11rem_1fr]">
-                <Link href={r.href} className={`truncate text-xs hover:text-fg-inverse sm:text-sm ${r.role ? "font-semibold text-fg-inverse" : "text-muted-inverse"}`}>
-                  {r.label}
+                <Link href={r.href} className={`hit block min-w-0 text-xs [--hit:1.625rem] hover:text-fg-inverse sm:text-sm ${r.role ? "font-semibold text-fg-inverse" : "text-muted-inverse"}`}>
+                  <span className="block truncate">{r.label}</span>
                 </Link>
                 <div className="relative h-5 rounded-full bg-white/3">
                   <span
@@ -91,7 +91,7 @@ export function CapabilityMap() {
                 const p = projects.find((x) => x.slug === slug)!;
                 return (
                   <li key={slug}>
-                    <Link href={`/work/${slug}`} className="inline-flex min-h-8 items-center rounded-full bg-white/6 px-2.5 text-xs hover:bg-white/12">
+                    <Link href={`/work/${slug}`} className="hit inline-flex min-h-8 items-center rounded-full bg-white/6 px-2.5 text-xs [--hit:2.5rem] hover:bg-white/12">
                       {p.title}
                     </Link>
                   </li>

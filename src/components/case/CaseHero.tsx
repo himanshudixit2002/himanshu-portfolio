@@ -31,7 +31,7 @@ export function CaseHero({ project }: { project: Project }) {
       />
       <div className="container-page">
         <nav aria-label="Breadcrumb" className="hero-rise text-sm text-dim-inverse" style={rise(0)}>
-          <Link href="/work" className="transition-colors hover:text-fg-inverse">
+          <Link href="/work" className="hit inline-block transition-colors hover:text-fg-inverse">
             Work
           </Link>
           <span aria-hidden="true"> / </span>

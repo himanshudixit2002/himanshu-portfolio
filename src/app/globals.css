@@ -256,6 +256,31 @@ body {
     transform: rotate(-45deg);
   }
 
+  /* A touch target taller than what's drawn: an invisible box, at least
+     --hit tall (2.75rem by default), centred on the element, so small chips,
+     pills and text links are easy to hit without changing the layout. The
+     element itself mustn't clip its overflow (truncate an inner span). */
+  .hit {
+    position: relative;
+  }
+
+  .hit::after {
+    content: "";
+    position: absolute;
+    inset-inline: 0;
+    top: 50%;
+    height: max(100%, var(--hit, 2.75rem));
+    translate: 0 -50%;
+  }
+
+  /* Range sliders are drawn 16px tall; give fingers a taller box to grab,
+     without moving anything around them. */
+  input[type="range"] {
+    padding-block: 0.875rem;
+    margin-block: -0.875rem;
+    cursor: pointer;
+  }
+
   /* A live status: a steady dot whose ring pings outward. */
   .live-dot {
     position: relative;

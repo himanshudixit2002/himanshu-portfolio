@@ -81,7 +81,10 @@
   }
 }
 
+/* Clips the sliding band: without it, the band's box reached past the tile
+   and made the page scroll sideways at tablet widths. */
 .dots {
+  overflow: clip;
   view-timeline: --dots block;
 }
 

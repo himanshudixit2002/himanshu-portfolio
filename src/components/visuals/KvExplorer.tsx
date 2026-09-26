@@ -165,7 +165,7 @@ export default function KvExplorer({ compact = false }: { compact?: boolean }) {
             key={e}
             type="button"
             onClick={() => dispatch({ type: "run", input: e })}
-            className="min-h-9 rounded-full bg-white/6 px-3 font-mono text-xs text-muted-inverse transition-colors hover:bg-white/12 hover:text-fg-inverse"
+            className="hit min-h-9 rounded-full bg-white/6 px-3 font-mono text-xs text-muted-inverse transition-colors hover:bg-white/12 hover:text-fg-inverse"
           >
             {e}
           </button>
@@ -173,7 +173,7 @@ export default function KvExplorer({ compact = false }: { compact?: boolean }) {
         <button
           type="button"
           onClick={() => dispatch({ type: "runMany", inputs: crowd })}
-          className="min-h-9 rounded-full bg-amber-300/12 px-3 text-xs font-medium text-amber-200 transition-colors hover:bg-amber-300/20"
+          className="hit min-h-9 rounded-full bg-amber-300/12 px-3 text-xs font-medium text-amber-200 transition-colors hover:bg-amber-300/20"
         >
           Overfill one shard
         </button>

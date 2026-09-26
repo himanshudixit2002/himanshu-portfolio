@@ -5,6 +5,11 @@
  * an ancestor can set with usePointerLight; without it the glare rests.
  */
 
+/* Tailwind's layer order, stated here too: if this file's CSS reaches the
+   page before globals.css, its @layer below would otherwise put
+   "components" first, and base resets would then beat component rules. */
+@layer theme, base, components, utilities;
+
 @layer components {
   .frame {
     container-type: inline-size;

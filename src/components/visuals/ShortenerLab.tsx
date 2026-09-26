@@ -89,9 +89,9 @@ export default function ShortenerLab() {
                 key={u}
                 type="button"
                 onClick={() => setUrl(u)}
-                className="min-h-8 max-w-full truncate rounded-full bg-white/6 px-2.5 font-mono text-[0.6875rem] text-muted-inverse hover:bg-white/12 hover:text-fg-inverse"
+                className="hit inline-flex min-h-8 max-w-full min-w-0 items-center rounded-full bg-white/6 px-2.5 font-mono text-[0.6875rem] text-muted-inverse [--hit:2.5rem] hover:bg-white/12 hover:text-fg-inverse"
               >
-                {u.replace(/^https?:\/\//, "")}
+                <span className="truncate">{u.replace(/^https?:\/\//, "")}</span>
               </button>
             ))}
           </div>
