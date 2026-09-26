@@ -1,0 +1,69 @@
+/* The 404's link game (FixTheLink). The halves move by transform; a spring
+   carries them home, or together once mended. */
+
+.link {
+  touch-action: none;
+}
+
+.mover {
+  transition: transform 520ms var(--ease-spring);
+}
+
+.link[data-dragging] .mover {
+  transition: none;
+}
+
+.grab {
+  stroke: transparent;
+  stroke-width: 22;
+  pointer-events: stroke;
+  cursor: grab;
+}
+
+.link[data-dragging] .grab {
+  cursor: grabbing;
+}
+
+.link[data-fixed] .grab {
+  cursor: default;
+}
+
+.bridge {
+  stroke-dasharray: 1;
+  animation: bridge 360ms var(--ease-out) 200ms both;
+}
+
+@keyframes bridge {
+  from {
+    stroke-dashoffset: 1;
+  }
+}
+
+/* Mended: the sparks fly out once, then settle. */
+.burst {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: burst 700ms var(--ease-out) calc(var(--k) * 30ms + 250ms) both;
+}
+
+@keyframes burst {
+  0% {
+    opacity: 0;
+    transform: scale(0.2);
+  }
+  40% {
+    opacity: 1;
+    transform: scale(1.6);
+  }
+  100% {
+    opacity: 0.85;
+    transform: none;
+  }
+}
+
+:global(html[data-motion="reduce"]) .mover,
+:global(html[data-motion="reduce"]) .bridge,
+:global(html[data-motion="reduce"]) .burst {
+  transition: none;
+  animation: none;
+}

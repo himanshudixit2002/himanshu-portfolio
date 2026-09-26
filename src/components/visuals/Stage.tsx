@@ -18,10 +18,13 @@ type StageProps = {
  * of thing the viewer is looking at.
  */
 export function Stage({ title, kind, caption, children, className = "", id }: StageProps) {
+  // overflow-clip, not hidden, so scroll timelines inside still see the page.
+  // Unlike hidden it doesn't zero a grid item's minimum width, hence min-w-0:
+  // without it a wide table inside stretches the page sideways.
   return (
     <figure
       id={id}
-      className={`relative overflow-hidden rounded-[1.75rem] bg-ink-2 p-5 text-fg-inverse ring-1 ring-white/8 sm:p-7 ${className}`}
+      className={`relative min-w-0 overflow-clip rounded-[1.75rem] bg-ink-2 p-5 text-fg-inverse ring-1 ring-white/8 sm:p-7 ${className}`}
     >
       <div className="mb-5 flex flex-wrap items-center justify-between gap-3">
         <p className="text-sm font-semibold tracking-[-0.01em]">{title}</p>

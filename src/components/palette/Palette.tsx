@@ -9,6 +9,7 @@ import { ArrowRight, Check, Copy, Dice, Search, Sparkle } from "@/components/ui/
 import { useXray } from "@/components/xray/XRay";
 import { DISCOVERIES } from "@/lib/discoveries";
 import { discover, foundSnapshot, parseList, subscribeExplored } from "@/lib/explored";
+import { score } from "@/lib/fuzzy";
 import { toggleXray } from "@/lib/xray";
 import type { PaletteProps } from "./PaletteHost";
 import s from "./palette.module.css";
@@ -24,36 +25,6 @@ type Item = {
   /** Where it goes; items without one are actions (see run). */
   href?: string;
 };
-
-/** Where `query` appears in `text` as a substring, ranked: earlier and at a word start is better. */
-function substring(text: string, q: string) {
-  const at = text.indexOf(q);
-  if (at < 0) return 0;
-  return 500 - Math.min(at, 400) + (at === 0 || text[at - 1] === " " ? 100 : 0);
-}
-
-/**
- * How well a query matches an item, 0 for not at all: its name first, then
- * its hint and keywords, then the query's letters in order within the name
- * ("ssk" finds SmartShelfKart).
- */
-function score(item: Item, query: string) {
-  const q = query.trim().toLowerCase();
-  if (!q) return 1;
-  const label = item.label.toLowerCase();
-  const inLabel = substring(label, q);
-  if (inLabel) return 2000 + inLabel;
-  const inRest = substring(`${item.hint} ${item.keywords ?? ""}`.toLowerCase(), q);
-  if (inRest) return 1000 + inRest;
-  let i = 0;
-  let gaps = 0;
-  for (const ch of label) {
-    if (ch === q[i]) i++;
-    else if (i > 0) gaps++;
-    if (i === q.length) return Math.max(1, 500 - gaps);
-  }
-  return 0;
-}
 
 /**
  * The command palette: every project, the places to go and a few things to
@@ -187,7 +158,7 @@ export default function Palette({ entries, email, onClose }: PaletteProps) {
 
   // Filtered and ranked within each group; while searching, the group with the best match comes first.
   const shown = useMemo(() => {
-    const ranked = items.map((item, order) => ({ item, order, rank: score(item, query) })).filter((r) => r.rank > 0);
+    const ranked = items.map((item, order) => ({ item, order, rank: score(item.label, `${item.hint} ${item.keywords ?? ""}`, query) })).filter((r) => r.rank > 0);
     const best = (g: string) => Math.max(...ranked.filter((r) => r.item.group === g).map((r) => r.rank));
     const groups = [...new Set(ranked.map((r) => r.item.group))];
     if (query.trim()) groups.sort((a, b) => best(b) - best(a));

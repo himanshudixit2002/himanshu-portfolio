@@ -1,20 +1,11 @@
 "use client";
 
 import { useCallback, useEffect, useRef, useState, type ComponentType } from "react";
+import type { Place } from "@/content/places";
 import { isTyping } from "@/lib/xray";
 
-/** An entry the server hands the palette: a project or a place to go. Actions are added on the client. */
-export type PaletteEntry = {
-  id: string;
-  group: "Projects" | "Go to";
-  label: string;
-  hint: string;
-  href: string;
-  /** Extra words to match: a project's categories, a section's other names. */
-  keywords?: string;
-  accent?: string;
-  slug?: string;
-};
+/** An entry the server hands the palette: a project or a place to go (content/places). Actions are added on the client. */
+export type PaletteEntry = Place;
 
 /** onClose(false) when the palette navigated, so focus isn't pulled back to the old opener. */
 export type PaletteProps = { entries: PaletteEntry[]; email: string; onClose: (restoreFocus?: boolean) => void };

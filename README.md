@@ -9,10 +9,10 @@ The plan behind it lives in `~/Desktop/PORTFOLIO_MASTER_PLAN.md`. The site prese
 | `/` | Direct, one idea per screen: Hero · At a glance · Experience (Cleartrip) · Work (three flagships as stacking cards, then every other project with its stack) · Skills (tied to the projects that use them) · Contact |
 | `/work` | All 13 projects, filterable (Product / Systems / AI & Data / Tools) |
 | `/work/[slug]` | Case study per project, each opening with its signature visual |
-| `/lab` | Every interactive simulation in one place |
-| `/about` | The background, told by the pinned "From interface to impact" scene, then the Cleartrip walkthroughs, work over time and capabilities |
-| `/about` | Bio, Cleartrip experience visuals, timeline, capability evidence map, education |
+| `/lab` | Every interactive simulation in one place, with a strip that jumps to each |
+| `/about` | The background, told by the pinned "From interface to impact" scene, then the Cleartrip walkthroughs, work over time, the capability map and education |
 | `/resume` | One neutral résumé, printable to PDF |
+| any missing address | The 404: a broken link to mend, and the places the address might have meant |
 
 Every project has a **signature visual** (`src/components/visuals/`): interactive simulations for KVStore, the self-healing cache, Cue & Coffee, Elepeia, the URL shortener, the fraud graph, the anomaly gateway, RxForce and Two Sum; server-rendered diagrams for Vitals, Skintellect and ScopeForge. Each is labelled Simulation, Illustration, Diagram, Measured or Screenshots, and says what is sample data.
 
@@ -97,7 +97,7 @@ Only ScopeForge has real screenshots (its repository's synthetic demo workspace)
     - As it arrives, the disc opens, he rises into it and a black-and-white copy fades to colour.
     - It tilts toward a fine pointer (`usePointerLight`) or gently with scroll on touch screens, and floats at rest.
   - **Elsewhere:** the header's `<Avatar>` is the same photo in a small disc with the availability dot, and the link previews use it too.
-- **Scroll timelines and `overflow`.** `overflow: hidden` makes an element a scroll container, and a `view()` timeline inside it measures against that box instead of the page, so its animation never moves. The old homepage chapters' entrances and the case-study device's tilt sat frozen like this until they moved to `overflow-clip`, which clips the same way without being a scroll container. Use `overflow-clip` around anything scroll-linked.
+- **Scroll timelines and `overflow`.** `overflow: hidden` makes an element a scroll container, and a `view()` timeline inside it measures against that box instead of the page, so its animation never moves. The old homepage chapters' entrances and the case-study device's tilt sat frozen like this until they moved to `overflow-clip`, which clips the same way without being a scroll container. The visuals' `Stage` frame is `overflow-clip` for the same reason. One catch: `overflow-hidden` also sets a grid or flex item's minimum width to zero, and `overflow-clip` doesn't, so pair it with `min-w-0` wherever it replaces `hidden` on such an item (without it, the capability map's table pushed `/about` 650px wider than a tablet). Use `overflow-clip` around anything scroll-linked.
 - **Tap targets.** Small controls keep their look and get a 44px hit area from `.hit` (`globals.css`): an invisible `::after` centred on the element, `--hit` tall (lower it where rows sit closer, as the About timeline does at 26px). Range inputs get the same height from padding that a negative margin cancels. Anything painted outside its box, like the practice dots' light band, needs `overflow: clip` on its box, or the page scrolls sideways at tablet widths.
 - **CSS layer order.** A CSS module that uses `@layer components` can load before `globals.css`, and whichever file names a layer first fixes the order, so components would land under base and the reset would win. Each layered module starts with `@layer theme, base, components, utilities;` so the order is the same whichever file arrives first.
 - **Things to find** (`src/components/explore`, `src/lib/explored.ts`). Everything here is per visitor, kept in their own browser (falling back to memory when storage is blocked) and read only after mount, so the server's HTML never depends on it.
@@ -127,16 +127,23 @@ Only ScopeForge has real screenshots (its repository's synthetic demo workspace)
     - rippling the practice dots
     - exploring every project
     - pulling through to the next project
+    - fixing the 404's broken link
     - the Konami code, which bursts sparks in every project's accent
   - **Command palette** (`src/components/palette`). ⌘K / Ctrl+K, "/" or the header's search button.
     - **Contents:** every project (with a "Seen" mark once opened), the places to go, and actions: Surprise me, copy the email address, x-ray mode, reduce motion.
-    - **Search and keys:** it filters as you type (substring first, then letters in order, so "ssk" finds SmartShelfKart). ↑ ↓ choose and Enter runs.
+    - **Search and keys:** it filters as you type (substring first, then letters in order, so "ssk" finds SmartShelfKart). ↑ ↓ choose and Enter runs. The matching is `lib/fuzzy.ts` and the places are `content/places.ts`, both shared with the 404's suggestions.
     - **Mechanics:** it's a native modal `<dialog>`, so focus stays inside and Escape closes it. Focus returns to whatever opened it.
     - **Loading:** pages carry only the listener (`PaletteHost`) and a slim list built in the root layout; the palette's own code loads on first open.
   - **X-ray mode** (`x` anywhere but a text field, the palette, or the footer switch). It outlines the page's building blocks and labels each with how it's built, from its `data-xray` attribute.
     - **Accuracy:** a label must stay true of the code; change it when the code changes.
     - **Mechanics:** every tagged element is already positioned, so turning it on moves nothing. Blocks under the fixed header set `--xray-top`. `data-xray-wide` hides a label on phones where what it describes isn't shown.
     - **Lifetime:** it lasts for the visit (`<html data-xray>`), with a corner note to leave it.
+  - **About, Lab, 404 and résumé:**
+    - **About:** in "Work over time" each bar grows from its start date as it scrolls in; pointing at a row lights it, and pointing or focusing shows its period beside the bar (always read out). The capability map is a crosshair: pointing at a capability lights its row, at a project its column (CSS `:has`, no script).
+    - **Lab:** "Poke" wobbles when poked (`data-wobble`). Under the intro, "The labs" is a strip of all six, each with its project's signature looping under the pointer (`data-loops`).
+    - **404** (`src/components/notfound`). `FixTheLink`: drag either half of the broken link to the other and it mends, with sparks; dropped short, it springs back. A button does it from the keyboard, and undoes it. `DidYouMean` ranks the places against the missing address's last part (`/work/kv-store` finds KVStore) and tops up with the main pages, always three cards. The page is built once for every missing address, so the ranking happens after mount. The cards are keyed by slot, not by place, so when the ranking arrives they change in place instead of trading positions.
+    - **Fonts and wrapping:** on a phone the fallback font (Arial's metrics) wrapped the heading and the game's line onto one more line than Inter did, so the swap moved the page (CLS 0.076). Both now hold their line count in either font: the heading has a width that breaks it after "lives" on phones, and the game's text is two lines by design. Check a new page the same way with web fonts blocked.
+    - **Résumé:** it stays sober. Section rules draw across as they scroll in, and the print button's page slides out of the printer.
   - **Section rail** (homepage, 1280px and up). One dot per section: an observer on a line across the middle of the screen grows the current dot, and it steps aside over the hero. Without JavaScript it's a plain list of links.
 - **Hydrate only what shows.** `usePinShown` (from `ScrollScene`) says whether a pinned track is displayed; render the stage's contents only then, so phones don't hydrate a scene they never see. Static fallbacks use plain elements, not animated ones.
 - **A pinned scene in CSS alone** (`InterfaceToImpact`, on `/about`). "From interface to impact" is a server component. Its track has a view timeline, and every piece's keyframes run on it, with `animation-range` set inline for the pieces that arrive in turn. Only the three phase buttons are script (`PhaseJump`).

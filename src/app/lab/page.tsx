@@ -1,7 +1,9 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { SurfaceSystem } from "@/components/home/SurfaceSystem";
+import { getProject } from "@/content/projects";
 import { ArrowRight } from "@/components/ui/icons";
+import { MiniVisual } from "@/components/visuals/MiniVisual";
 import { LazyVisual, type InteractiveId } from "@/components/visuals/LazyVisual";
 
 export const metadata: Metadata = {
@@ -54,10 +56,40 @@ export default function LabPage() {
     <>
       <section className="container-page pt-[calc(var(--nav-h)+clamp(3rem,8vw,6rem))]">
         <p className="text-eyebrow text-accent-bright">Lab</p>
-        <h1 className="mt-4 max-w-4xl text-display text-[clamp(2.5rem,7vw,5.5rem)] text-balance">Poke at the ideas.</h1>
+        <h1 className="mt-4 max-w-4xl text-display text-[clamp(2.5rem,7vw,5.5rem)] text-balance">
+          {/* Poke it (Fx): it wobbles. */}
+          <span data-wobble="" className="poke">
+            Poke
+          </span>{" "}
+          at the ideas.
+        </h1>
         <p className="text-lede mt-6 max-w-2xl text-muted-inverse">
           Small, honest simulations of the systems behind my projects. They run entirely in your browser on sample data — each one says exactly what it models and what it leaves out.
         </p>
+        {/* Every lab at a glance: each with its project's signature, playing under the pointer. */}
+        <nav aria-label="The labs" className="mt-10 grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-6">
+          {LABS.map((lab) => {
+            const p = getProject(lab.slug)!;
+            return (
+              <a
+                key={lab.id}
+                href={`#lab-${lab.id}`}
+                data-loops=""
+                className="group overflow-clip rounded-2xl bg-ink-2 ring-1 ring-white/8 transition-[translate,box-shadow] duration-(--dur-base) ease-(--ease-out) hover:-translate-y-1 hover:ring-white/20"
+              >
+                <span aria-hidden="true" className="block aspect-[16/10] bg-ink">
+                  <MiniVisual id={p.visual} accent={p.accent} />
+                </span>
+                <span className="block px-3 pt-2.5 pb-3">
+                  <span className="block text-sm font-semibold" style={{ color: p.accent }}>
+                    {p.title}
+                  </span>
+                  <span className="mt-0.5 block text-xs leading-snug text-muted-inverse">{lab.title}</span>
+                </span>
+              </a>
+            );
+          })}
+        </nav>
       </section>
 
       <SurfaceSystem />

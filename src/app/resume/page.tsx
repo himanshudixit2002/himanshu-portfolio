@@ -169,7 +169,7 @@ export default function ResumePage() {
 function Section({ title, children }: { title: string; children: ReactNode }) {
   return (
     <section className="mt-7 break-inside-avoid-page">
-      <h2 className="border-b border-black/10 pb-1.5 text-eyebrow tracking-[0.08em] text-muted uppercase">{title}</h2>
+      <h2 className="resume-rule pb-1.5 text-eyebrow tracking-[0.08em] text-muted uppercase">{title}</h2>
       <div className="mt-3">{children}</div>
     </section>
   );

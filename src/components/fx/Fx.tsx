@@ -156,15 +156,26 @@ export function Fx({ projects }: { projects: Slim[] }) {
       el.dataset.bouncing = el.dataset.bouncing === "a" ? "b" : "a";
       discover("bounce");
     };
+    let wobbledAt = 0;
+    const wobble = (el: HTMLElement) => {
+      if (performance.now() - wobbledAt < 900) return;
+      wobbledAt = performance.now();
+      el.dataset.wobbling = el.dataset.wobbling === "a" ? "b" : "a";
+    };
     const onOver = (event: PointerEvent) => {
       if (event.pointerType !== "mouse") return;
-      const el = (event.target as Element | null)?.closest?.<HTMLElement>("[data-bounce]");
+      const target = event.target as Element | null;
+      const el = target?.closest?.<HTMLElement>("[data-bounce]");
       if (el) bounce(el);
+      const jelly = target?.closest?.<HTMLElement>("[data-wobble]");
+      if (jelly) wobble(jelly);
     };
     const onDown = (event: PointerEvent) => {
       const target = event.target as Element | null;
       const dot = target?.closest?.<HTMLElement>("[data-bounce]");
       if (dot && event.pointerType !== "mouse") bounce(dot);
+      const jelly = target?.closest?.<HTMLElement>("[data-wobble]");
+      if (jelly && event.pointerType !== "mouse") wobble(jelly);
       const drawing = target?.closest?.<HTMLElement>("[data-redraw]");
       if (drawing && event.pointerType !== "mouse") drawing.dataset.redrawing = drawing.dataset.redrawing === "a" ? "b" : "a";
     };

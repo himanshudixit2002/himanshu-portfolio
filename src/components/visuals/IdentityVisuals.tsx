@@ -34,21 +34,24 @@ export function Timeline() {
       caption="Project spans come from each repository's first and last commits (or file dates where there is no repository). Open-ended bars are still active."
     >
       <div className="relative">
-        <ol className="grid gap-1.5">
+        <ol className="tl-list grid gap-1.5">
           {rows.map((r) => {
             const left = pct(r.period.start);
             const right = pct(r.period.end ?? NOW) + 100 / SPAN;
             return (
-              <li key={r.key} className="grid grid-cols-[7.5rem_1fr] items-center gap-3 sm:grid-cols-[11rem_1fr]">
+              <li key={r.key} className="tl-row grid grid-cols-[7.5rem_1fr] items-center gap-3 sm:grid-cols-[11rem_1fr]">
                 <Link href={r.href} className={`hit block min-w-0 text-xs [--hit:1.625rem] hover:text-fg-inverse sm:text-sm ${r.role ? "font-semibold text-fg-inverse" : "text-muted-inverse"}`}>
                   <span className="block truncate">{r.label}</span>
                 </Link>
                 <div className="relative h-5 rounded-full bg-white/3">
                   <span
-                    className="absolute inset-y-0.5 rounded-full"
+                    className="tl-bar absolute inset-y-0.5 rounded-full"
                     style={{ left: `${left}%`, width: `${Math.max(right - left, 2.5)}%`, background: r.color, opacity: r.role ? 0.9 : 0.75 }}
                   />
-                  <span className="sr-only">{formatPeriod(r.period)}</span>
+                  {/* Read out always; shown beside the bar under a pointer or focus. */}
+                  <span className="tl-period" style={{ left: `${Math.min(left, 62)}%` }}>
+                    {formatPeriod(r.period)}
+                  </span>
                 </div>
               </li>
             );
@@ -104,7 +107,7 @@ export function CapabilityMap() {
 
       {/* Wider screens: a dot matrix */}
       <div className="hidden overflow-x-auto md:block">
-        <table className="w-full border-separate border-spacing-0 text-sm">
+        <table className="cap-map w-full border-separate border-spacing-0 text-sm">
           <caption className="sr-only">Which projects demonstrate each capability</caption>
           <thead>
             <tr>
