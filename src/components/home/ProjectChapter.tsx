@@ -21,7 +21,7 @@ export function ProjectChapter({ project, index, art, tone, reverse = false }: P
   return (
     <article
       aria-labelledby={`${project.slug}-title`}
-      className={`section-y overflow-hidden ${light ? "surface-light bg-paper text-fg" : "bg-ink text-fg-inverse"}`}
+      className={`section-y overflow-clip ${light ? "surface-light bg-paper text-fg" : "bg-ink text-fg-inverse"}`}
     >
       <div className="container-page">
         <div className={`grid items-center gap-12 lg:gap-16 ${reverse ? "lg:grid-cols-[1.25fr_1fr]" : "lg:grid-cols-[1fr_1.25fr]"}`}>

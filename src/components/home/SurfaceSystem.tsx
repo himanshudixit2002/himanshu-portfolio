@@ -76,7 +76,7 @@ export function SurfaceSystem() {
   };
 
   return (
-    <section id="system" aria-labelledby="system-title" className="section-y overflow-hidden bg-ink">
+    <section id="system" aria-labelledby="system-title" className="section-y overflow-clip bg-ink">
       <div className="container-page">
         <header className="max-w-3xl">
           <p data-reveal className="text-eyebrow text-accent-bright">

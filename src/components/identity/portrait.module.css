@@ -1,0 +1,319 @@
+/*
+ * The portrait: Himanshu's cut-out photo standing in a glowing disc, his
+ * shoulders inside the circle and his head rising out of it, with a ring and
+ * glow set further back. The layers sit at different depths in one 3D stage,
+ * so a tilt reads as depth, not as a flat card turning.
+ *
+ * Geometry: the stage is --size wide and 1.2 × --size tall; the disc fills
+ * its bottom square, so the disc's centre is --r (half the size) above the
+ * bottom and its top is a fifth of the size below the stage's top.
+ *
+ * Motion — all transforms and opacity, all resting in the finished portrait
+ * where scroll timelines are missing, under reduced motion and without JS:
+ * - reveal, scroll-driven as it arrives: the disc and ring open, the photo
+ *   rises into the circle, and a black-and-white copy fades to colour;
+ * - under a fine pointer the stage tilts toward it (usePointerLight's --mx,
+ *   --my, --hover); on touch screens it tilts gently with scroll;
+ * - at rest it floats and the ring turns, slowly.
+ */
+
+.portrait {
+  --size: 10.5rem;
+  --r: calc(var(--size) / 2);
+  position: relative;
+  flex: none;
+  width: var(--size);
+  aspect-ratio: 1 / 1.2;
+  view-timeline: --portrait block;
+}
+
+@media (min-width: 768px) {
+  .portrait {
+    --size: 15rem;
+  }
+}
+
+.float,
+.stage {
+  position: absolute;
+  inset: 0;
+}
+
+.stage {
+  transform-style: preserve-3d;
+  transform: perspective(56rem) rotateX(calc((0.5 - var(--my, 0.5)) * 14deg * var(--hover, 0)))
+    rotateY(calc((var(--mx, 0.5) - 0.5) * 18deg * var(--hover, 0)));
+  transition: transform 600ms var(--ease-out);
+}
+
+/* The disc's square, shared by the glow, ring and disc. */
+.glow,
+.ringBox,
+.disc {
+  position: absolute;
+  inset: auto 0 0 0;
+  height: var(--size);
+  border-radius: 50%;
+}
+
+.glow {
+  inset: auto -30% -18% -30%;
+  height: calc(var(--size) * 1.5);
+  background: radial-gradient(closest-side, rgb(92 164 255 / 0.32), rgb(45 212 191 / 0.1) 60%, transparent);
+  transform: translateZ(-4rem);
+}
+
+.ringBox {
+  inset: auto -0.6rem -0.6rem -0.6rem;
+  height: calc(var(--size) + 1.2rem);
+  transform: translateZ(-2rem);
+}
+
+.ring {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  background: conic-gradient(from 0deg, #8ec1ff, #2dd4bf 30%, transparent 55%, transparent 70%, #8ec1ff);
+  -webkit-mask-image: radial-gradient(farthest-side, transparent calc(100% - 2.5px), #000 calc(100% - 2px));
+  mask-image: radial-gradient(farthest-side, transparent calc(100% - 2.5px), #000 calc(100% - 2px));
+}
+
+.disc {
+  background:
+    radial-gradient(circle at 32% 24%, rgb(255 255 255 / 0.22), transparent 42%),
+    linear-gradient(160deg, #2563eb, #0f766e 72%, #115e59);
+  box-shadow:
+    inset 0 1px 0 rgb(255 255 255 / 0.25),
+    inset 0 -1.5rem 3rem rgb(0 0 0 / 0.35),
+    0 1.5rem 3rem -1rem rgb(0 0 0 / 0.6);
+}
+
+/* The person: clipped to the disc below its centre line and free above it,
+   so the head rises out of the circle. */
+.person {
+  position: absolute;
+  inset: 0;
+  transform: translateZ(2.5rem);
+  -webkit-mask-image: radial-gradient(circle var(--r) at 50% calc(100% - var(--r)), #000 calc(100% - 0.5px), transparent 100%), linear-gradient(#000, #000);
+  mask-image: radial-gradient(circle var(--r) at 50% calc(100% - var(--r)), #000 calc(100% - 0.5px), transparent 100%), linear-gradient(#000, #000);
+  -webkit-mask-size: 100% 100%, 100% calc(100% - var(--r));
+  mask-size: 100% 100%, 100% calc(100% - var(--r));
+  -webkit-mask-repeat: no-repeat;
+  mask-repeat: no-repeat;
+}
+
+/* The shadow belongs to the moving layer, so it's painted once and moved;
+   on the masked parent it was repainted on every frame of the reveal. */
+.rise {
+  position: absolute;
+  inset: 0;
+  filter: drop-shadow(0 1rem 1.25rem rgb(0 0 0 / 0.45));
+}
+
+/* The photo is square with the head near its top: wider than the stage and
+   bottom-aligned, the hair just clears the stage's top edge. */
+.photo {
+  position: absolute;
+  left: -12.5%;
+  bottom: 0;
+  width: 125%;
+  max-width: none;
+  height: auto;
+}
+
+.gray {
+  filter: grayscale(1) contrast(1.05);
+  opacity: 0;
+}
+
+.status {
+  position: absolute;
+  right: 14%;
+  bottom: 12%;
+  width: 0.9rem;
+  height: 0.9rem;
+  box-shadow: 0 0 0 3px var(--color-ink);
+  transform: translateZ(3.5rem);
+}
+
+/* ── Motion ─────────────────────────────────────────────────────────── */
+
+@keyframes float {
+  to {
+    transform: translate3d(0, -0.4rem, 0);
+  }
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes open {
+  from {
+    opacity: 0;
+    transform: scale(0.55);
+  }
+}
+
+@keyframes ring-in {
+  from {
+    opacity: 0;
+    transform: translateZ(-2rem) rotate(-150deg) scale(0.7);
+  }
+}
+
+@keyframes rise {
+  from {
+    opacity: 0;
+    transform: translate3d(0, 24%, 0);
+  }
+}
+
+@keyframes to-colour {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+  }
+}
+
+@keyframes pop {
+  from {
+    transform: translateZ(3.5rem) scale(0);
+  }
+}
+
+@keyframes scroll-tilt {
+  from {
+    transform: perspective(56rem) rotateX(12deg) rotateY(-4deg);
+  }
+  to {
+    transform: perspective(56rem) rotateX(-6deg) rotateY(3deg);
+  }
+}
+
+:global(html[data-motion="full"]) .float {
+  animation: float 3.2s var(--ease-in-out) infinite alternate;
+}
+
+:global(html[data-motion="full"]) .ring {
+  animation: spin 18s linear infinite;
+}
+
+@supports (animation-timeline: view()) {
+  :global(html[data-motion="full"]) .disc {
+    animation: open linear both;
+    animation-timeline: --portrait;
+    animation-range: cover 0% cover 20vh;
+  }
+
+  :global(html[data-motion="full"]) .ringBox {
+    animation: ring-in linear both;
+    animation-timeline: --portrait;
+    animation-range: cover 2vh cover 26vh;
+  }
+
+  :global(html[data-motion="full"]) .rise {
+    animation: rise linear both;
+    animation-timeline: --portrait;
+    animation-range: cover 6vh cover 26vh;
+  }
+
+  /* The black-and-white copy starts on top, so the photo warms to colour. */
+  :global(html[data-motion="full"]) .gray {
+    animation: to-colour linear both;
+    animation-timeline: --portrait;
+    animation-range: cover 10vh cover 28vh;
+  }
+
+  :global(html[data-motion="full"]) .status {
+    animation: pop linear both;
+    animation-timeline: --portrait;
+    animation-range: cover 24vh cover 30vh;
+  }
+
+  /* Touch screens have no pointer to lean toward: the portrait turns a
+     little as it passes up the screen instead. */
+  @media (hover: none) {
+    :global(html[data-motion="full"]) .stage {
+      animation: scroll-tilt linear both;
+      animation-timeline: --portrait;
+      animation-range: cover 0% cover 100%;
+    }
+  }
+}
+
+/* ── Header avatar ──────────────────────────────────────────────────── */
+
+.avatar {
+  position: relative;
+  display: inline-grid;
+  flex: none;
+  width: 2rem;
+  height: 2rem;
+  animation: avatar-in 700ms var(--ease-spring) 150ms both;
+}
+
+@keyframes avatar-in {
+  from {
+    opacity: 0;
+    transform: scale(0.4) rotate(-20deg);
+  }
+}
+
+.avatarDisc {
+  position: relative;
+  overflow: hidden;
+  border-radius: 50%;
+  background: linear-gradient(160deg, #2563eb, #0f766e);
+  box-shadow:
+    inset 0 1px 0 rgb(255 255 255 / 0.3),
+    0 0 0 1px rgb(255 255 255 / 0.18);
+}
+
+/* Head and shoulders fill the circle. */
+.avatarImg {
+  position: absolute;
+  left: -20%;
+  top: -4%;
+  width: 140%;
+  max-width: none;
+  height: auto;
+}
+
+.avatarRing {
+  position: absolute;
+  inset: -3px;
+  border-radius: 50%;
+  background: conic-gradient(from 0deg, #8ec1ff, #2dd4bf 35%, transparent 60%, #8ec1ff);
+  -webkit-mask-image: radial-gradient(farthest-side, transparent calc(100% - 2px), #000 calc(100% - 1.5px));
+  mask-image: radial-gradient(farthest-side, transparent calc(100% - 2px), #000 calc(100% - 1.5px));
+  opacity: 0;
+  transition: opacity var(--dur-base) var(--ease-out);
+}
+
+:global(.group:hover) .avatarRing,
+:global(.group:focus-visible) .avatarRing {
+  opacity: 1;
+}
+
+:global(html[data-motion="full"] .group:hover) .avatarRing,
+:global(html[data-motion="full"] .group:focus-visible) .avatarRing {
+  animation: spin 900ms var(--ease-out);
+}
+
+.avatarDot {
+  position: absolute;
+  right: -1px;
+  bottom: -1px;
+  width: 0.55rem;
+  height: 0.55rem;
+  box-shadow: 0 0 0 2px var(--color-ink);
+}
+
+:global(html[data-motion="reduce"]) .avatar {
+  animation: none;
+}

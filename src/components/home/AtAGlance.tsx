@@ -5,6 +5,7 @@ import { profile } from "@/content/profile";
 import { projects } from "@/content/projects";
 import type { ProjectCategory } from "@/content/types";
 import { formatPeriod } from "@/lib/format";
+import { Portrait } from "@/components/identity/Portrait";
 import { ButtonLink } from "@/components/ui/ButtonLink";
 import { ArrowRight } from "@/components/ui/icons";
 import s from "./glance.module.css";
@@ -41,13 +42,16 @@ export function AtAGlance() {
         </p>
 
         <div className="mt-12 grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-          {/* Who: the monogram writes itself. */}
+          {/* Who: the portrait opens and warms to colour; the monogram writes itself beside it. */}
           <div
-            className={`${s.monoTile} sd-rise relative flex flex-col justify-between gap-8 overflow-hidden rounded-[1.75rem] bg-ink p-7 text-fg-inverse md:col-span-2 lg:row-span-2 lg:p-9`}
+            className={`${s.monoTile} sd-rise relative flex flex-col justify-between gap-8 overflow-clip rounded-[1.75rem] bg-ink p-7 text-fg-inverse md:col-span-2 lg:row-span-2 lg:p-9`}
             style={rise(0)}
           >
             <div aria-hidden="true" className="pointer-events-none absolute -top-24 -right-24 size-80 rounded-full bg-[radial-gradient(closest-side,rgb(92_164_255/0.28),transparent)]" />
-            <Monogram />
+            <div className="relative flex items-center gap-5 md:gap-8">
+              <Portrait />
+              <Monogram />
+            </div>
             <div className="relative">
               <p className="text-title text-[clamp(1.75rem,3vw,2.5rem)]">{profile.name}</p>
               <p className="mt-2 text-muted-inverse">
@@ -155,7 +159,7 @@ function Monogram() {
     "M104 16 H126 C160 16 178 36 178 60 C178 84 160 104 126 104 H104",
   ];
   return (
-    <svg viewBox="0 0 200 120" className="relative w-44 md:w-64" aria-hidden="true" focusable="false">
+    <svg viewBox="0 0 200 120" className="relative w-28 md:w-40" aria-hidden="true" focusable="false">
       <defs>
         {/* In the drawing's own units: a bounding-box gradient doesn't paint a straight stroke, whose box has no width or height. */}
         <linearGradient id="mono-ink" gradientUnits="userSpaceOnUse" x1="20" y1="10" x2="180" y2="110">

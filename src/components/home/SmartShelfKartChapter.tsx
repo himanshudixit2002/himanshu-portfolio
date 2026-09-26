@@ -13,7 +13,7 @@ export function SmartShelfKartChapter() {
   const [live, ...more] = project.links;
 
   return (
-    <article aria-labelledby="ssk-title" className="surface-light section-y overflow-hidden bg-paper text-fg">
+    <article aria-labelledby="ssk-title" className="surface-light section-y overflow-clip bg-paper text-fg">
       <div className="container-page">
         <header className="max-w-4xl">
           <p data-reveal className="text-eyebrow flex items-center gap-3 text-muted">

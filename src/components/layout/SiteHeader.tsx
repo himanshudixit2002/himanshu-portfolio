@@ -4,7 +4,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useId, useLayoutEffect, useRef, useState } from "react";
 import type { NavItem } from "@/content/types";
-import { Monogram } from "./Monogram";
+import { Avatar } from "@/components/identity/Portrait";
 
 type Props = { name: string; items: NavItem[]; resume?: NavItem };
 
@@ -100,8 +100,8 @@ export function SiteHeader({ name, items, resume }: Props) {
         }`}
       >
         <div className="container-page flex h-(--nav-h) items-center justify-between">
-          <Link href="/#top" className="flex min-h-11 items-center gap-2.5 rounded-lg text-[0.9375rem] font-semibold tracking-[-0.01em]">
-            <Monogram />
+          <Link href="/#top" className="group flex min-h-11 items-center gap-2.5 rounded-lg text-[0.9375rem] font-semibold tracking-[-0.01em]">
+            <Avatar />
             {name}
           </Link>
 

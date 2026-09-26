@@ -353,7 +353,7 @@ body {
   html[data-motion="full"] [data-reveal] {
     animation: sd-rise linear both;
     animation-timeline: view();
-    animation-range: cover calc(var(--reveal-i, 0) * 1.5vh) cover calc(14vh + var(--reveal-i, 0) * 1.5vh);
+    animation-range: cover calc(var(--reveal-i, 0) * 1vh) cover calc(12vh + var(--reveal-i, 0) * 1vh);
   }
 }
 

@@ -23,7 +23,7 @@ export function CaseHero({ project }: { project: Project }) {
   ];
 
   return (
-    <header className="relative isolate overflow-hidden pt-[calc(var(--nav-h)+clamp(2.5rem,7vw,5rem))]">
+    <header className="relative isolate overflow-clip pt-[calc(var(--nav-h)+clamp(2.5rem,7vw,5rem))]">
       <div
         aria-hidden="true"
         className="ambient pointer-events-none absolute -inset-x-[15%] top-0 -z-10 h-[52rem]"

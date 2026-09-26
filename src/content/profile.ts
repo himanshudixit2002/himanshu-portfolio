@@ -1,4 +1,5 @@
 import type { NavItem, Profile } from "./types";
+import photo from "./media/himanshu.png";
 
 export const profile: Profile = {
   name: "Himanshu Dixit",
@@ -12,6 +13,7 @@ export const profile: Profile = {
     "I studied Computer Science and Engineering at VIT, specialising in data science.",
   ],
   availability: "Open to full-time roles",
+  photo: { src: photo, alt: "Himanshu Dixit" },
   email: "himanshudixit2406@gmail.com",
   links: {
     github: { label: "GitHub", href: "https://github.com/himanshudixit2002" },

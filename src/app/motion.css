@@ -116,7 +116,7 @@
   html[data-motion="full"] .sd-scale-in {
     animation: sd-scale-in linear both;
     animation-timeline: view();
-    animation-range: cover 0% cover 30vh;
+    animation-range: cover 0% cover 22vh;
   }
 
   /* A device lying back that settles flat as it comes up the screen. It

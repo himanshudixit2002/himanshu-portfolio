@@ -36,6 +36,11 @@ export const sources: SourceNote[] = [
     verified: "Each achievement stated in both PDFs; the data-science PDF phrases the first three differently and omits the 30%. Employer claims cannot be checked publicly — shown as text, never as animated counters.",
   },
   {
+    claim: "Profile photo",
+    source: "Himanshu's GitHub profile picture (avatars.githubusercontent.com/u/116220539), fetched 2026-09-26",
+    verified: "Used at Himanshu's request. Background removed by colour key (src/content/media/himanshu.png); replace that one file with a sharper photo to update the header, the introduction and the link previews.",
+  },
+  {
     claim: "Availability: open to full-time roles",
     source: "Himanshu, in conversation (2026-09-26)",
     verified: "Stated by Himanshu for the hero badge and the homepage introduction. Update or remove when it changes.",

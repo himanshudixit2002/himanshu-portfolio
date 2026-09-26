@@ -28,11 +28,12 @@ export function WordReveal({ text, mode = "entrance", delay = 0, className = "" 
       style={mode === "entrance" ? ({ "--wr-delay": `${delay}ms` } as CSSProperties) : undefined}
     >
       {words.map((word, i) => {
-        // Scrub: words start between 4% and 26% of the text's pass across
-        // the screen, each taking 10% to reach full strength, so the line is
-        // lit by the time it reaches the middle — never still dim where it's read.
-        const a = 4 + (n > 1 ? (i / (n - 1)) * 22 : 0);
-        const vars: Record<string, string | number> = mode === "entrance" ? { "--w": i } : { "--a": a.toFixed(1), "--b": (a + 10).toFixed(1) };
+        // Scrub: words start between 2% and 14% of the text's pass across
+        // the screen, each taking 8% to reach full strength, so the line is
+        // lit while still in the lower part of the screen — never dim where
+        // it's read.
+        const a = 2 + (n > 1 ? (i / (n - 1)) * 12 : 0);
+        const vars: Record<string, string | number> = mode === "entrance" ? { "--w": i } : { "--a": a.toFixed(1), "--b": (a + 8).toFixed(1) };
         const style = vars as CSSProperties;
         return (
           <span key={i}>

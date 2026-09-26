@@ -1,3 +1,5 @@
+import type { StaticImageData } from "next/image";
+
 export type Href = `https://${string}` | `mailto:${string}` | `/${string}` | `#${string}`;
 
 export type LinkItem = {
@@ -19,6 +21,8 @@ export type Profile = {
   bio: string[];
   /** What Himanshu is looking for now, shown in the hero and the intro. */
   availability: string;
+  /** His photo, cut out from its background so it can sit on any surface — a static import, so it carries its size. */
+  photo: { src: StaticImageData; alt: string };
   email: string;
   links: {
     github: LinkItem;

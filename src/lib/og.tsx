@@ -1,3 +1,5 @@
+import { readFileSync } from "node:fs";
+import { join } from "node:path";
 import { ImageResponse } from "next/og";
 import type { Metric } from "@/content/types";
 import { profile } from "@/content/profile";
@@ -15,6 +17,15 @@ const INK = "#08090b";
 const FG = "#f5f5f7";
 const MUTED = "#a1a1a6";
 const DIM = "#86868b";
+
+/** Himanshu's cut-out photo, read once at build time; without it the preview falls back to the HD mark. */
+const PHOTO = (() => {
+  try {
+    return `data:image/png;base64,${readFileSync(join(process.cwd(), "src/content/media/himanshu.png")).toString("base64")}`;
+  } catch {
+    return null;
+  }
+})();
 
 /**
  * Inter at one weight, subset to the text drawn, from Google Fonts (the build
@@ -69,23 +80,41 @@ export async function ogImage({ accent, eyebrow, title, line, metrics = [] }: Ca
         }}
       >
         <div style={{ display: "flex", alignItems: "center", gap: 18 }}>
-          <div
-            style={{
-              display: "flex",
-              width: 52,
-              height: 52,
-              alignItems: "center",
-              justifyContent: "center",
-              borderRadius: 15,
-              border: "1.5px solid rgba(255,255,255,0.22)",
-              background: "rgba(255,255,255,0.08)",
-              fontSize: 20,
-              fontWeight: 600,
-              letterSpacing: -0.8,
-            }}
-          >
-            HD
-          </div>
+          {PHOTO ? (
+            <div
+              style={{
+                display: "flex",
+                position: "relative",
+                width: 64,
+                height: 64,
+                overflow: "hidden",
+                borderRadius: 999,
+                border: "2px solid rgba(255,255,255,0.22)",
+                backgroundImage: "linear-gradient(160deg, #2563eb, #0f766e)",
+              }}
+            >
+              {/* eslint-disable-next-line @next/next/no-img-element -- drawn by next/og, not a page */}
+              <img src={PHOTO} width={88} height={88} alt="" style={{ position: "absolute", left: -14, top: -3 }} />
+            </div>
+          ) : (
+            <div
+              style={{
+                display: "flex",
+                width: 52,
+                height: 52,
+                alignItems: "center",
+                justifyContent: "center",
+                borderRadius: 15,
+                border: "1.5px solid rgba(255,255,255,0.22)",
+                background: "rgba(255,255,255,0.08)",
+                fontSize: 20,
+                fontWeight: 600,
+                letterSpacing: -0.8,
+              }}
+            >
+              HD
+            </div>
+          )}
           <div style={{ fontSize: 26, fontWeight: 600, letterSpacing: -0.3 }}>{profile.name}</div>
         </div>
 

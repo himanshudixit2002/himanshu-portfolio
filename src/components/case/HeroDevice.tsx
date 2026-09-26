@@ -55,7 +55,7 @@ export function HeroDevice({ project }: { project: Project }) {
       return (
         <Device caption="Screenshot of the repository's synthetic demo workspace">
           <BrowserFrame url="localhost · ScopeForge" dark page="#141512">
-            <Image src={shot.src!} alt={shot.alt} width={shot.width} height={shot.height} sizes="(min-width: 1280px) 1200px, 92vw" className="h-full w-full object-cover object-top" priority />
+            <Image src={shot.src!} alt={shot.alt} width={shot.width} height={shot.height} sizes="(min-width: 1280px) 1200px, 92vw" className="h-full w-full object-cover object-top" preload />
           </BrowserFrame>
         </Device>
       );
