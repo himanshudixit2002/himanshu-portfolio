@@ -6,15 +6,15 @@ The plan behind it lives in `~/Desktop/PORTFOLIO_MASTER_PLAN.md`. The site prese
 
 | Route | What it is |
 | --- | --- |
-| `/` | Direct, one idea per screen: At a glance (who Himanshu is, first) · Experience (Cleartrip) · Work (three flagships as stacking cards, then the other ten as a bento wall, each with its stack) · Skills (tied to the projects that use them) · Contact |
-| `/work` | All 13 projects, filterable (Product / Systems / AI & Data / Tools) |
-| `/work/[slug]` | Case study per project, each opening with its signature visual |
+| `/` | Direct, one idea per screen: At a glance (who Himanshu is, first, and a pointer to the main project) · Experience (Cleartrip) · Work (the main project, ComplianceWatch, in a spotlight; three flagships as stacking cards; then the other ten as a bento wall, each with its stack) · Skills (tied to the projects that use them) · Contact |
+| `/work` | All 14 projects, filterable (Product / Systems / AI & Data / Tools) |
+| `/work/[slug]` | Case study per project, each opening with its signature visual. ComplianceWatch, the main project, adds a deep dive: three more simulations, a service map, its screens and its CI gates |
 | `/lab` | Every interactive simulation in one place, with a strip that jumps to each |
 | `/about` | The background, told by the pinned "From interface to impact" scene, then the Cleartrip walkthroughs, work over time, the capability map and education |
 | `/resume` | One neutral résumé, printable to PDF |
 | any missing address | The 404: a broken link to mend, and the places the address might have meant |
 
-Every project has a **signature visual** (`src/components/visuals/`): interactive simulations for KVStore, the self-healing cache, Cue & Coffee, Elepeia, the URL shortener, the fraud graph, the anomaly gateway, RxForce and Two Sum; server-rendered diagrams for Vitals, Skintellect and ScopeForge. Each is labelled Simulation, Illustration, Diagram, Measured or Screenshots, and says what is sample data.
+Every project has a **signature visual** (`src/components/visuals/`): interactive simulations for ComplianceWatch (its rules engine, plus its citation check, delivery policy and model gateway on its case study), KVStore, the self-healing cache, Cue & Coffee, Elepeia, the URL shortener, the fraud graph, the anomaly gateway, RxForce and Two Sum; server-rendered diagrams for Vitals, Skintellect and ScopeForge. Each is labelled Simulation, Illustration, Diagram, Measured or Screenshots, and says what is sample data.
 
 ## Scripts
 
@@ -34,14 +34,16 @@ Node 22.12 or newer (`.nvmrc` pins 24, matching a current Vercel runtime).
 src/app/                 routes: home, work, work/[slug], lab, about, resume, 404, sitemap, robots
 src/components/art/      interface illustrations — sized in em against 1cqw so each scales as one piece
 src/components/home/     homepage scenes (also reused by case studies and /about)
+src/components/compliancewatch/  the main project's deep dive: service map, screens, gates
 src/components/visuals/  signature visuals, the Stage frame, and LazyVisual (loads interactives near the viewport)
 src/components/work/     project cards and the /work filter
 src/components/layout/   header, footer, monogram
 src/components/motion/   motion preference provider + switch, reveal observer, page transition, inline script helper
 src/components/ui/       link buttons, icons, print button
 src/content/             typed public content: profile, experience, projects/, Surface/System
+src/content/compliancewatch/  ComplianceWatch's own recorded data: seed rules, clauses, messages, services
 src/content/editorial/   build-time only: sources for every claim, and open questions
-src/lib/sim/             pure, deterministic simulation engines (KVStore, cluster, café, Base62, SSRF, hex map, graph, isolation forest, sync queue, Two Sum)
+src/lib/sim/             pure, deterministic simulation engines (ComplianceWatch's rules, dates, quote check, masking and delivery; KVStore, cluster, café, Base62, SSRF, hex map, graph, isolation forest, sync queue, Two Sum)
 src/lib/                 explorer state machine, content validation, formatting, motion helpers
 public/projects/         real screenshots (ScopeForge, synthetic demo data)
 tests/unit/              Vitest: content rules, explorer state, every simulation engine
@@ -55,7 +57,7 @@ Public copy lives in `src/content/*.ts`, not in components. When you change a cl
 
 ### Illustrations vs screenshots
 
-Only ScopeForge has real screenshots (its repository's synthetic demo workspace). SmartShelfKart, Elepeia and Cue & Coffee are original HTML/CSS drawings with sample data — no client photos, logos or records — labelled as such on the page and in their accessible names. To swap in captures, add images under `public/projects/`, change the media entry's `kind` to `"screenshot"` with `src`, `width` and `height`, and render them with `next/image` as `ScopeForgeGuard` does. Client screenshots need the client's OK first.
+Only ScopeForge has real screenshots (its repository's synthetic demo workspace). ComplianceWatch, SmartShelfKart, Elepeia and Cue & Coffee are original HTML/CSS drawings with sample data — no client photos, logos or records — labelled as such on the page and in their accessible names. To swap in captures, add images under `public/projects/`, change the media entry's `kind` to `"screenshot"` with `src`, `width` and `height`, and render them with `next/image` as `ScopeForgeGuard` does. Client screenshots need the client's OK first.
 
 ## Motion system
 
@@ -82,11 +84,12 @@ Only ScopeForge has real screenshots (its repository's synthetic demo workspace)
   - **At a glance, first** (`AtAGlance`, a dark stage; it replaced a hero with a tagline over project art):
     - **Who, directly:** the availability badge, the headline "Hi, I'm Himanshu." (two lines at every width, so a font swap moves nothing; its full stop is a ball that bounces when poked, `data-bounce`), the role, the one-line intro, and the way to the work, the résumé, GitHub and LinkedIn.
     - **Beside it:** the portrait, which plays its opening on load here (`intro="load"`) and then greets you, and the monogram writing itself.
-    - **Then the facts as tiles:** the Cleartrip role, VIT, the certifications and the practice figure. Everything rises in on load (`hero-rise`, `wr-in`), and the header turns frosted as soon as the section starts to scroll under it.
+    - **Then the facts as tiles:** the Cleartrip role, VIT, the certifications, the main project (its path in three steps — a notification, a decision, a date — lit in turn) and the practice figure. Everything rises in on load (`hero-rise`, `wr-in`), and the header turns frosted as soon as the section starts to scroll under it.
   - **Experience:** the achievements are a swipeable row on phones (`SnapGallery`, `stackFrom="md"`). The hex map and the other walkthroughs are on `/about`.
   - **Work** (`Projects`):
-    - **Flagships** (`Featured`): the three are sticky cards that pile up as you scroll. Each settles back and dims on the next card's named view timeline, scoped to the list with `timeline-scope`. Every card shows the idea, its own figures, its stack and the way in.
-    - **The rest** (`ProjectBento`, `bento.module.css`): the other ten as a bento wall, numbered on from the featured three.
+    - **The main project** (`MainProject`, `main.module.css`): ComplianceWatch in one wide card, numbered 01 — the idea, three of its figures and its whole stack beside the product itself (its web app with the WhatsApp reminder leaning in front; on phones just the phone, where the pair would be too small to read). Under it, the wire: five stations from a regulator's PDF to the owner's phone. One light runs along it (a transform on a full-width strip, 6 s a lap) and each station rings as it passes (opacity on the same clock), so nothing runs per frame in script. Still under reduced motion.
+    - **Flagships** (`Featured`, numbered 02–04): the three are sticky cards that pile up as you scroll. Each settles back and dims on the next card's named view timeline, scoped to the list with `timeline-scope`. Every card shows the idea, its own figures, its stack and the way in.
+    - **The rest** (`ProjectBento`, `bento.module.css`): the other ten as a bento wall, numbered on from the flagships.
       - **Layout:** from 1024px it's four columns of fixed rows packed densely, so one large tile (2×2), three wide (2×1) and six small ones fill a clean 4×4. The sizes are a slug list in `ProjectBento`, and a new project joins as a small tile. Below 1024px it's two columns, with the large and wide tiles spanning both.
       - **Each tile:** its signature (`MiniVisual`, looping under the pointer or mid-screen on touch), a glow in its accent, category, title and stack (one fading line on small tiles), with the whole tile a link. Tilt, light and the touch "active" tile come from `CardGrid`, and tiles rise in on their own scroll timelines.
   - **Skills** (`Skills`, `content/skills.ts`): the résumé's skill groups, each matched to the projects whose own stack names it, or the Cleartrip role's. Pointing at or tapping a skill lights those projects; on phones they ride in a bar pinned to the bottom of the screen. Skills with nothing to show them are listed plainly. The résumé reads the same list.
@@ -137,6 +140,7 @@ Only ScopeForge has real screenshots (its repository's synthetic demo workspace)
     - pulling through to the next project
     - fixing the 404's broken link
     - the Konami code, which bursts sparks in every project's accent
+    - answering ComplianceWatch's reminder bot in Hindi, which answers in Hindi
   - **Command palette** (`src/components/palette`). ⌘K / Ctrl+K, "/" or the header's search button.
     - **Contents:** every project (with a "Seen" mark once opened), the places to go, and actions: Surprise me, copy the email address, x-ray mode, reduce motion.
     - **Search and keys:** it filters as you type (substring first, then letters in order, so "ssk" finds SmartShelfKart). ↑ ↓ choose and Enter runs. The matching is `lib/fuzzy.ts` and the places are `content/places.ts`, both shared with the 404's suggestions.
@@ -148,7 +152,7 @@ Only ScopeForge has real screenshots (its repository's synthetic demo workspace)
     - **Lifetime:** it lasts for the visit (`<html data-xray>`), with a corner note to leave it.
   - **About, Lab, 404 and résumé:**
     - **About:** in "Work over time" each bar grows from its start date as it scrolls in; pointing at a row lights it, and pointing or focusing shows its period beside the bar (always read out). The capability map is a crosshair: pointing at a capability lights its row, at a project its column (CSS `:has`, no script).
-    - **Lab:** "Poke" wobbles when poked (`data-wobble`). Under the intro, "The labs" is a strip of all six, each with its project's signature looping under the pointer (`data-loops`).
+    - **Lab:** "Poke" wobbles when poked (`data-wobble`). Under the intro, "The labs" is a strip of all eight, two rows of four, each with its project's signature looping under the pointer (`data-loops`). ComplianceWatch's rules engine and citation check lead.
     - **404** (`src/components/notfound`). `FixTheLink`: drag either half of the broken link to the other and it mends, with sparks; dropped short, it springs back. A button does it from the keyboard, and undoes it. `DidYouMean` ranks the places against the missing address's last part (`/work/kv-store` finds KVStore) and tops up with the main pages, always three cards. The page is built once for every missing address, so the ranking happens after mount. The cards are keyed by slot, not by place, so when the ranking arrives they change in place instead of trading positions.
     - **Fonts and wrapping:** on a phone the fallback font (Arial's metrics) wrapped the heading and the game's line onto one more line than Inter did, so the swap moved the page (CLS 0.076). Both now hold their line count in either font: the heading has a width that breaks it after "lives" on phones, and the game's text is two lines by design. Check a new page the same way with web fonts blocked.
     - **Résumé:** it stays sober. Section rules draw across as they scroll in, and the print button's page slides out of the printer.
@@ -164,9 +168,18 @@ Only ScopeForge has real screenshots (its repository's synthetic demo workspace)
 
 `/work/[slug]` reads like a product page (`src/components/case`): `CaseHero` puts the project on its device (`HeroDevice`: a MacBook, browser or desktop around its drawing or real screenshots, or its signature mark where it has neither) under a drifting glow in its accent; `LocalNav` is the sticky sub-nav that appears once the hero has passed, marks the section being read and draws reading progress; `Metrics` gives each figure a small exact picture of itself (`lib/metric-viz.ts` reads every number from the metric's own value and label, and draws nothing where no honest picture exists); decisions sit in a `SnapGallery`; the story section rises as a rounded sheet (`sd-sheet`); evidence and limits tick in; `NextProject` is the door onward.
 
+**ComplianceWatch's deep dive** (`src/components/compliancewatch`). The main project's case study adds an "Inside" chapter after its scene and rules engine, with a sticky-nav entry of its own:
+
+- **Three more simulations**, each its own lazy chunk like every interactive: the answerer's citation check (you write the model's quote; one retry, then "not covered"), the delivery policy (batching, quiet hours, WhatsApp's 24-hour window, retries, the fallback, and the bot's Hindi and English keywords), and the model gateway (PII masking as you type, routes with a fallback and a breaker, the budget).
+- **The service map**: a server-rendered SVG of the ten services and two apps, events solid and HTTP dashed. Pointing at a service lights its wires through `:has()` rules generated from the data, with no script; the cards under it say everything in words and are all a phone shows.
+- **The screens**: eight drawings of the web app in the product's own tokens and copy, in a `SnapGallery`. Each drawing is costly to lay out, so each is drawn by `CardDraw` as the row nears it, in a box already its size.
+- **The gates**: what CI holds every change to, with ticks that draw in on reveal.
+
+Every simulation runs ComplianceWatch's own logic, ported to `src/lib/sim/compliance.ts` from its Python and TypeScript: the kernel's three-valued predicates and recurrences, the quote check (difflib's `SequenceMatcher` included), the gateway's masking patterns, the notification policy and the bot's keywords. `tests/unit/compliance.test.ts` pins each port to values the original code produced. Its reminders are in Hindi, so the root layout loads Noto Sans Devanagari with `preload: false`: its `@font-face` carries the Devanagari `unicode-range`, and a browser fetches it only for a page that shows Devanagari.
+
 ### Signature scenes
 
-Before its interactive ("Now try it"), a case study tells one short story by scrolling — SmartShelfKart's question travelling the layers, Elepeia's page losing its weight, a key landing in KVStore, a cache losing a node and healing, what Vitals costs the Mac, RxForce's queue riding out a dead zone, 39134 becoming `abc` and a destination failing the SSRF checks, Skintellect's pipeline in order, one night at the snooker club, requests meeting ScopeForge's scope guards, a fraud ring surfacing two hops out, an Isolation Forest's random cuts, and Two Sum stepped through in three languages. Each scene is:
+Before its interactive ("Now try it"), a case study tells one short story by scrolling — one CBIC notification followed from the regulator's feed to an owner's WhatsApp through ComplianceWatch, SmartShelfKart's question travelling the layers, Elepeia's page losing its weight, a key landing in KVStore, a cache losing a node and healing, what Vitals costs the Mac, RxForce's queue riding out a dead zone, 39134 becoming `abc` and a destination failing the SSRF checks, Skintellect's pipeline in order, one night at the snooker club, requests meeting ScopeForge's scope guards, a fraud ring surfacing two hops out, an Isolation Forest's random cuts, and Two Sum stepped through in three languages. Each scene is:
 
 - `src/lib/scenes/<name>.ts` — its steps (captions restating the project's own content; a scene adds pictures, not claims), a note on what is real, and a pure `frameAt(step)` built on the same simulation engines as the interactives. Tested in `tests/unit/scenes.test.ts`.
 - `src/components/scenes/visuals/*Visual.tsx` — the drawing for a frame, in SVG so it scales to whatever the pinned stage leaves it, in two compositions: `wide` from 768px and `tall` for phones (portrait, type sized to read, not a shrunk copy). Moves are transitions keyed to the step; nothing animates per scroll frame. Groups that hold text fade rather than slide: moving an SVG group re-lays out every line of text in it on each frame. Keep text in the site's fonts — ticks, crosses and arrows are drawn (`visuals/marks.tsx`), because a fallback-font lookup mid-scroll costs a frame.
@@ -174,7 +187,7 @@ Before its interactive ("Now try it"), a case study tells one short story by scr
 
 The stage draws only the composition for the screen it's on. Reduced motion gets static frames drawn on demand; without JavaScript, the `<noscript>` in `SignatureScene` lists the steps as text. Neither is in anyone else's HTML. The step indicator is a row of fixed segments that only change colour, and the stage is `contain: strict`, so a step change is laid out inside the stage and not across the page.
 
-Scenes too dense for a 390px stage set `mobile: "cards"` in their meta (Cue & Coffee, ScopeForge, the fraud ring, the gateway, PadhnaThoPadega): phones get every step as a card in a swipeable row (`StepCards`, on `SnapGallery`) instead of a pin. Until frames are drawn, `motion.css` holds about their height from `--frames-n` and `--frames-details`, which the scene sets.
+Scenes too dense for a 390px stage set `mobile: "cards"` in their meta (ComplianceWatch, Cue & Coffee, ScopeForge, the fraud ring, the gateway, PadhnaThoPadega): phones get every step as a card in a swipeable row (`StepCards`, on `SnapGallery`) instead of a pin. Until frames are drawn, `motion.css` holds about their height from `--frames-n` and `--frames-details`, which the scene sets.
 
 Drawing is scheduled so it doesn't land mid-scroll (`src/lib/idle.ts`): interactives mount in idle time first; static frames (`IdleDraw`) and step cards (`CardDraw`: on load only the card in view and the one peeking in; the rest as the row is swiped) come after, and only once scrolling has settled — except the first frame and the first two cards (`eager`), which draw at "high" priority: an idle callback of their own with a 400ms deadline, since a slow phone that keeps scrolling has no idle time and a blank card looks broken. A live drawing's panels for later steps can go in `Later`, which draws them in idle time or when their step arrives, so the stage's first render is only what step 0 shows.
 
