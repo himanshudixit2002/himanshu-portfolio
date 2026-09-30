@@ -61,6 +61,64 @@ export const sources: SourceNote[] = [
     verified: "Identical in every source. Credential links come from the résumés; current status not re-checked.",
   },
 
+  // ── ComplianceWatch (the main project) ──────────────────────────────────
+  {
+    claim: "ComplianceWatch is presented as complete",
+    source: "Himanshu, in conversation (2026-09-30): “assume it's completed” and show it as the main project",
+    verified:
+      "At 55f7ef3 (2026-09-29) each hop is built and tested on its own, but the chain is not yet wired end to end: the applicability-engine service is a template (the kernel evaluates the predicates, and `make demo` stitches profile → evaluation → obligations → a reminder in one process), nothing consumes the rule.* events yet, the ingest workflow runs on in-memory fakes, the bot doesn't answer questions yet, and infra/terraform, helm and argocd are placeholders. Nothing is deployed. The page describes the product as designed and claims no deployment, users or traffic.",
+  },
+  {
+    claim: "Role: sole author; Sep 2026",
+    source: "git log of github.com/himanshudixit2002/compliancewatch (full history, fetched 2026-09-30)",
+    verified: "22 commits, 2026-09-27 → 2026-09-29, 21 squash-merged PRs (highest #37): 20 by Himanshu Dixit, 1 by himanshudixit2002 (the scaffold), 1 by Dependabot. Two commits carry an AI assistant's co-author trailer.",
+  },
+  {
+    claim: "Problem: regulators publish dozens of notifications, circulars and advisories a year",
+    source: "evals/golden/extraction/cbic_notifications index: 50 CBIC Central Tax notifications from 04/2024 to 02/2026",
+    verified: "That is notifications from one regulator alone; circulars, advisories and the state's notifications come on top. Late fees and interest are the general GST position (sections 47 and 50), not a figure.",
+  },
+  {
+    claim: "Seed calendar of 13 rules; 4 of 13 apply to the demo business, 8 don't, 1 unsure; 7 obligations; the reminder in Hindi",
+    source: "services/rulebook/seed/gst_calendar.yaml; tools/demo; `cw-demo --daytime` run 2026-09-30",
+    verified: "Run output: 4 apply (gstr3b_monthly, gstr1_monthly, gstr9_annual, eway_bill), 8 not, itc04_annual unsure; 7 obligations. The seed is draft (needs_review). tests/unit/compliance.test.ts reproduces the split and the seven dates with the ported engine.",
+  },
+  {
+    claim: "5,571 tests passing (4,523 Python, 1,048 TypeScript); 99.21% coverage of domain and application",
+    source: "uv run pytest -m \"not integration\" --cov --cov-fail-under=80; pnpm turbo run test",
+    verified: "Run 2026-09-30 on an export of 55f7ef3 (uv 0.8.17, Python 3.12.3; pnpm 11.15, Node 22.22): 4,523 passed, 1 xfailed (a documented open finding in header auth mode), 214 integration tests deselected; 1,048 Vitest passed. Integration and the 69 Playwright tests need Docker and a newer browser build, so they weren't run here.",
+  },
+  {
+    claim: "10 services, 18 event topics, 19 ADRs, 22 eval gates, 10 import-linter contracts, 167 schemathesis cases, 70 cross-tenant cases, 12 alert rules, 20 flags, 5 sources, 17 attributes",
+    source: "services/, packages/contracts/events/schemas, docs/adr, evals/harness thresholds.py, import-linter config, tests, infra/dev/prometheus/alerts.yml, packages/flags/registry.json, pipeline adapters registry, ontology attributes.yaml",
+    verified: "Counted 2026-09-30. ADRs: 16 written, 3 stubs (009–011); 8 Accepted, 11 Proposed. Two of the ten services (applicability-engine, eval) are scaffolds.",
+  },
+  {
+    claim: "56 question-answering cases (20 single-hop, 16 multi-hop, 10 date and threshold, 10 must-refuse); the quote check (0.85, evidence tokens, one retry, then not covered)",
+    source: "evals/golden/qa/kag; packages/domain-kernel/src/domain_kernel/citations.py; services/qa/src/qa/domain/answer.py, application/answerer.py",
+    verified: "The cases are drafts, labelled with an AI assistant and not yet reviewed by an analyst. The TypeScript port matches quote_match_ratio and evidence_tokens_missing to six decimals on 13 strings (tests/unit/compliance.test.ts).",
+  },
+  {
+    claim: "Notification 01/2026-Central Tax: clause text, and the GSTR-3B extension from 20 to 21 April 2026",
+    source: "apps/web/scripts/seed/fixtures/rulebook/gst-ct-01-2026.document.json; evals/golden/relations/cbic_notifications/cases/01-2026-central-tax.yaml",
+    verified: "Clause text verbatim, extraction spacing kept. The 20th is the seed's gstr3b_monthly due day (rule 61(1)).",
+  },
+  {
+    claim: "Reminders: templates and Hindi copy, quiet hours 21:00–08:00 IST, the 24-hour window, 5-minute batching, retries after 1 and 5 minutes, one fallback, the 09:00 digest; the bot's keywords and replies",
+    source: "services/notification/src/notification/domain/{templates,policy,preferences,channels}.py and application/{enqueue,dispatch,send}.py; apps/whatsapp-bot/src/{consent,replies}.ts",
+    verified: "Copied verbatim. The Hindi is the project's draft, awaiting an analyst's review; the templates are drafts with Meta.",
+  },
+  {
+    claim: "Gateway: routes and fallbacks, budgets (₹1,500 a tenant, ₹20,000 a feature, alarm at 80%), breaker after 3 failures for 60 s, PII masking order",
+    source: "services/llm-gateway/src/llm_gateway/domain/{routing,config,breaker,scrub}.py, settings.py",
+    verified: "The masking port matches the Python scrub() on 12 strings (tests/unit/compliance.test.ts).",
+  },
+  {
+    claim: "Accent #8ab4ff; the product's screens as drawn",
+    source: "packages/ui/src/styles/tokens.css; apps/web/src/shared/i18n/messages/en.json and the features/*/ui views",
+    verified: "No logo exists; the product's primary is #1d4ed8 in light and #8ab4ff in dark. The drawings use its tokens and its own copy with sample data for the demo tenant.",
+  },
+
   // ── SmartShelfKart ──────────────────────────────────────────────────────
   {
     claim: "SmartShelfKart architecture, request order, 980-line rules, CI eval gate",
@@ -168,6 +226,11 @@ export const sources: SourceNote[] = [
 ];
 
 export const openQuestions: OpenQuestion[] = [
+  {
+    topic: "ComplianceWatch screenshots",
+    detail: "The screens are drawn from the web app's own copy and tokens. Once the owner screens run against the demo tenant, capture them and switch the media to 'screenshot'.",
+    blocks: "Final visual polish",
+  },
   {
     topic: "Real screenshots",
     detail: "SmartShelfKart, Elepeia, Cue & Coffee, KVStore and the rest are drawn. Capture from demo/test workspaces (Cue & Coffee has a test Firebase project) and switch media.kind to 'screenshot'. Client screenshots need the client's OK.",

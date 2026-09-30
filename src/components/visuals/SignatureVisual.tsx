@@ -3,6 +3,7 @@ import { LazyVisual, type InteractiveId } from "./LazyVisual";
 import { ScopeForgeGuard, SkintellectPipeline, VitalsEfficiency } from "./StaticVisuals";
 
 const INTERACTIVE: Partial<Record<VisualId, InteractiveId>> = {
+  "cw-applicability": "cw-applicability",
   "ssk-system": "ssk-agent",
   "elepeia-teardown": "elepeia-teardown",
   "cafe-night": "cafe-night",

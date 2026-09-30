@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from "next";
-import { Caveat, Inter, JetBrains_Mono } from "next/font/google";
+import { Caveat, Inter, JetBrains_Mono, Noto_Sans_Devanagari } from "next/font/google";
 import { places } from "@/content/places";
 import { navigation, profile, resume } from "@/content/profile";
 import { projects } from "@/content/projects";
@@ -20,6 +20,9 @@ const inter = Inter({ subsets: ["latin"], variable: "--font-inter", display: "sw
 const jetbrains = JetBrains_Mono({ subsets: ["latin"], variable: "--font-jetbrains", display: "swap" });
 // Only the hand-written notes use it, and they appear late: not preloaded.
 const caveat = Caveat({ subsets: ["latin"], variable: "--font-caveat", display: "swap", preload: false });
+// ComplianceWatch's reminders are in Hindi. Its @font-face carries the Devanagari
+// unicode-range, so a browser fetches it only for a page that shows Devanagari.
+const devanagari = Noto_Sans_Devanagari({ subsets: ["devanagari"], variable: "--font-deva", display: "swap", preload: false });
 
 const description = `${profile.intro.replace(/\.$/, "")} — ${profile.role.toLowerCase()} based in ${profile.location}.`;
 
@@ -49,7 +52,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
     <html
       lang="en"
-      className={`${inter.variable} ${jetbrains.variable} ${caveat.variable}`}
+      className={`${inter.variable} ${jetbrains.variable} ${caveat.variable} ${devanagari.variable}`}
       data-scroll-behavior="smooth"
       suppressHydrationWarning
     >

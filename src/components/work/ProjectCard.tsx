@@ -9,7 +9,20 @@ import styles from "./card.module.css";
 
 export const categoryId = (c: string) => c.toLowerCase().replace(/[^a-z]+/g, "-").replace(/^-|-$/g, "");
 
-export function ProjectCard({ project, large = false, headingLevel = 3, className = "" }: { project: Project; large?: boolean; headingLevel?: 2 | 3; className?: string }) {
+export function ProjectCard({
+  project,
+  large = false,
+  headingLevel = 3,
+  badge,
+  className = "",
+}: {
+  project: Project;
+  large?: boolean;
+  headingLevel?: 2 | 3;
+  /** A short note over the card's picture, like "Main project". */
+  badge?: string;
+  className?: string;
+}) {
   const Heading = `h${headingLevel}` as const;
   return (
     <article
@@ -23,6 +36,14 @@ export function ProjectCard({ project, large = false, headingLevel = 3, classNam
       <div className={`relative ${large ? "aspect-[16/10] lg:aspect-auto" : "aspect-[16/10]"} bg-ink`}>
         <MiniVisual id={project.visual} accent={project.accent} />
         <SeenTick slug={project.slug} />
+        {badge && (
+          <span
+            className="absolute top-3 left-3 z-2 rounded-full px-2.5 py-1 text-[0.6875rem] font-semibold tracking-[0.02em]"
+            style={{ color: project.accent, background: `${project.accent}1f`, boxShadow: `inset 0 0 0 1px ${project.accent}55` }}
+          >
+            {badge}
+          </span>
+        )}
       </div>
       <div className="flex flex-1 flex-col p-6">
         <p className={`${styles.category} text-eyebrow`} style={{ color: project.accent }}>

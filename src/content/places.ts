@@ -29,7 +29,7 @@ export const places: Place[] = [
       ["home", "Home", "The start", "/"],
       ["hello", "At a glance", "Who Himanshu is, on one screen", "/#hello"],
       ["experience", "Experience", "The Cleartrip role", "/#experience"],
-      ["projects", "Projects", "Three flagships, then everything else", "/#work"],
+      ["projects", "Projects", "The main project, three flagships, then everything else", "/#work"],
       ["skills", "Skills", "The tools, and the work that shows them", "/#skills"],
       ["work", "All work", "Every project, with a filter", "/work"],
       ["lab", "Lab", "Interactive simulations of systems he has built", "/lab"],

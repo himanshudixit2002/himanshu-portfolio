@@ -6,6 +6,10 @@ import { whenIdle } from "@/lib/idle";
 import { useNearViewport } from "./useNearViewport";
 
 export type InteractiveId =
+  | "cw-applicability"
+  | "cw-answers"
+  | "cw-reminders"
+  | "cw-gateway"
   | "kv-explorer"
   | "kv-explorer-compact"
   | "cluster-lab"
@@ -23,6 +27,10 @@ export type InteractiveId =
 type Loader = () => Promise<{ default: ComponentType<Record<string, unknown>> }>;
 
 const LOADERS: Record<InteractiveId, Loader> = {
+  "cw-applicability": () => import("./CwApplicability"),
+  "cw-answers": () => import("./CwAnswers"),
+  "cw-reminders": () => import("./CwReminders"),
+  "cw-gateway": () => import("./CwGateway"),
   "kv-explorer": () => import("./KvExplorer"),
   "kv-explorer-compact": () => import("./KvExplorer"),
   "cluster-lab": () => import("./ClusterLab"),
@@ -47,6 +55,10 @@ const LOADERS: Record<InteractiveId, Loader> = {
  * measured. Re-measure after changing a visual's layout.
  */
 const HEIGHT: Record<InteractiveId, string> = {
+  "cw-applicability": "min-h-[145rem] sm:min-h-[128rem] lg:min-h-[78rem]",
+  "cw-answers": "min-h-[99rem] sm:min-h-[73rem] md:min-h-[70rem] lg:min-h-[50rem] xl:min-h-[47rem]",
+  "cw-reminders": "min-h-[108rem] sm:min-h-[92rem] md:min-h-[86rem] lg:min-h-[47rem]",
+  "cw-gateway": "min-h-[111rem] sm:min-h-[83rem] md:min-h-[81rem] lg:min-h-[48rem] xl:min-h-[47rem]",
   "kv-explorer": "min-h-[79rem] sm:min-h-[54rem] lg:min-h-[37rem]",
   "kv-explorer-compact": "min-h-[40rem]",
   "cluster-lab": "min-h-[73rem] sm:min-h-[62rem] lg:min-h-[37rem]",

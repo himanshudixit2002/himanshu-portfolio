@@ -58,6 +58,7 @@ export type ProjectLink = LinkItem & {
 
 /** Signature visual for each project. Mapped to components in components/visuals. */
 export type VisualId =
+  | "cw-applicability"
   | "ssk-system"
   | "elepeia-teardown"
   | "cafe-night"

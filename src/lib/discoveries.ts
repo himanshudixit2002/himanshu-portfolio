@@ -23,6 +23,7 @@ export const DISCOVERIES: Discovery[] = [
   { id: "pull", name: "Pull through", hint: "With a mouse or trackpad, keep scrolling at the end of a case study.", href: "/work/smartshelfkart" },
   { id: "fixer", name: "Fixer", hint: "Some links are broken on purpose. Find one and mend it.", href: "/this-page-is-not-here" },
   { id: "konami", name: "Old school", hint: "On a keyboard, a classic cheat code works here." },
+  { id: "namaste", name: "नमस्ते", hint: "A reminder somewhere speaks Hindi. Reply in kind.", href: "/work/compliancewatch#reminders" },
 ];
 
 export const discoveryName = (id: string) => DISCOVERIES.find((d) => d.id === id)?.name ?? id;

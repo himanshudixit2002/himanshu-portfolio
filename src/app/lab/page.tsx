@@ -9,11 +9,23 @@ import { LazyVisual, type InteractiveId } from "@/components/visuals/LazyVisual"
 
 export const metadata: Metadata = {
   title: "Lab",
-  description: "Interactive simulations of systems Himanshu Dixit has built — a sharded key-value store, a self-healing cache, a URL shortener's safety checks and more.",
+  description: "Interactive simulations of systems Himanshu Dixit has built — a GST rules engine, a citation check, a sharded key-value store, a self-healing cache and more.",
   alternates: { canonical: "/lab" },
 };
 
 const LABS: { id: InteractiveId; slug: string; title: string; body: string }[] = [
+  {
+    id: "cw-applicability",
+    slug: "compliancewatch",
+    title: "Thirteen rules, one business",
+    body: "Change a business's GST profile and watch ComplianceWatch's seed calendar decide, rule by rule, what applies, what doesn't and what needs a person — and what falls due.",
+  },
+  {
+    id: "cw-answers",
+    slug: "compliancewatch",
+    title: "Quote it, or it isn't an answer",
+    body: "Write the model's quote and run it through the answerer's citation check: close isn't enough when a date or a month is wrong.",
+  },
   {
     id: "kv-explorer",
     slug: "kvstore",
@@ -73,7 +85,7 @@ export default function LabPage() {
         {/* Every lab at a glance: each with its project's signature, playing under the pointer. */}
         <nav
           aria-label="The labs"
-          className="relative mt-10 grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-6"
+          className="relative mt-10 grid grid-cols-2 gap-3 sm:grid-cols-4"
           data-xray="Server-rendered links · each signature is a CSS loop that plays under the pointer (data-loops)"
         >
           {LABS.map((lab) => {

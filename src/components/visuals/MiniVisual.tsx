@@ -45,6 +45,23 @@ const OUTLIERS = [
 ];
 
 const DRAW: Record<VisualId, (a: string) => ReactNode> = {
+  // ComplianceWatch: a notice is read, and a due date on the calendar moves a day (20 → 21).
+  "cw-applicability": (a) => (
+    <>
+      <rect x="24" y="22" width="38" height="52" rx="4" fill="rgb(255 255 255 / 0.05)" stroke={soft} />
+      {[32, 40, 48, 56, 64].map((y, i) => (
+        <rect key={y} x="30" y={y} width={i === 4 ? 14 : 26} height="2.4" rx="1.2" fill={i === 1 ? a : soft} fillOpacity={i === 1 ? 0.7 : 1} />
+      ))}
+      <rect className={loop(m.cwScan)} x="27" y="29" width="32" height="1.4" rx="0.7" fill={a} />
+      <path d="M68 48 H76" stroke={a} strokeOpacity="0.5" strokeDasharray="2 2" />
+      <rect x="80" y="22" width="58" height="10" rx="3" fill={a} fillOpacity="0.28" />
+      {Array.from({ length: 20 }, (_, i) => (
+        <rect key={i} x={82 + (i % 5) * 11} y={36 + Math.floor(i / 5) * 10} width="9" height="8" rx="2" fill={soft} />
+      ))}
+      {/* The 20th, lit; the loop carries it to the 21st, as notification 01/2026 did. */}
+      <rect className={loop(m.cwMove)} x="104" y="56" width="9" height="8" rx="2" fill={a} />
+    </>
+  ),
   "ssk-system": (a) =>
     [0, 1, 2, 3].map((i) => (
       <path

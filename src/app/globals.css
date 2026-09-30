@@ -25,7 +25,8 @@
   --color-ssk-bright: #2dd4bf;
   --color-ssk-deep: #0f766e;
 
-  --font-sans: var(--font-inter), ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+  /* Devanagari falls through Inter to Noto Sans Devanagari (ComplianceWatch's Hindi reminders). */
+  --font-sans: var(--font-inter), var(--font-deva), ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
   --font-mono: var(--font-jetbrains), ui-monospace, "SF Mono", Menlo, monospace;
   /* The "try me" notes and the portrait's speech bubble. */
   --font-hand: var(--font-caveat), "Bradley Hand", "Segoe Print", cursive;

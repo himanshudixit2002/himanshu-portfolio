@@ -1,7 +1,8 @@
-import type { CSSProperties, ReactNode } from "react";
+import { Fragment, type CSSProperties, type ReactNode } from "react";
 import Link from "next/link";
 import { achievements, certifications, cleartrip, education } from "@/content/experience";
 import { profile } from "@/content/profile";
+import { complianceWatch as main } from "@/content/projects";
 import { formatPeriod } from "@/lib/format";
 import { Hint } from "@/components/explore/Hint";
 import { Portrait } from "@/components/identity/Portrait";
@@ -18,8 +19,8 @@ const word = (i: number) => ({ "--w": i }) as CSSProperties;
  * The first screen: who Himanshu is, directly. His name as the headline
  * (its full stop is a ball that bounces when poked), what he does, and the
  * way to the work, beside the portrait that says hello by itself; then the
- * facts as tiles — the Cleartrip role, VIT, the certifications and the
- * practice figure. Every fact is the site's own content.
+ * facts as tiles — the Cleartrip role, VIT, the certifications, the main
+ * project and the practice figure. Every fact is the site's own content.
  * Everything rises in on load with CSS; the monogram writes itself.
  */
 export function AtAGlance() {
@@ -174,9 +175,35 @@ export function AtAGlance() {
             </Tile>
           </div>
 
+          {/* The main project: what it does in a line, its path in three steps, and the way in. */}
+          <Tile label="Main project" className="lg:col-span-7" i={9}>
+            <div className="flex flex-col gap-4 md:flex-row md:items-end md:justify-between md:gap-6" style={{ "--accent": main.accent } as CSSProperties}>
+              <div className="min-w-0">
+                <p className="text-title text-[clamp(1.4rem,2.2vw,1.85rem)]" style={{ color: main.accent }}>
+                  {main.title}
+                </p>
+                <p className="mt-2 leading-relaxed text-muted-inverse">GST rule changes, decided for one business and sent to the owner on WhatsApp, in Hindi or English.</p>
+                <p className={`${s.flow} mt-4`}>
+                  {["CBIC notification", "applies to you", "due 21 Apr"].map((step, i) => (
+                    <Fragment key={step}>
+                      {i > 0 && <span aria-hidden="true" className={s.flowJoin} />}
+                      <span className={s.flowStep} style={k(i)}>
+                        {step}
+                      </span>
+                    </Fragment>
+                  ))}
+                </p>
+              </div>
+              <Link href={`/work/${main.slug}`} className="group inline-flex min-h-11 flex-none items-center gap-2 font-medium text-accent-bright">
+                <span className="link-draw">See how it works</span>
+                <ArrowRight className="size-4 transition-transform duration-(--dur-base) ease-(--ease-out) group-hover:translate-x-0.5" />
+              </Link>
+            </div>
+          </Tile>
+
           {/* Practice: the figure, and the line it comes from. */}
-          <Tile label="Practice" className="lg:col-span-12" i={9}>
-            <div className="flex flex-col gap-2 md:flex-row md:items-baseline md:gap-6">
+          <Tile label="Practice" className="lg:col-span-5" i={10}>
+            <div className="flex flex-col gap-2 md:flex-row md:items-baseline md:gap-6 lg:flex-col lg:items-start lg:gap-2">
               <p className="flex flex-none items-baseline gap-2">
                 <span className="bg-linear-to-br from-[#9be15d] to-[#2cbb5d] bg-clip-text text-display text-[clamp(2.75rem,5vw,3.75rem)] text-transparent tabular-nums">
                   {figure}

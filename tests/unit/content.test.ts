@@ -59,7 +59,7 @@ describe("published content", () => {
 
 describe("content validation catches problems", () => {
   it("duplicate slugs", () => {
-    expect(validateProjects([projects[0], projects[0]])).toContain('project "smartshelfkart": duplicate slug');
+    expect(validateProjects([projects[0], projects[0]])).toContain(`project "${projects[0].slug}": duplicate slug`);
   });
 
   it("thin alt text and unlabelled illustrations", () => {

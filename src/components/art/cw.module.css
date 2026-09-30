@@ -1,0 +1,833 @@
+/*
+ * ComplianceWatch drawings: the web app's screens and a WhatsApp chat, in the
+ * product's own tokens (packages/ui/src/styles/tokens.css, light scheme) and
+ * its own copy, with sample data for the demo tenant. Like the other
+ * drawings, each window is a size container and everything inside is in em
+ * against 1cqw, so a screen scales as one piece.
+ */
+
+@layer theme, base, components, utilities;
+
+@layer components {
+  .frame {
+    container-type: inline-size;
+    position: relative;
+    width: 100%;
+  }
+}
+
+.window {
+  --bg: #ffffff;
+  --surface: #f4f6f9;
+  --fg: #101828;
+  --muted: #4a5568;
+  --line: #d9dee7;
+  --line-strong: #6b7a90;
+  --primary: #1d4ed8;
+  --accent: #0f766e;
+  --success: #166534;
+  --warning: #92400e;
+  --danger: #b91c1c;
+  --info: #0369a1;
+
+  font-size: 1cqw;
+  font-family: var(--font-sans);
+  letter-spacing: -0.01em;
+  line-height: 1.3;
+  color: var(--fg);
+  background: var(--bg);
+  border-radius: 1.2em;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  aspect-ratio: 16 / 10;
+  box-shadow:
+    0 0 0 0.08em rgb(255 255 255 / 0.12),
+    0 2.4em 6em -1.2em rgb(0 0 0 / 0.55),
+    0 1em 2em -1em rgb(0 0 0 / 0.35);
+}
+
+/* Browser chrome ---------------------------------------------------------- */
+
+.chrome {
+  flex: none;
+  height: 3em;
+  display: flex;
+  align-items: center;
+  gap: 0.6em;
+  padding-inline: 1.2em;
+  background: #eef1f5;
+  border-bottom: 0.08em solid var(--line);
+}
+
+.dot {
+  width: 0.85em;
+  height: 0.85em;
+  border-radius: 50%;
+}
+
+.dot:nth-child(1) {
+  background: #ff5f57;
+}
+.dot:nth-child(2) {
+  background: #febc2e;
+}
+.dot:nth-child(3) {
+  background: #28c840;
+}
+
+.url {
+  margin-inline: auto;
+  padding: 0.35em 2.4em;
+  font-size: 1.05em;
+  color: var(--muted);
+  background: #fff;
+  border-radius: 0.6em;
+  border: 0.08em solid var(--line);
+}
+
+/* App shell: the product's header is its name in text, the nav and a user menu. */
+.shell {
+  flex: none;
+  height: 4.4em;
+  display: flex;
+  align-items: center;
+  gap: 2.6em;
+  padding-inline: 3em;
+  border-bottom: 0.08em solid var(--line);
+}
+
+.brand {
+  font-size: 1.45em;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
+
+.nav {
+  display: flex;
+  gap: 2em;
+  font-size: 1.15em;
+  color: var(--muted);
+}
+
+.navOn {
+  color: var(--fg);
+  font-weight: 600;
+  box-shadow: 0 0.35em 0 -0.12em var(--primary);
+}
+
+.avatar {
+  margin-left: auto;
+  width: 2.5em;
+  height: 2.5em;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  background: #e8eefc;
+  color: var(--primary);
+  font-size: 1em;
+  font-weight: 700;
+}
+
+.page {
+  flex: 1;
+  min-height: 0;
+  padding: 2.2em 3em 0;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5em;
+  background: var(--surface);
+}
+
+.head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 2em;
+}
+
+.h1 {
+  font-size: 2.2em;
+  font-weight: 700;
+  letter-spacing: -0.025em;
+  line-height: 1.1;
+}
+
+.sub {
+  margin-top: 0.45em;
+  font-size: 1.12em;
+  color: var(--muted);
+}
+
+.btn {
+  flex: none;
+  display: inline-flex;
+  align-items: center;
+  height: 2.9em;
+  padding-inline: 1.3em;
+  border-radius: 0.5em;
+  background: var(--primary);
+  color: #fff;
+  font-size: 1.1em;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.btnGhost {
+  background: #fff;
+  color: var(--fg);
+  box-shadow: inset 0 0 0 0.08em var(--line);
+}
+
+.tabs {
+  display: flex;
+  gap: 0.5em;
+  border-bottom: 0.08em solid var(--line);
+  font-size: 1.1em;
+  color: var(--muted);
+}
+
+.tabs > span {
+  padding: 0 0.9em 0.75em;
+}
+
+.tabOn {
+  color: var(--fg);
+  font-weight: 600;
+  box-shadow: inset 0 -0.2em 0 var(--primary);
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: 1.3fr 1fr;
+  gap: 1.5em;
+  min-height: 0;
+}
+
+.gridWide {
+  grid-template-columns: 1.55fr 1fr;
+}
+
+.stack {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5em;
+  min-width: 0;
+}
+
+.profile {
+  display: grid;
+  gap: 1.3em;
+  margin-top: 1.1em;
+}
+
+.card {
+  min-width: 0;
+  background: #fff;
+  border: 0.08em solid var(--line);
+  border-radius: 0.9em;
+  padding: 1.4em 1.5em;
+}
+
+.cardTitle {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1em;
+  font-size: 1.2em;
+  font-weight: 650;
+}
+
+.cardMeta {
+  font-size: 0.85em;
+  font-weight: 500;
+  color: var(--muted);
+}
+
+/* Obligations -------------------------------------------------------------- */
+
+.rows {
+  margin-top: 0.9em;
+  display: grid;
+}
+
+.row {
+  display: grid;
+  grid-template-columns: 6.6em minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 1em;
+  padding: 0.95em 0;
+  border-top: 0.08em solid var(--line);
+}
+
+.row:first-child {
+  border-top: 0;
+}
+
+.form {
+  justify-self: start;
+  padding: 0.3em 0.6em;
+  border-radius: 0.4em;
+  background: #eef2ff;
+  color: var(--primary);
+  font: 700 0.98em/1.1 var(--font-mono);
+  letter-spacing: -0.02em;
+}
+
+.rowTitle {
+  font-size: 1.08em;
+  font-weight: 550;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.rowSub {
+  display: block;
+  margin-top: 0.15em;
+  font-size: 0.86em;
+  font-weight: 450;
+  color: var(--muted);
+}
+
+.due {
+  text-align: right;
+  font-size: 1.05em;
+  font-weight: 650;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+.was {
+  display: block;
+  margin-top: 0.2em;
+  font-size: 0.82em;
+  font-weight: 500;
+  color: var(--muted);
+  text-decoration: line-through;
+}
+
+/* The product's status chips: a pill on the surface, a border and a dot. */
+.chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45em;
+  padding: 0.25em 0.7em;
+  border-radius: 99em;
+  border: 0.08em solid var(--line);
+  background: var(--surface);
+  color: var(--fg);
+  font-size: 0.86em;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.chip::before {
+  content: "";
+  width: 0.55em;
+  height: 0.55em;
+  border-radius: 50%;
+  background: var(--tone, var(--line-strong));
+}
+
+.success {
+  --tone: #16a34a;
+}
+.warning {
+  --tone: #d97706;
+}
+.info {
+  --tone: #0284c7;
+}
+.danger {
+  --tone: #dc2626;
+}
+
+/* A banner: a 4px edge in its tone over a tint of it. */
+.banner {
+  padding: 1.2em 1.3em;
+  border-left: 0.3em solid var(--info);
+  border-radius: 0.5em;
+  background: color-mix(in srgb, var(--info) 9%, #fff);
+}
+
+.bannerTitle {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1em;
+  font-size: 1.15em;
+  font-weight: 700;
+}
+
+.bannerBody {
+  margin-top: 0.55em;
+  font-size: 1.02em;
+  line-height: 1.4;
+  color: #243044;
+}
+
+.citation {
+  margin-top: 1em;
+  padding: 1em 1.1em;
+  border: 0.08em solid var(--line);
+  border-radius: 0.6em;
+  background: #fff;
+}
+
+.citeHead {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1em;
+  font-size: 0.92em;
+  font-weight: 600;
+  color: var(--muted);
+}
+
+.mono {
+  font-family: var(--font-mono);
+  letter-spacing: -0.02em;
+}
+
+.quote {
+  margin-top: 0.7em;
+  padding-left: 0.9em;
+  border-left: 0.22em solid var(--line);
+  font-size: 0.98em;
+  line-height: 1.45;
+  font-style: italic;
+  color: #243044;
+}
+
+.fine {
+  margin-top: 0.8em;
+  font-size: 0.8em;
+  color: var(--muted);
+}
+
+/* Progress and small stats. */
+.stats {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1.5em;
+}
+
+.stat {
+  font-size: 1em;
+  color: var(--muted);
+}
+
+.stat strong {
+  display: block;
+  margin-bottom: 0.4em;
+  color: var(--fg);
+  font-size: 1.1em;
+}
+
+.meter {
+  height: 0.6em;
+  margin-top: 0.5em;
+  border-radius: 99em;
+  background: #e3e8ef;
+  overflow: hidden;
+}
+
+.meter > i {
+  display: block;
+  height: 100%;
+  border-radius: inherit;
+  background: var(--accent);
+}
+
+/* Tables ---------------------------------------------------------------- */
+
+.table {
+  display: grid;
+  font-size: 1em;
+}
+
+.tr {
+  display: grid;
+  grid-template-columns: var(--cols);
+  align-items: center;
+  gap: 1em;
+  padding: 0.85em 1.2em;
+  border-top: 0.08em solid var(--line);
+}
+
+.th {
+  border-top: 0;
+  padding-block: 0.7em;
+  background: var(--surface);
+  color: var(--muted);
+  font-size: 0.88em;
+  font-weight: 650;
+}
+
+.tr > span {
+  min-width: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.strong {
+  font-weight: 600;
+}
+
+.dim {
+  color: var(--muted);
+}
+
+/* Onboarding ------------------------------------------------------------ */
+
+.stepper {
+  display: flex;
+  align-items: center;
+  gap: 0.8em;
+  font-size: 1em;
+  color: var(--muted);
+}
+
+.step {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5em;
+}
+
+.step > b {
+  display: grid;
+  place-items: center;
+  width: 1.8em;
+  height: 1.8em;
+  border-radius: 50%;
+  background: #e3e8ef;
+  color: var(--muted);
+  font-size: 0.85em;
+}
+
+.stepDone > b {
+  background: var(--accent);
+  color: #fff;
+}
+
+.stepOn {
+  color: var(--fg);
+  font-weight: 650;
+}
+
+.stepOn > b {
+  background: var(--primary);
+  color: #fff;
+}
+
+.stepLine {
+  width: 2.6em;
+  height: 0.12em;
+  background: var(--line);
+}
+
+.question {
+  font-size: 1.9em;
+  font-weight: 700;
+  letter-spacing: -0.025em;
+  line-height: 1.15;
+  max-width: 30em;
+}
+
+.options {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0.7em;
+}
+
+.option {
+  display: flex;
+  align-items: center;
+  gap: 0.7em;
+  padding: 0.85em 1em;
+  border-radius: 0.6em;
+  border: 0.08em solid var(--line);
+  background: #fff;
+  font-size: 1.02em;
+}
+
+.option::before {
+  content: "";
+  flex: none;
+  width: 1.1em;
+  height: 1.1em;
+  border-radius: 50%;
+  box-shadow: inset 0 0 0 0.12em var(--line-strong);
+}
+
+.optionOn {
+  border-color: var(--primary);
+  background: #eef2ff;
+  font-weight: 600;
+}
+
+.optionOn::before {
+  box-shadow: inset 0 0 0 0.33em var(--primary);
+}
+
+.actions {
+  display: flex;
+  align-items: center;
+  gap: 0.8em;
+}
+
+.hint {
+  font-size: 0.98em;
+  color: var(--muted);
+}
+
+/* Settings -------------------------------------------------------------- */
+
+.kv {
+  display: grid;
+  grid-template-columns: 9em minmax(0, 1fr);
+  gap: 0.75em 1em;
+  margin-top: 1em;
+  font-size: 1.02em;
+}
+
+.kv > dt {
+  color: var(--muted);
+}
+
+.kv > dd {
+  font-weight: 550;
+}
+
+.field {
+  display: grid;
+  gap: 0.35em;
+  font-size: 1em;
+}
+
+.field > span:first-child {
+  color: var(--muted);
+  font-size: 0.9em;
+  font-weight: 600;
+}
+
+.input {
+  display: flex;
+  align-items: center;
+  height: 2.8em;
+  padding-inline: 0.9em;
+  border-radius: 0.5em;
+  border: 0.08em solid var(--line-strong);
+  background: #fff;
+  font-size: 1.02em;
+}
+
+.radio {
+  display: flex;
+  align-items: center;
+  gap: 0.55em;
+  font-size: 1.02em;
+}
+
+.radio::before {
+  content: "";
+  width: 1em;
+  height: 1em;
+  border-radius: 50%;
+  box-shadow: inset 0 0 0 0.12em var(--line-strong);
+}
+
+.radioOn::before {
+  box-shadow: inset 0 0 0 0.3em var(--primary);
+}
+
+/* Node chips on the attributes page. */
+.nodes {
+  display: flex;
+  gap: 0.8em;
+}
+
+.node {
+  padding: 0.6em 0.9em;
+  border-radius: 0.6em;
+  border: 0.08em solid var(--line);
+  background: #fff;
+  font-size: 0.95em;
+  line-height: 1.25;
+}
+
+.node small {
+  display: block;
+  color: var(--muted);
+  font-size: 0.85em;
+}
+
+.nodeOn {
+  border-color: var(--primary);
+  background: #eef2ff;
+}
+
+/* WhatsApp ----------------------------------------------------------------
+ * Inside PhoneFrame, whose type is sized against the phone's own width. A
+ * generic chat look, no logos: the green bar, the paper-coloured wall and
+ * the two bubble colours are what make it read as WhatsApp.
+ */
+
+.wa {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  background: #efeae2;
+  color: #111b21;
+  font-family: var(--font-sans);
+}
+
+/* PhoneFrame's status bar sits at 3.6 of its own (4.6×) ems, about 16.6em down
+   and 4.6em tall in these units: the chat's header starts below it. */
+.waHead {
+  flex: none;
+  display: flex;
+  align-items: center;
+  gap: 3em;
+  padding: 23.5em 5em 3.6em;
+  background: #f0f2f5;
+  border-bottom: 0.3em solid #e2e5e8;
+}
+
+.waIcon {
+  flex: none;
+  width: 11em;
+  height: 11em;
+  border-radius: 2.6em;
+  background: #171717;
+}
+
+.waName {
+  font-size: 4.6em;
+  font-weight: 650;
+  letter-spacing: -0.01em;
+  line-height: 1.15;
+}
+
+.waSub {
+  display: block;
+  font-size: 0.72em;
+  font-weight: 450;
+  color: #54656f;
+}
+
+.waWall {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  gap: 2.2em;
+  padding: 4em 4.5em 3em;
+  overflow: hidden;
+  background:
+    radial-gradient(circle at 20% 20%, rgb(0 0 0 / 0.025) 0 1.2em, transparent 1.3em) 0 0 / 18em 18em,
+    radial-gradient(circle at 70% 60%, rgb(0 0 0 / 0.02) 0 0.9em, transparent 1em) 0 0 / 14em 14em,
+    #efeae2;
+}
+
+.waDay {
+  align-self: center;
+  padding: 0.8em 2.4em;
+  border-radius: 1.6em;
+  background: #fff;
+  color: #54656f;
+  font-size: 3.2em;
+  box-shadow: 0 0.12em 0.2em rgb(0 0 0 / 0.08);
+}
+
+.bubble {
+  position: relative;
+  max-width: 82%;
+  padding: 2.2em 2.8em 1.6em;
+  border-radius: 2.6em;
+  background: #fff;
+  box-shadow: 0 0.3em 0.4em rgb(0 0 0 / 0.07);
+}
+
+.bubble p {
+  font-size: 3.7em;
+  line-height: 1.38;
+  overflow-wrap: anywhere;
+}
+
+.bubble time {
+  display: block;
+  margin-top: 0.4em;
+  text-align: right;
+  font-size: 2.9em;
+  color: #667781;
+}
+
+.bubbleIn {
+  align-self: flex-start;
+  border-top-left-radius: 0.6em;
+}
+
+.bubbleOut {
+  align-self: flex-end;
+  background: #d9fdd3;
+  border-top-right-radius: 0.6em;
+}
+
+/* Read ticks, drawn. */
+.ticks {
+  display: inline-block;
+  width: 1.3em;
+  height: 0.75em;
+  margin-left: 0.3em;
+  vertical-align: 0;
+  background:
+    linear-gradient(45deg, transparent 45%, #53bdeb 45% 60%, transparent 60%) 0 0 / 0.75em 0.75em no-repeat,
+    linear-gradient(45deg, transparent 45%, #53bdeb 45% 60%, transparent 60%) 0.45em 0 / 0.75em 0.75em no-repeat;
+}
+
+.waInput {
+  flex: none;
+  display: flex;
+  align-items: center;
+  gap: 2.4em;
+  padding: 2.6em 4em 7em;
+  background: #f0f2f5;
+}
+
+.waField {
+  flex: 1;
+  padding: 2.4em 3.4em;
+  border-radius: 6em;
+  background: #fff;
+  color: #667781;
+  font-size: 3.5em;
+  line-height: 1;
+}
+
+.waMic {
+  flex: none;
+  width: 11.5em;
+  height: 11.5em;
+  border-radius: 50%;
+  background: #00a884;
+}
+
+/* The two together: the web app on its laptop, the phone leaning in front of it. */
+.duo {
+  position: relative;
+  width: 100%;
+  padding-right: 9%;
+}
+
+.duoPhone {
+  position: absolute;
+  right: 0;
+  bottom: -7%;
+  width: 25%;
+  filter: drop-shadow(0 1.2rem 2rem rgb(0 0 0 / 0.45));
+}

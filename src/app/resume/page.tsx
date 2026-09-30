@@ -17,6 +17,14 @@ export const metadata: Metadata = {
 /** One neutral résumé: the same verified facts the rest of the site uses. */
 const RESUME_PROJECTS: { slug: string; points: string[] }[] = [
   {
+    slug: "compliancewatch",
+    points: [
+      "Regulatory-change platform for Indian SMBs under GST: 10 FastAPI services on Postgres, a transactional outbox to Kafka and Temporal workflows, from crawling five regulator feeds to WhatsApp reminders in Hindi and English.",
+      "Applicability as three-valued predicates over a business's profile, with human approval before any rule publishes; LLM calls through one gateway with budgets, PII masking and a prompt registry.",
+      "Question answering in three layers whose quotes are checked against their clauses before an answer goes out; 5,571 tests passing, 99.21% domain coverage and 22 eval gates in CI.",
+    ],
+  },
+  {
     slug: "smartshelfkart",
     points: [
       "Multi-tenant inventory platform on web and Google Play: 51 business modules, 800+ automated tests, a 7-job CI pipeline.",

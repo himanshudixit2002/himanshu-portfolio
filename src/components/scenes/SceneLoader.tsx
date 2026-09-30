@@ -12,6 +12,7 @@ type SceneProps = { accent: string };
  * while its chunk loads, an empty track of the same height holds its place.
  */
 const SCENES: Record<string, ComponentType<SceneProps>> = {
+  compliancewatch: lazy(() => import("./live/CwScene")),
   smartshelfkart: lazy(() => import("./live/SskScene")),
   elepeia: lazy(() => import("./live/ElepeiaScene")),
   kvstore: lazy(() => import("./live/KvScene")),

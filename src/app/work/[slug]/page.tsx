@@ -7,6 +7,7 @@ import { LocalNav } from "@/components/case/LocalNav";
 import { Decisions, Metrics, NextProject, Proof } from "@/components/case/Sections";
 import { MarkExplored } from "@/components/explore/Explored";
 import { Hint } from "@/components/explore/Hint";
+import { DeepDive } from "@/components/compliancewatch/DeepDive";
 import { SurfaceSystem } from "@/components/home/SurfaceSystem";
 import { hasScene, SignatureScene } from "@/components/scenes/SignatureScene";
 import { isInteractive, SignatureVisual } from "@/components/visuals/SignatureVisual";
@@ -42,9 +43,11 @@ export default async function CaseStudy({ params }: PageProps<"/work/[slug]">) {
   const next = nextProject(project.slug);
   const hasProof = project.evidence.length > 0 || project.limitations.length > 0;
 
+  const deep = project.slug === "compliancewatch";
   const sections = [
     ...(project.metrics.length ? [{ id: "overview", label: "Overview" }] : []),
     { id: "how", label: "How it works" },
+    ...(deep ? [{ id: "inside", label: "Inside" }] : []),
     { id: "story", label: "Story" },
     ...(project.decisions.length ? [{ id: "decisions", label: "Decisions" }] : []),
     ...(hasProof ? [{ id: "proof", label: "Proof" }] : []),
@@ -87,6 +90,9 @@ export default async function CaseStudy({ params }: PageProps<"/work/[slug]">) {
           </div>
         </div>
       </section>
+
+      {/* The main project gets the whole tour: three more of its rules to try, the system, the screens and the gates. */}
+      {deep && <DeepDive project={project} />}
 
       <section id="story" aria-labelledby="story-title" className="surface-light sd-sheet section-y bg-paper text-fg">
         <div className="container-page">

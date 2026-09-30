@@ -1,4 +1,5 @@
 import type { Project } from "../types";
+import { complianceWatch } from "./compliancewatch";
 import { cueAndCoffee } from "./cue-and-coffee";
 import { elepeia } from "./elepeia";
 import { kvStore } from "./kvstore";
@@ -15,13 +16,15 @@ import {
 } from "./selected";
 import { smartShelfKart } from "./smartshelfkart";
 
-export { cueAndCoffee, elepeia, kvStore, smartShelfKart };
+export { complianceWatch, cueAndCoffee, elepeia, kvStore, smartShelfKart };
 
 /**
- * Public projects in display order: flagships first, then the rest roughly by
- * how much they show. Every claim is traceable to editorial/sources.ts.
+ * Public projects in display order: the main project, then the flagships,
+ * then the rest roughly by how much they show. Every claim is traceable to
+ * editorial/sources.ts.
  */
 export const projects: Project[] = [
+  complianceWatch,
   smartShelfKart,
   elepeia,
   cueAndCoffee,
@@ -36,6 +39,9 @@ export const projects: Project[] = [
   skintellect,
   padhnaThoPadega,
 ];
+
+/** The main project: the homepage's spotlight, and first everywhere projects are listed. */
+export const MAIN_PROJECT = complianceWatch.slug;
 
 /** Every project's slug, in display order: the list the explorer features count against. */
 export const projectSlugs = projects.map((p) => p.slug);

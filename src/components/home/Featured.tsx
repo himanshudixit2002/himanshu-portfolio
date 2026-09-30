@@ -21,7 +21,7 @@ const FEATURED: { project: Project; art: ReactNode }[] = [
  * featured.module.css). Each card says it in one look: the idea, its own
  * figures, its stack, and the way in. On phones they're simply a column.
  */
-export function Featured() {
+export function Featured({ start = 1 }: { start?: number }) {
   return (
     <ol className={s.stack} data-xray="Sticky stacking cards · each one settles back on the next card's CSS view timeline">
       {FEATURED.map(({ project: p, art }, i) => {
@@ -32,7 +32,7 @@ export function Featured() {
               <span aria-hidden="true" className={s.glow} />
               <div className={s.text}>
                 <p className="text-eyebrow" style={{ color: p.accent }}>
-                  {String(i + 1).padStart(2, "0")} · {p.categories.join(" · ")}
+                  {String(start + i).padStart(2, "0")} · {p.categories.join(" · ")}
                 </p>
                 <h3 id={`featured-${p.slug}`} className="mt-3 text-title text-[clamp(1.75rem,3.2vw,2.75rem)]">
                   {p.title}

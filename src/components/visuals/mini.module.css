@@ -258,3 +258,44 @@
   animation: pair 2s var(--ease-in-out) infinite;
   animation-delay: calc(var(--k) * 0.35s);
 }
+
+/* ComplianceWatch: a line sweeps down the notice as it's read, then the lit
+   due date hops a day to the right and settles back. */
+@keyframes cw-scan {
+  40% {
+    transform: translate3d(0, 36px, 0);
+    opacity: 1;
+  }
+  46% {
+    transform: translate3d(0, 36px, 0);
+    opacity: 0;
+  }
+  47% {
+    transform: translate3d(0, 0, 0);
+    opacity: 0;
+  }
+  60% {
+    opacity: 1;
+  }
+}
+:global(html[data-motion="full"] [data-loops]:hover) .cwScan,
+:global(html[data-motion="full"] [data-loops]:focus-within) .cwScan,
+:global(html[data-motion="full"] [data-loops][data-active]) .cwScan {
+  animation: cw-scan 3.6s var(--ease-in-out) infinite;
+}
+
+@keyframes cw-move {
+  0%,
+  44% {
+    transform: translate3d(0, 0, 0);
+  }
+  54%,
+  88% {
+    transform: translate3d(11px, 0, 0);
+  }
+}
+:global(html[data-motion="full"] [data-loops]:hover) .cwMove,
+:global(html[data-motion="full"] [data-loops]:focus-within) .cwMove,
+:global(html[data-motion="full"] [data-loops][data-active]) .cwMove {
+  animation: cw-move 3.6s var(--ease-emphasized) infinite;
+}

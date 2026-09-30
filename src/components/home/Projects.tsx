@@ -1,17 +1,18 @@
 import Link from "next/link";
-import { projects, projectSlugs } from "@/content/projects";
+import { MAIN_PROJECT, projects, projectSlugs } from "@/content/projects";
 import { ExploredPill, SurpriseMe } from "@/components/explore/Explored";
 import { Hint } from "@/components/explore/Hint";
 import { ArrowRight } from "@/components/ui/icons";
 import { Featured } from "./Featured";
+import { MainProject } from "./MainProject";
 import { ProjectBento } from "./ProjectBento";
 
 /** The flagships, shown as big stacking cards; every other project follows in the bento wall. */
 const FEATURED = ["smartshelfkart", "elepeia", "cue-and-coffee"];
 
-/** Every project: the three flagships as stacking cards, then the rest as a bento wall, each with its stack. */
+/** Every project: the main one in a spotlight, the three flagships as stacking cards, then the rest as a bento wall, each with its stack. */
 export function Projects() {
-  const more = projects.filter((p) => !FEATURED.includes(p.slug));
+  const more = projects.filter((p) => p.slug !== MAIN_PROJECT && !FEATURED.includes(p.slug));
 
   return (
     <section id="work" aria-labelledby="work-title" data-tone="dark" className="relative section-y bg-ink">
@@ -25,7 +26,7 @@ export function Projects() {
               Things I&rsquo;ve built.
             </h2>
             <p data-reveal className="text-lede mt-5 text-muted-inverse">
-              Three to start with, then everything else. Each opens into a case study you can play with.
+              The main project first, then three flagships and everything else. Each opens into a case study you can play with.
             </p>
           </div>
           <div className="flex flex-wrap items-center gap-3">
@@ -40,7 +41,11 @@ export function Projects() {
         </div>
 
         <div className="mt-12">
-          <Featured />
+          <MainProject />
+        </div>
+
+        <div className="mt-6 md:mt-8">
+          <Featured start={2} />
         </div>
 
         <div className="mt-16 md:mt-24">
@@ -53,7 +58,7 @@ export function Projects() {
           </div>
           {/* On phones the tile mid-screen plays its signature; on wider screens, the one under the pointer. */}
           <div className="relative mt-8" data-xray="Server-rendered bento · a dense CSS grid, each tile sized per project · signatures loop under the pointer or mid-screen on touch · tilt and light from one listener">
-            <ProjectBento projects={more} start={FEATURED.length + 1} />
+            <ProjectBento projects={more} start={FEATURED.length + 2} />
           </div>
         </div>
       </div>

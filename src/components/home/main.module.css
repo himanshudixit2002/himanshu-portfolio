@@ -1,0 +1,317 @@
+/*
+ * The main project's spotlight at the top of Work (MainProject). One wide
+ * card: the idea and its figures beside the product itself, then the wire —
+ * five stations from a regulator's PDF to the owner's phone, with a light
+ * that travels along it and wakes each station as it passes. Transforms and
+ * opacity only; still under reduced motion and without scroll timelines.
+ */
+
+@layer theme, base, components, utilities;
+
+.spot {
+  position: relative;
+  isolation: isolate;
+  overflow: clip;
+  border-radius: 2rem;
+  background:
+    radial-gradient(circle at 1px 1px, rgb(255 255 255 / 0.07) 1px, transparent 1.5px) 0 0 / 22px 22px,
+    var(--color-ink-2);
+  box-shadow:
+    inset 0 0 0 1px color-mix(in oklab, var(--accent) 28%, transparent),
+    0 2.5rem 5rem -2.5rem rgb(0 0 0 / 0.85);
+}
+
+/* Two glows: the project's blue, and its teal. */
+.glow,
+.glow2 {
+  position: absolute;
+  z-index: -1;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  pointer-events: none;
+}
+
+.glow {
+  top: -35%;
+  right: -15%;
+  width: 75%;
+  background: radial-gradient(closest-side, color-mix(in oklab, var(--accent) 26%, transparent), transparent);
+}
+
+.glow2 {
+  bottom: -40%;
+  left: -20%;
+  width: 60%;
+  background: radial-gradient(closest-side, rgb(45 212 191 / 0.12), transparent);
+}
+
+.body {
+  display: grid;
+  gap: 2rem;
+  padding: 1.5rem 1.25rem 1.75rem;
+}
+
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.3rem 0.75rem 0.3rem 0.6rem;
+  border-radius: 999px;
+  background: color-mix(in oklab, var(--accent) 14%, transparent);
+  box-shadow: inset 0 0 0 1px color-mix(in oklab, var(--accent) 35%, transparent);
+  color: var(--accent);
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+}
+
+.badge::before {
+  content: "";
+  width: 0.45rem;
+  height: 0.45rem;
+  border-radius: 50%;
+  background: var(--accent);
+  box-shadow: 0 0 0 3px color-mix(in oklab, var(--accent) 25%, transparent);
+}
+
+.figures {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 1rem;
+  margin-top: 1.75rem;
+  padding-top: 1.25rem;
+  border-top: 1px solid rgb(255 255 255 / 0.1);
+}
+
+.tech {
+  padding: 0.3rem 0.65rem;
+  border-radius: 999px;
+  background: rgb(255 255 255 / 0.06);
+  box-shadow: inset 0 0 0 1px rgb(255 255 255 / 0.08);
+  color: var(--color-muted-inverse);
+  font-size: 0.75rem;
+  white-space: nowrap;
+}
+
+/* The product: the phone alone on phones, where the pair would be too small
+   to read; the web app with the phone leaning in front from 768px. */
+.art {
+  position: relative;
+  min-width: 0;
+}
+
+.artPair {
+  display: none;
+}
+
+.artPhone {
+  width: min(62%, 17rem);
+  margin-inline: auto;
+}
+
+/* The wire ----------------------------------------------------------------- */
+
+.wire {
+  position: relative;
+  display: grid;
+  gap: 1.1rem;
+  counter-reset: station;
+}
+
+.station {
+  position: relative;
+  display: grid;
+  grid-template-columns: 2.75rem minmax(0, 1fr);
+  gap: 0.35rem 0.9rem;
+  align-items: start;
+}
+
+.node {
+  position: relative;
+  grid-row: span 2;
+  display: grid;
+  place-items: center;
+  width: 2.75rem;
+  height: 2.75rem;
+  border-radius: 0.9rem;
+  background: var(--color-ink);
+  box-shadow: inset 0 0 0 1px color-mix(in oklab, var(--accent) 40%, transparent);
+  color: var(--accent);
+}
+
+.node svg {
+  width: 1.3rem;
+  height: 1.3rem;
+}
+
+/* The glow each station takes, and the ring it sends out, as the light reaches it. */
+.node::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  box-shadow:
+    inset 0 0 0 1px var(--accent),
+    0 0 1.2rem -0.2rem var(--accent);
+  opacity: 0;
+  pointer-events: none;
+}
+
+.node::after {
+  content: "";
+  position: absolute;
+  inset: -1px;
+  border-radius: inherit;
+  box-shadow: 0 0 0 2px var(--accent);
+  opacity: 0;
+  pointer-events: none;
+}
+
+.stationTitle {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0.25rem 0.6rem;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+}
+
+.stat {
+  font-family: var(--font-mono);
+  font-size: 0.6875rem;
+  font-weight: 500;
+  color: var(--accent);
+}
+
+.stationBody {
+  font-size: 0.875rem;
+  line-height: 1.5;
+  color: var(--color-muted-inverse);
+  text-wrap: pretty;
+}
+
+/* A thin line down the stations on phones, across them from 768px. */
+.line {
+  position: absolute;
+  top: 1.4rem;
+  bottom: 1.4rem;
+  left: calc(1.375rem - 1px);
+  width: 2px;
+  overflow: clip;
+  background: rgb(255 255 255 / 0.1);
+  pointer-events: none;
+}
+
+.comet {
+  display: none;
+}
+
+@media (min-width: 768px) {
+  .artPhone {
+    display: none;
+  }
+
+  .artPair {
+    display: block;
+    padding-bottom: 1.75rem;
+  }
+
+  .body {
+    padding: 2.5rem 2.5rem 2.25rem;
+    gap: 2.5rem;
+  }
+
+  .wire {
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+    gap: 1.25rem;
+  }
+
+  .station {
+    grid-template-columns: minmax(0, 1fr);
+    justify-items: start;
+  }
+
+  .node {
+    grid-row: auto;
+    margin-bottom: 0.6rem;
+  }
+
+  .line {
+    top: calc(1.375rem - 1px);
+    bottom: auto;
+    left: 1.375rem;
+    /* From the first node's centre to the last's: columns are 20% less 1rem of gap, nodes 2.75rem. */
+    right: calc(20% - 2.375rem);
+    width: auto;
+    height: 2px;
+  }
+
+  /* A comet: a bright stretch of a full-width strip, slid across the line. */
+  .comet {
+    display: block;
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(90deg, transparent 38%, color-mix(in oklab, var(--accent) 90%, white) 50%, transparent 52%);
+    transform: translate3d(-100%, 0, 0);
+  }
+}
+
+@media (min-width: 1024px) {
+  .top {
+    display: grid;
+    grid-template-columns: minmax(0, 0.95fr) minmax(0, 1.15fr);
+    gap: 2.5rem;
+    align-items: center;
+  }
+}
+
+/* The light travels once every 6 s; a station rings as it passes. The comet's
+   bright spot crosses the line in the middle half of its run (1.5 s to 4.5 s),
+   so station i, at i/4 of the way along, rings at 1.5 + 0.75 i seconds. */
+@keyframes travel {
+  to {
+    transform: translate3d(100%, 0, 0);
+  }
+}
+
+@keyframes ring {
+  0% {
+    opacity: 0.9;
+    transform: scale(1);
+  }
+  14%,
+  100% {
+    opacity: 0;
+    transform: scale(1.45);
+  }
+}
+
+@keyframes wake {
+  0% {
+    opacity: 1;
+  }
+  18%,
+  100% {
+    opacity: 0;
+  }
+}
+
+:global(html[data-motion="full"]) .comet {
+  animation: travel 6s linear infinite;
+}
+
+:global(html[data-motion="full"]) .node::after {
+  animation: ring 6s var(--ease-out) infinite;
+  animation-delay: calc(1.5s + var(--i) * 0.75s);
+}
+
+:global(html[data-motion="full"]) .node::before {
+  animation: wake 6s var(--ease-out) infinite;
+  animation-delay: calc(1.5s + var(--i) * 0.75s);
+}
+
+@media print {
+  .spot {
+    box-shadow: none;
+  }
+}

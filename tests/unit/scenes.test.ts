@@ -8,6 +8,8 @@ import type { SceneMeta } from "@/lib/scenes/types";
 import { ticks, VITALS_RATES, vitalsFrame, vitalsScene } from "@/lib/scenes/vitals";
 import * as kv from "@/lib/sim/kvstore";
 import { cafeFrame, cafeScene, clock } from "@/lib/scenes/cafe";
+import { CW_BUSINESSES, CW_MESSAGE, CW_MESSAGE_LINES, CW_QUOTE, cwFrame, cwScene } from "@/lib/scenes/compliancewatch";
+import { N01_2026 } from "@/content/compliancewatch/documents";
 import { attemptTimes, rxFrame, rxScene } from "@/lib/scenes/rxforce";
 import { skinFrame, skinScene } from "@/lib/scenes/skintellect";
 import { divisions, URL_ALIAS, URL_ID, urlFrame, urlScene } from "@/lib/scenes/url";
@@ -22,6 +24,7 @@ import * as fg from "@/lib/sim/fraud-graph";
 import { isolationPath } from "@/lib/sim/isolation-forest";
 
 const scenes: [string, SceneMeta, (i: number) => unknown][] = [
+  ["compliancewatch", cwScene, cwFrame],
   ["smartshelfkart", sskScene, sskFrame],
   ["elepeia", elepeiaScene, elepeiaFrame],
   ["kvstore", kvScene, kvFrame],
@@ -48,6 +51,17 @@ describe("signature scenes", () => {
       expect(s.body.length).toBeGreaterThan(20);
     }
     expect(meta.note.length).toBeGreaterThan(40);
+  });
+
+  it("ComplianceWatch follows 01/2026 from the feed to the phone, with the engine's verdicts and the service's words", () => {
+    expect(cwFrame(0).stage).toBe("watch");
+    expect(cwFrame(6)).toMatchObject({ stage: "remind", reached: ["watch", "read", "extract", "approve", "decide", "date", "remind"] });
+    // The extension applies to the monthly filer and not to the quarterly one.
+    expect(CW_BUSINESSES.map((b) => b.verdict)).toEqual(["applies", "not_applicable"]);
+    // The quote the validators check is in the operative clause, spacing and all.
+    expect(N01_2026.clauses[2].text).toContain(CW_QUOTE);
+    // The phone's lines are the rendered template, broken for drawing.
+    expect(CW_MESSAGE_LINES.join(" ")).toBe(CW_MESSAGE);
   });
 
   it("SmartShelfKart follows the documented question path and ends on the published figure", () => {

@@ -1,6 +1,7 @@
 import type { Project } from "@/content/types";
 import { cacheScene } from "@/lib/scenes/cache";
 import { cafeScene } from "@/lib/scenes/cafe";
+import { cwScene } from "@/lib/scenes/compliancewatch";
 import { elepeiaScene } from "@/lib/scenes/elepeia";
 import { fraudScene } from "@/lib/scenes/fraud";
 import { gatewayScene } from "@/lib/scenes/gateway";
@@ -17,6 +18,7 @@ import { SceneSteps } from "./SceneStage";
 import { SceneLoader } from "./SceneLoader";
 
 const SCENES: Record<string, SceneMeta> = {
+  compliancewatch: cwScene,
   smartshelfkart: sskScene,
   elepeia: elepeiaScene,
   kvstore: kvScene,

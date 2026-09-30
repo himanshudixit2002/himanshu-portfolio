@@ -2,6 +2,7 @@ import Image from "next/image";
 import type { ReactNode } from "react";
 import type { Project } from "@/content/types";
 import { CafeFloorArt, ElepeiaArt } from "@/components/art/ChapterArt";
+import { CwDuoArt } from "@/components/art/ComplianceWatchArt";
 import { KvTerminalArt } from "@/components/art/KvTerminalArt";
 import { SskOverviewArt } from "@/components/art/SmartShelfKartArt";
 import { BrowserFrame, DesktopFrame, MacBookFrame } from "@/components/frames/DeviceFrame";
@@ -20,6 +21,12 @@ export function HeroDevice({ project }: { project: Project }) {
   const wall: [string, string] = [`${accent}66`, "rgb(92 164 255 / 0.22)"];
 
   switch (project.slug) {
+    case "compliancewatch":
+      return (
+        <Device caption="Interface illustrations with sample data — the web app, and a reminder on WhatsApp in Hindi">
+          <CwDuoArt home={alt(project, "cw-home")!} phone={alt(project, "cw-whatsapp")!} accent={accent} />
+        </Device>
+      );
     case "smartshelfkart":
       return (
         <Device caption="Interface illustration with sample data">

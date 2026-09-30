@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { projects, projectSlugs } from "@/content/projects";
+import { MAIN_PROJECT, projects, projectSlugs } from "@/content/projects";
 import type { ProjectCategory } from "@/content/types";
 import { ExploredPill, SurpriseMe } from "@/components/explore/Explored";
 import { categoryId, ProjectCard } from "@/components/work/ProjectCard";
@@ -47,7 +47,7 @@ export default function WorkPage() {
       <div className="mt-12">
         <WorkFilter filters={filters} total={projects.length}>
           {displayOrder().map((p) => (
-            <ProjectCard key={p.slug} project={p} large={p.tier === "flagship"} headingLevel={2} />
+            <ProjectCard key={p.slug} project={p} large={p.tier === "flagship"} headingLevel={2} badge={p.slug === MAIN_PROJECT ? "Main project" : undefined} />
           ))}
         </WorkFilter>
       </div>
