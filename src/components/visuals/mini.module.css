@@ -284,6 +284,74 @@
   animation: cw-scan 3.6s var(--ease-in-out) infinite;
 }
 
+/* ComplianceWatch's citation check: the match drains and climbs back past the
+   85% mark while the dashes run from clause to quote; then the verified badge
+   settles. */
+@keyframes cw-match {
+  0% {
+    transform: scaleX(1);
+    opacity: 1;
+  }
+  8% {
+    transform: scaleX(1);
+    opacity: 0;
+  }
+  9% {
+    transform: scaleX(0);
+    opacity: 1;
+  }
+  60%,
+  100% {
+    transform: scaleX(1);
+    opacity: 1;
+  }
+}
+.cwMatch {
+  transform-origin: 92px 69.5px;
+}
+:global(html[data-motion="full"] [data-loops]:hover) .cwMatch,
+:global(html[data-motion="full"] [data-loops]:focus-within) .cwMatch,
+:global(html[data-motion="full"] [data-loops][data-active]) .cwMatch {
+  animation: cw-match 3.6s var(--ease-in-out) infinite;
+}
+
+@keyframes cw-verified {
+  0% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  8%,
+  62% {
+    opacity: 0;
+    transform: scale(0.5);
+  }
+  74%,
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+.cwVerified {
+  transform-origin: 138px 30px;
+}
+:global(html[data-motion="full"] [data-loops]:hover) .cwVerified,
+:global(html[data-motion="full"] [data-loops]:focus-within) .cwVerified,
+:global(html[data-motion="full"] [data-loops][data-active]) .cwVerified {
+  animation: cw-verified 3.6s var(--ease-emphasized) infinite;
+}
+
+/* Two dash periods a loop, so it ends where it began. */
+@keyframes cw-flow {
+  to {
+    stroke-dashoffset: -8;
+  }
+}
+:global(html[data-motion="full"] [data-loops]:hover) .cwFlow,
+:global(html[data-motion="full"] [data-loops]:focus-within) .cwFlow,
+:global(html[data-motion="full"] [data-loops][data-active]) .cwFlow {
+  animation: cw-flow 1.8s linear infinite;
+}
+
 @keyframes cw-move {
   0%,
   44% {
