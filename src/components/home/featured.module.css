@@ -12,7 +12,7 @@
   position: relative;
   display: grid;
   gap: 1.25rem;
-  timeline-scope: --featured-1, --featured-2;
+  timeline-scope: --featured-1, --featured-2, --featured-3;
 }
 
 .card {
@@ -138,14 +138,20 @@
       view-timeline: --featured-2 block;
     }
 
+    .item3 {
+      view-timeline: --featured-3 block;
+    }
+
     :global(html[data-motion="full"]) .item0 .card,
-    :global(html[data-motion="full"]) .item1 .card {
+    :global(html[data-motion="full"]) .item1 .card,
+    :global(html[data-motion="full"]) .item2 .card {
       animation: settle linear both;
       animation-range: entry 0% entry 100%;
     }
 
     :global(html[data-motion="full"]) .item0 .card::after,
-    :global(html[data-motion="full"]) .item1 .card::after {
+    :global(html[data-motion="full"]) .item1 .card::after,
+    :global(html[data-motion="full"]) .item2 .card::after {
       animation: dim linear both;
       animation-range: entry 20% entry 100%;
     }
@@ -158,6 +164,11 @@
     :global(html[data-motion="full"]) .item1 .card,
     :global(html[data-motion="full"]) .item1 .card::after {
       animation-timeline: --featured-2;
+    }
+
+    :global(html[data-motion="full"]) .item2 .card,
+    :global(html[data-motion="full"]) .item2 .card::after {
+      animation-timeline: --featured-3;
     }
   }
 }
