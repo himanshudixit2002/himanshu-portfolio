@@ -4,7 +4,7 @@ import { SurfaceSystem } from "@/components/home/SurfaceSystem";
 import { getProject } from "@/content/projects";
 import { Hint } from "@/components/explore/Hint";
 import { ArrowRight } from "@/components/ui/icons";
-import { MiniVisual } from "@/components/visuals/MiniVisual";
+import { MiniVisual, type MiniId } from "@/components/visuals/MiniVisual";
 import { LazyVisual, type InteractiveId } from "@/components/visuals/LazyVisual";
 
 export const metadata: Metadata = {
@@ -13,7 +13,8 @@ export const metadata: Metadata = {
   alternates: { canonical: "/lab" },
 };
 
-const LABS: { id: InteractiveId; slug: string; title: string; body: string }[] = [
+/** Each lab shows its project's signature in the strip, unless it brings a drawing of its own (a second lab on one project). */
+const LABS: { id: InteractiveId; slug: string; title: string; body: string; mini?: MiniId }[] = [
   {
     id: "cw-applicability",
     slug: "compliancewatch",
@@ -25,6 +26,7 @@ const LABS: { id: InteractiveId; slug: string; title: string; body: string }[] =
     slug: "compliancewatch",
     title: "Quote it, or it isn't an answer",
     body: "Write the model's quote and run it through the answerer's citation check: close isn't enough when a date or a month is wrong.",
+    mini: "cw-citation",
   },
   {
     id: "kv-explorer",
@@ -82,7 +84,7 @@ export default function LabPage() {
         <p className="text-lede mt-6 max-w-2xl text-muted-inverse">
           Small, honest simulations of the systems behind my projects. They run entirely in your browser on sample data — each one says exactly what it models and what it leaves out.
         </p>
-        {/* Every lab at a glance: each with its project's signature, playing under the pointer. */}
+        {/* Every lab at a glance: each with its project's signature (or its own drawing), playing under the pointer. */}
         <nav
           aria-label="The labs"
           className="relative mt-10 grid grid-cols-2 gap-3 sm:grid-cols-4"
@@ -98,7 +100,7 @@ export default function LabPage() {
                 className="group overflow-clip rounded-2xl bg-ink-2 ring-1 ring-white/8 transition-[translate,box-shadow] duration-(--dur-base) ease-(--ease-out) hover:-translate-y-1 hover:ring-white/20"
               >
                 <span aria-hidden="true" className="block aspect-[16/10] bg-ink">
-                  <MiniVisual id={p.visual} accent={p.accent} />
+                  <MiniVisual id={lab.mini ?? p.visual} accent={p.accent} />
                 </span>
                 <span className="block px-3 pt-2.5 pb-3">
                   <span className="block text-sm font-semibold" style={{ color: p.accent }}>

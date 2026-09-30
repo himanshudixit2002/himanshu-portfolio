@@ -2,13 +2,16 @@ import type { CSSProperties, ReactNode } from "react";
 import type { VisualId } from "@/content/types";
 import m from "./mini.module.css";
 
+/** A project's signature, or a drawing of its own for a second lab on the same project. */
+export type MiniId = VisualId | "cw-citation";
+
 /**
  * Small SVG signatures for project cards — one idea per project, drawn in its
  * accent colour. Still by default; while the card holding one is active, its
  * idea plays as a short loop (mini.module.css). Decorative: the card text
  * carries the meaning.
  */
-export function MiniVisual({ id, accent }: { id: VisualId; accent: string }) {
+export function MiniVisual({ id, accent }: { id: MiniId; accent: string }) {
   return (
     <svg viewBox="0 0 160 100" className="block h-full w-full" aria-hidden="true" focusable="false">
       {/* The glow is an ellipse centred at (80, 40), 112 × 70 in radius, drawn
@@ -44,7 +47,7 @@ const OUTLIERS = [
   [124, 78],
 ];
 
-const DRAW: Record<VisualId, (a: string) => ReactNode> = {
+const DRAW: Record<MiniId, (a: string) => ReactNode> = {
   // ComplianceWatch: a notice is read, and a due date on the calendar moves a day (20 → 21).
   "cw-applicability": (a) => (
     <>
@@ -60,6 +63,30 @@ const DRAW: Record<VisualId, (a: string) => ReactNode> = {
       ))}
       {/* The 20th, lit; the loop carries it to the 21st, as notification 01/2026 did. */}
       <rect className={loop(m.cwMove)} x="104" y="56" width="9" height="8" rx="2" fill={a} />
+    </>
+  ),
+  // ComplianceWatch's citation check: the quote beside the clause it came from, its match
+  // climbing past the 85% mark, and the badge that lets the answer go out.
+  "cw-citation": (a) => (
+    <>
+      <rect x="22" y="20" width="54" height="60" rx="4" fill="rgb(255 255 255 / 0.05)" stroke={soft} />
+      <rect x="27" y="39.4" width="44" height="14.2" rx="2" fill={a} fillOpacity="0.14" />
+      {[28, 35, 42, 49, 56, 63, 70].map((y, i) => (
+        <rect key={y} x="30" y={y} width={i === 6 ? 20 : 38} height="2.4" rx="1.2" fill={i === 2 || i === 3 ? a : soft} fillOpacity={i === 2 || i === 3 ? 0.7 : 1} />
+      ))}
+      <path className={loop(m.cwFlow)} d="M79 46 H89" stroke={a} strokeOpacity="0.5" strokeDasharray="2 2" />
+      <rect x="92" y="30" width="46" height="31" rx="4" fill={a} fillOpacity="0.1" stroke={a} strokeOpacity="0.4" />
+      {[38, 45, 52].map((y, i) => (
+        <rect key={y} x="98" y={y} width={i === 2 ? 20 : 34} height="2.4" rx="1.2" fill={a} fillOpacity="0.6" />
+      ))}
+      <rect x="92" y="68" width="46" height="3" rx="1.5" fill={soft} />
+      <rect className={loop(m.cwMatch)} x="92" y="68" width="42.3" height="3" rx="1.5" fill={a} />
+      {/* The threshold: 85% of the way along. */}
+      <path d="M131.1 64.5 V74.5" stroke="rgb(255 255 255 / 0.55)" />
+      <g className={loop(m.cwVerified)}>
+        <circle cx="138" cy="30" r="6.5" fill={a} />
+        <path d="M135 30.2 L137.1 32.3 L141.2 28" fill="none" stroke="#0b0c0e" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
+      </g>
     </>
   ),
   "ssk-system": (a) =>
